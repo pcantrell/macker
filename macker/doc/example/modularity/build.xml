@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+
+<project name="Macker example" default="macker" basedir=".">
+    &stdbuild;
+
+    <target name="explain">
+        <echo>
+________________________________________________________________________________
+
+This example demonstrates how to use Macker to enforce modularity rules between
+a collection of functionally separate peers with a parallel structre.
+
+The example code is a game simulation program with several different computer
+players which can play one of two games (Prisoner's Dilemma or Rochambeau).  The
+games don't know about the various players, and the players don't know about the
+game; the two modules communicate through APIs, and hide their implementations
+in "impl" packages.
+
+The macker rules file (src/macker.xml) looks for modules using a &lt;foreach&gt;, and
+the checks that other classes are using each module through its API.  The class
+BrokenMain breaks this rule by instantiating impl classes directly, so it will
+give some errors.
+________________________________________________________________________________
+        </echo>
+    </target>
+</project>
