@@ -107,7 +107,7 @@ public class AccessRule
             MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
             ClassInfo from = (ClassInfo) entry.getKey();
             ClassInfo to   = (ClassInfo) entry.getValue();
-            if(from == to)
+            if(from.equals(to))
                 continue;
             if(!context.getRuleSet().isInSubset(context, from))
                 continue;

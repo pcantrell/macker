@@ -82,18 +82,18 @@ public abstract class AbstractClassInfo
     public int compareTo(Object that)
         { return getFullName().compareTo(((ClassInfo) that).getFullName()); }
     
-    public boolean equals(Object that)
+    public final boolean equals(Object that)
         {
         if(this == that)
             return true;
         if(that == null)
             return false;
-        if(this.getClass() != that.getClass())
+        if(!(that instanceof ClassInfo))
             return false;
         return getFullName().equals(((ClassInfo) that).getFullName());
         }
     
-    public int hashCode()
+    public final int hashCode()
         { return getFullName().hashCode(); }
     
     public String toString()

@@ -36,7 +36,7 @@ public class SubtypeFilter
         if(params.size() != 1)
             throw new FilterSyntaxException(
                 this,
-                options.get("filter") + " expects one parameter, but has " + params.size());
+                "Filter \"" + options.get("filter") + "\" expects one parameter, but has " + params.size());
         final Pattern supertypePat = (Pattern) params.get(0);
         return new Pattern()
             {

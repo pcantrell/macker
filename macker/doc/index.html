@@ -34,9 +34,9 @@ Questions or suggestions?  Feel free to <a href="contact.html">contact Paul</a>.
 
 <h2>Macker Approaches 0.4 Beta!</h2>
 <p>
-Macker is preparing for 0.4 beta.  Please download it and try it out!
+Macker is preparing for 0.4 beta.  Please download it and try it out, blah blah blah...
 
-<h3>New features</h3>
+<h4>New features</h4>
 <p>
 <ul>
     <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="filter.html">more</a>)
@@ -45,7 +45,7 @@ Macker is preparing for 0.4 beta.  Please download it and try it out!
     <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="???.html">???</a>)
 </ul>
 
-<h3>Functional changes</h3>
+<h4>Functional changes</h4>
 <p>
 <ul>
     <li> The <code>regex</code> attribute is now deprecated in favor of <code>class</code>, which will make future features more readable.  (Only the name has changed; both do the same thing.)
@@ -53,7 +53,7 @@ Macker is preparing for 0.4 beta.  Please download it and try it out!
     <li> Verbose output shows classes in sorted order.
 </ul>
 
-<h3>Implementation changes</h3>
+<h4>Implementation changes</h4>
 <p>
 <ul>
     <li> Macker now uses <a href="http://jakarta.apache.org/bcel/">Jakarta BCEL</a> for class file parsing.  This speeds things up a hair, and eliminates the warning messages <a href="http://www.ej-technologies.com/jclasslib/">JClasslib</a> used to generate.
@@ -62,12 +62,13 @@ Macker is preparing for 0.4 beta.  Please download it and try it out!
     <li> Macker now forces validation against its internal DTD.
 </ul>
 
-<h3>Bug fixes</h3>
+<h4>Bug fixes</h4>
 <p>
 <ul>
     <li> Running under Java 1.4 no longer generates "major version" warning messages.
     <li> The Ant task now always honors the <code>failonerror</code> attribute.
-    <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern. 
+    <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern.
+    <li> Fixed a bug in which a certain lazy loading sequence would incorrectly cause access rules to match the reference from a class to itself.
 </ul>
 
 <div class="footer">

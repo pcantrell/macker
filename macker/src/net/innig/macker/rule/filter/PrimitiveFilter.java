@@ -38,7 +38,7 @@ public class PrimitiveFilter
         if(params.size() != 0)
             throw new FilterSyntaxException(
                 this,
-                options.get("filter") + " expects no parameters, but has " + params.size());
+                "Filter \"" + options.get("filter") + "\" expects no parameters, but has " + params.size());
         return PRIMITIVE_PATTERN;
         } 
     

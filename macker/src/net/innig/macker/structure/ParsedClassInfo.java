@@ -160,8 +160,7 @@ public class ParsedClassInfo
                 addReference(
                     new Reference(
                         this,
-                        getClassManager().getClassInfo(
-                            (String) paramsAndReturn.get(paramsAndReturn.size()-1)),
+                        getClassManager().getClassInfo(refTo),
                         i.hasNext() ? ReferenceType.METHOD_PARAM
                                     : ReferenceType.METHOD_RETURNS,
                         method.getName(),
