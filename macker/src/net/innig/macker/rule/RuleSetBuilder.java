@@ -65,6 +65,8 @@ public class RuleSetBuilder
                 }
             else if(subElemName.equals("access-rule"))
                 ruleSet.addRule(buildAccessRule(subElem, ruleSet));
+            else if(subElemName.equals("var"))
+                ruleSet.addRule(buildVariable(subElem, ruleSet));
             else if(subElemName.equals("foreach"))
                 ruleSet.addRule(buildForEach(subElem, ruleSet));
             else if(subElemName.equals("ruleset"))
@@ -146,6 +148,24 @@ public class RuleSetBuilder
         return (pat instanceof CompositePattern)
             ? (CompositePattern) pat
             : new CompositePattern(CompositePatternType.INCLUDE, pat);
+        }
+    
+    public Variable buildVariable(Element forEachElem, RuleSet parent)
+        throws RulesException
+        {
+        String varName = forEachElem.getAttributeValue("name");
+        if(varName == null)
+            throw new RulesDocumentException(
+                forEachElem,
+                "<var> is missing the \"name\" attribute");
+        
+        String value = forEachElem.getAttributeValue("value");
+        if(value == null)
+            throw new RulesDocumentException(
+                forEachElem,
+                "<var> is missing the \"value\" attribute");
+        
+        return new Variable(varName, value);
         }
     
     public ForEach buildForEach(Element forEachElem, RuleSet parent)

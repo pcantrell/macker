@@ -2,12 +2,16 @@
 
 <!ELEMENT macker (ruleset)+>
 
-<!ELEMENT ruleset (pattern|access-rule|foreach|ruleset)*>
+<!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset)*>
 <!ATTLIST ruleset name  CDATA #IMPLIED> 
 
+<!ELEMENT var EMPTY>
+<!ATTLIST var name  CDATA #REQUIRED>
+<!ATTLIST var value CDATA #REQUIRED>
+
 <!ELEMENT foreach (pattern|foreach|access-rule)*>
-<!ATTLIST foreach var   CDATA #REQUIRED> 
-<!ATTLIST foreach regex CDATA #REQUIRED> 
+<!ATTLIST foreach var     CDATA #REQUIRED> 
+<!ATTLIST foreach regex   CDATA #REQUIRED> 
 
 <!ELEMENT pattern (include|exclude)*>
 <!ATTLIST pattern name    CDATA #REQUIRED> 

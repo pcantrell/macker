@@ -72,15 +72,7 @@ public class RegexPattern
                 int expEnd = hasAnotherVar ? var.getParenStart(0) : regexStr.length();
                 
                 if(pos < expEnd)
-                    {
-                    String exp = regexStr.substring(pos, expEnd);
-                    exp = partBoundary.subst(exp, "[\\.\\$]");
-                    exp = innerClassBoundary.subst(exp, "\\$");
-                    exp = star.subst(exp, "@");
-                    exp = matchAcross.subst(exp, ".*");
-                    exp = matchWithin.subst(exp, "[^\\.\\$]*");
-                    parts.add(new ExpPart(exp));
-                    }
+                    parts.add(new ExpPart(parseSubexpr(regexStr.substring(pos, expEnd))));
                 if(hasAnotherVar)
                     parts.add(new VarPart(var.getParen(1)));
                 
@@ -96,8 +88,9 @@ public class RegexPattern
                 Part part = (Part) i.next();
                 if(part instanceof VarPart)
                     builtRegexStr.append(
-                        context.getVariableValue(
-                            ((VarPart) part).varName));
+                        parseSubexpr(
+                            context.getVariableValue(
+                                ((VarPart) part).varName)));
                 else if(part instanceof ExpPart)
                     builtRegexStr.append(
                         ((ExpPart) part).exp);
@@ -111,6 +104,16 @@ public class RegexPattern
             if(regex.getParenCount() > 1)
                 throw new RegexPatternSyntaxException(regexStr, "Too many parenthesized expressions");
             }
+        }
+    
+    private String parseSubexpr(String exp)
+        {
+        exp = partBoundary.subst(exp, "[\\.\\$]");
+        exp = innerClassBoundary.subst(exp, "\\$");
+        exp = star.subst(exp, "@");
+        exp = matchAcross.subst(exp, ".*");
+        exp = matchWithin.subst(exp, "[^\\.\\$]*");
+        return exp;
         }
 
     private static void buildStaticPatterns()
