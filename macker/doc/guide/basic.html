@@ -118,7 +118,7 @@ Illegal reference
   from PrintHelloWorld
     to java.lang.System</pre>
 <p>
-Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.  (It also currently ignores certain things it should not; see the <a href="accessrule.html#limitations">access rule</a> section for details.)
+Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.
 <p>
 Note also that Macker did <i>not</i> get mad about any of the references from <code>java.io.PrintStream</code> to other java utilities, even though its name contains "Print", and our rule would apply.  Macker only applies rules to the input classes you specify, not to every class it can find in your classpath.
 

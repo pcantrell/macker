@@ -26,7 +26,7 @@
 
 <h3><a name="allowdeny">Allow / Deny</a></h3>
 <p>
-Class A <i>accesses</i> class B if A extends, implements, contains, aggregates, references, or otherwise depends on B.  Macker allows you to allow and deny such accesses between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
+Class <i>A</i> <i>accesses</i> class <i>B</i> if <i>A</i> extends, implements, contains, aggregates, references, or otherwise depends on <i>B</i>.  Macker allows you to allow and deny such accesses between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
 <p>
 The allow/deny construct is very similar to the include/exclude construct, except that it applies to <i>pairs</i> of classes.  An <code>&lt;access-rule&gt;</code> contains <code>&lt;allow&gt;</code> and <code>&lt;deny&gt;</code> rules, each of which may specify a <code>&lt;from&gt;</code> and a <code>&lt;to&gt;</code> pattern:
 </p>
@@ -77,9 +77,14 @@ Nesting allow/deny tags works just as nesting include/exclude does: the inner ru
 
 <h3><a name="limitations">Limitations</a></h3>
 <p>
-The ultimate intent is to make Macker's notion of "access" cover all the kinds of relationships that Java itself would check if B were private to A.  In its current version, Macker a bit falls short of this ideal -- it looks for things in A that would cause the JVM to actually load class B.   This covers any attempt to instantiate, invoke methods on, or typecast to or from B; however, it lets some cases slip through the cracks where B is the declared type of a parameter or variable, but the variable never actually gets used in any of the aforementioned ways.  Macker should be able to catch more of these cases with more meticulous class file parsing.
+Ideally, Macker's notion of "access" would cover all the kinds of relationships that Java itself would check if <i>B</i> were private and inaccessible to <i>A</i>.  This is almost the case; Macker can detect that class <i>A</i> accesses class <i>B</i> if:
+<ul>
+<li> <i>A</i> contains a method which takes or returns <i>B</i>,
+<li> <i>A</i> contains a field of type <i>B</i>, or
+<li> <i>A</i> contains code that would cause the JVM to load class <i>B</i> (which covers any attempt to instantiate, invoke methods on, or typecast to or from <i>B</i>).
+</ul>
 <p>
-There are also some cases which Macker simply cannot check.  Usage of primitive types is usually difficult to detect in Java bytecode (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class; as long as Macker operates on compiled classes, there's nothing we can do about that.
+There are, however, also some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.  Unfortunately, as long as Macker operates on compiled classes, there's nothing we can do about any of this.
 
 
 <div class="next">
