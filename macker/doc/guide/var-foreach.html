@@ -31,7 +31,7 @@
 If a certain string appears often in your regular expressions, you can assign to a variable.  A variable declaration has a very simple syntax:
 <pre>&lt;var name="<span class="comment">var-name</span>" value="<span class="comment">string</span>" /&gt;</pre>
 <p>
-You can then refer to a variable using a shell-style syntax:
+You can then refer to a variable in any pattern or message using a shell-style syntax:
 <pre>${<span class="comment">var-name</span>}</pre>
 <p>
 For example, you could define a variable for your application's base package, then use it in your patterns:
@@ -43,7 +43,7 @@ For example, you could define a variable for your application's base package, th
 As with patterns, the scope of a variable is the ruleset or foreach element which contains it.
 (You can also define a global variable when you call Macker; see the <a href="ant.html">Ant task</a> docs.)
 <p>
-An access rule's <code>&lt;message&gt;</code> may reference variables using the <code>${var-name}</code> syntax, including four variables special to the <code>&lt;message&gt;</code> tag:
+An access rule defines six special variables, which you can use in patterns in the access rule, and in its message. 
 <table class="example-table" cellspacing=0>
 <tr valign="top">
 <td class="example">${from}</td>
@@ -54,6 +54,14 @@ An access rule's <code>&lt;message&gt;</code> may reference variables using the 
 <td>The name of the class matching &lt;to&gt;, without the package name</td>
 </tr>
 <tr valign="top">
+<td class="example">${from-package}</td>
+<td>The package name of the &lt;from&gt; class</td>
+</tr>
+<tr valign="top">
+<td class="example">${to-package}</td>
+<td>The package name of the &lt;to&gt; class</td>
+</tr>
+<tr valign="top">
 <td class="example">${from-full}</td>
 <td>The fully qualified (including the package) name of the &lt;from&gt; class</td>
 </tr>
@@ -62,6 +70,7 @@ An access rule's <code>&lt;message&gt;</code> may reference variables using the 
 <td>The fully qualified (including the package) name of the &lt;to&gt; class</td>
 </tr>
 </table>
+</p>
 <p>
 
 <h3><a name="foreach">For Each</a></h3>

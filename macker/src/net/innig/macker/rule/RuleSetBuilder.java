@@ -97,7 +97,7 @@ public class RuleSetBuilder
         {
         Collection ruleSets = new ArrayList();
         for(Iterator rsIter = elem.getChildren("ruleset").iterator(); rsIter.hasNext(); )
-            ruleSets.add(buildRuleSet((Element) rsIter.next(), null));
+            ruleSets.add(buildRuleSet((Element) rsIter.next(), RuleSet.getMackerDefaults()));
         return ruleSets;
         }
 

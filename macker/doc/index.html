@@ -39,13 +39,14 @@ Macker is preparing for 0.4 beta.  Please download it and try it out, blah blah 
 <h4>New features</h4>
 <p>
 <ul>
-    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="filter.html">more</a>)
-    <li> Rules now have severity levels -- you can generate warnings without failing the build, or hide debug messages.  (<a href="???.html">???</a>)
-    <li> Macker can now generate XML reports.  (<a href="???.html">???</a>)
+    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="guide/filter.html">more</a>)
+    <li> Rules now have severity levels -- you can generate warnings without failing the build, or include debug messages which are hidden during a normal build.  (<a href="guide/accessrule.html#severity">more</a>)
+    <li> Macker can now generate XML reports.  (<a href="guide/report.html">more</a>)
     <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="???.html">???</a>)
+	<li> The special from/to variables are now available to patterns in an access rule, in addition to the message.  Two new variables give just the from/to package name.  (<a href="guide/var-foreach.html#var">more</a>)  Two new patterns match the from/to classes.  (<a href="guide/accessrule.html#fromtopats">more</a>)
 </ul>
 
-<h4>Functional changes</h4>
+<h4>Changes to existing features</h4>
 <p>
 <ul>
     <li> The <code>regex</code> attribute is now deprecated in favor of <code>class</code>, which will make future features more readable.  (Only the name has changed; both do the same thing.)

@@ -138,7 +138,7 @@
     <!-- ================================================================= -->
 
     <target name="build" 
-        depends="compile,copy-resources"
+        depends="jar"
         description="Builds an executable target (default)">
 
     </target>
@@ -148,7 +148,7 @@
     <!-- Creates jar file                                                  -->
     <!-- ================================================================= -->
     
-    <target name="jar" depends="build" description="Creates a jar file">
+    <target name="jar" depends="compile,copy-resources" description="Creates a jar file">
 
         <delete file="${jar.file}"/>
 

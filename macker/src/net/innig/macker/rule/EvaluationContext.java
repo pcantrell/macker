@@ -42,11 +42,10 @@ public class EvaluationContext
         {
         this(parent.getClassManager(), ruleSet);
         this.parent = parent;
-// Relaxed to allow ForEach to have its own context; should ForEach extend RuleSet?
-//        if(getParent().getRuleSet() != getRuleSet().getParent())
-//            throw new IllegalArgumentException(
-//                "Parent EvaluationContext must be associated with parent RuleSet");
         }
+    
+    public EvaluationContext(EvaluationContext parent)
+        { this(parent.getRuleSet(), parent); }
     
     public EvaluationContext getParent()
         { return parent; }
@@ -59,7 +58,7 @@ public class EvaluationContext
     
     public void setVariableValue(String name, String value)
         throws UndeclaredVariableException
-        { varValues.put(name, VariableParser.parse(this, value)); }
+        { varValues.put(name, (value == null) ? "" : VariableParser.parse(this, value)); }
     
     public String getVariableValue(String name)
         throws UndeclaredVariableException

@@ -10,6 +10,8 @@ version 0.4 (in development):
     - severity levels allow rules to generate warnings instead of errors
     - XML reporting
     - message rules
+    - from / to vars now available in access rule patterns as well as messages
+    - added from-package / to-package vars
     - "regex" deprecated in favor of "class" (will make future features more readable)
     - ForEach now checks more than just the primary classes
     - better-structured event callbacks (inching closer to IDE integration)

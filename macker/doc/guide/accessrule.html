@@ -42,10 +42,10 @@ The allow/deny construct is very similar to the include/exclude construct, excep
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
-If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any primary class from using <code>ThreadGroup</code>:
+If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any primary class from using the outdated <code>Vector</code>:
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
-        &lt;to class="java.lang.ThreadGroup" /&gt;
+        &lt;to class="java.lang.Vector" /&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
@@ -56,7 +56,6 @@ The <code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> tags are secretly anon
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
         &lt;to&gt;
-            &lt;include class="java.lang.ThreadGroup" /&gt;
             &lt;include class="java.util.Vector" /&gt;
             &lt;include class="java.util.Hashtable" /&gt;
             &lt;include class="java.util.Enumeration" /&gt;
@@ -79,7 +78,19 @@ Nesting allow/deny tags works just as nesting include/exclude does: the inner ru
         &lt;/allow&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
-
+<p>
+<a name="severity"></a>
+Not all access rules need be hard and fast.  The <code>severity</code> attribute, whose value is <code>error</code> by default for access rules, may also be <code>warning</code>, <code>info</code>, or <code>debug</code>.  (The last of these is hidden from output by default; you can control this through the <a href="ant.html">Ant task</a>.)  Here, for example, is a warning from <a href="http://java.sun.com/docs/books/effective/">Effective Java</a> expressed in Mackerese:
+</p>
+<pre>&lt;access-rule <b>severity="warning"</b>&gt;
+    &lt;deny&gt;
+        &lt;to&gt; &lt;include class="java.lang.ThreadGroup" /&gt; &lt;/to&gt;
+    &lt;/deny&gt;
+&lt;/access-rule&gt;</pre>
+<p>
+<a name="fromtopats"></a>
+Macker defines two special patterns, named <code>from</code> and <code>to</code>, which match the two ends of a reference in an access rule.  You can use these in combination with filters to make self-referential rules such as "a class may not reference its own subclasses".
+</p>
 
 <h3><a name="subset">Input Classes and Subsets</a></h3>
 <p>

@@ -102,6 +102,7 @@ public class AccessRule
     public void check(EvaluationContext context, ClassManager classes)
         throws RulesException, MackerIsMadException, ListenerException
         {
+        EvaluationContext localContext = new EvaluationContext(context);
         for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
             {
             MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
@@ -109,24 +110,24 @@ public class AccessRule
             ClassInfo to   = (ClassInfo) entry.getValue();
             if(from.equals(to))
                 continue;
-            if(!context.getRuleSet().isInSubset(context, from))
+            if(!localContext.getRuleSet().isInSubset(localContext, from))
                 continue;
 
-            if(!checkAccess(context, from, to))
+            localContext.setVariableValue("from", from.getClassName());
+            localContext.setVariableValue("to",     to.getClassName());
+            localContext.setVariableValue("from-package", from.getPackageName());
+            localContext.setVariableValue("to-package",     to.getPackageName());
+            localContext.setVariableValue("from-full", from.getFullName());
+            localContext.setVariableValue("to-full",     to.getFullName());
+
+            if(!checkAccess(localContext, from, to))
                 {
                 List messages;
                 if(getMessage() == null)
                     messages = Collections.EMPTY_LIST;
                 else
-                    {
-                    EvaluationContext errorCtx = new EvaluationContext(context.getRuleSet(), context);
-                    errorCtx.setVariableValue("from",      from.getClassName());
-                    errorCtx.setVariableValue("from-full", from.getFullName());
-                    errorCtx.setVariableValue("to",          to.getClassName());
-                    errorCtx.setVariableValue("to-full",     to.getFullName());
-                    messages = new LinkedList();
-                    messages.add(VariableParser.parse(errorCtx, getMessage()));
-                    }
+                    messages = Collections.singletonList(
+                        VariableParser.parse(localContext, getMessage()));
                 
                 context.broadcastEvent(
                     new AccessRuleViolation(this, from, to, messages));

@@ -27,16 +27,42 @@ import net.innig.macker.structure.ClassInfo;
 
 import java.util.*;
 
+import org.apache.commons.lang.exception.NestableRuntimeException;
+
 public class RuleSet
     extends Rule
     {
+    public static RuleSet getMackerDefaults()
+        {
+        if(defaults == null)
+            try {
+                defaults = new RuleSet();
+                defaults.setPattern("from", new RegexPattern("${from-full}"));
+                defaults.setPattern("to", new RegexPattern("${to-full}"));
+                }
+            catch(MackerRegexSyntaxException mrse)
+                { throw new NestableRuntimeException("Macker built-ins are broken", mrse); } //! what else to throw?
+        return defaults;
+        }
+    private static RuleSet defaults;
+    
     public RuleSet(RuleSet parent)
         {
         super(parent);
+        if(parent == null)
+            throw new IllegalArgumentException("parent == null");
+            
         patterns = new HashMap();
         rules = new ArrayList();
         }
-    
+
+    private RuleSet()
+        {
+        super(null);
+        rules = Collections.EMPTY_LIST;
+        patterns = new HashMap();
+        }
+        
     public String getName()
         {
         if(name == null)
