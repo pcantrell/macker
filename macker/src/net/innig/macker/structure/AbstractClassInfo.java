@@ -29,15 +29,15 @@ public abstract class AbstractClassInfo
     public AbstractClassInfo(ClassManager classManager)
         { this.classManager = classManager; }
     
-    public String getClassNameShort()
+    public String getClassName()
         {
-        String className = getClassName();
+        String className = getFullName();
         return className.substring(className.lastIndexOf('.') + 1);
         }
         
     public String getPackageName()
         {
-        String className = getClassName();
+        String className = getFullName();
         return className.substring(0, className.lastIndexOf('.'));
         }
     
@@ -69,7 +69,7 @@ public abstract class AbstractClassInfo
         { return classManager; }
     
     public abstract boolean isComplete();
-    public abstract String getClassName();
+    public abstract String getFullName();
     public abstract boolean isInterface();
     public abstract boolean isAbstract();
     public abstract boolean isFinal();
@@ -79,7 +79,7 @@ public abstract class AbstractClassInfo
     public abstract MultiMap/*<ClassInfo,Reference>*/ getReferences();
     
     public int compareTo(Object that)
-        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
+        { return getFullName().compareTo(((ClassInfo) that).getFullName()); }
     
     public boolean equals(Object that)
         {
@@ -89,14 +89,14 @@ public abstract class AbstractClassInfo
             return false;
         if(this.getClass() != that.getClass())
             return false;
-        return getClassName().equals(((ClassInfo) that).getClassName());
+        return getFullName().equals(((ClassInfo) that).getFullName());
         }
     
     public int hashCode()
-        { return getClassName().hashCode(); }
+        { return getFullName().hashCode(); }
     
     public String toString()
-        { return getClassName(); }
+        { return getFullName(); }
     
     private ClassManager classManager;
     private Set cachedAllSuper, cachedAllDirectSuper;

@@ -58,8 +58,8 @@ public final class PrimitiveTypeInfo
     public boolean isComplete()
         { return true; }
     
-    public String getClassName()      { return getName(); }
-    public String getClassNameShort() { return getName(); }
+    public String getFullName()      { return getName(); }
+    public String getClassName() { return getName(); }
     public String getPackageName()    { return null; }
     
     public boolean isInterface() { return false; }
@@ -75,7 +75,7 @@ public final class PrimitiveTypeInfo
         { return InnigCollections.EMPTY_MULTIMAP; }
     
     public int compareTo(Object that)
-        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
+        { return getFullName().compareTo(((ClassInfo) that).getFullName()); }
     }
 
 

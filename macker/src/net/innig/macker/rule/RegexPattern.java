@@ -53,11 +53,11 @@ public class RegexPattern
 
     public boolean matches(EvaluationContext context, ClassInfo classInfo)
         throws RulesException
-        { return regex.matches(context, classInfo.getClassName()); }
+        { return regex.matches(context, classInfo.getFullName()); }
     
     public String getMatch(EvaluationContext context, ClassInfo classInfo)
         throws RulesException
-        { return regex.getMatch(context, classInfo.getClassName()); }
+        { return regex.getMatch(context, classInfo.getFullName()); }
     
     public String toString()
         { return regex.toString(); }

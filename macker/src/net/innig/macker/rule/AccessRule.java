@@ -120,10 +120,10 @@ public class AccessRule
                 else
                     {
                     EvaluationContext errorCtx = new EvaluationContext(context.getRuleSet(), context);
-                    errorCtx.setVariableValue("from",      from.getClassNameShort());
-                    errorCtx.setVariableValue("from-full", from.getClassName());
-                    errorCtx.setVariableValue("to",          to.getClassNameShort());
-                    errorCtx.setVariableValue("to-full",     to.getClassName());
+                    errorCtx.setVariableValue("from",      from.getClassName());
+                    errorCtx.setVariableValue("from-full", from.getFullName());
+                    errorCtx.setVariableValue("to",          to.getClassName());
+                    errorCtx.setVariableValue("to-full",     to.getFullName());
                     messages = new LinkedList();
                     messages.add(VariableParser.parse(errorCtx, getMessage()));
                     }

@@ -35,7 +35,7 @@ public class HollowClassInfo
         this.className = className;
         }
     
-    public String getClassName()
+    public String getFullName()
         { return className; }
 
     public boolean isComplete()                { return getActual().isComplete(); }

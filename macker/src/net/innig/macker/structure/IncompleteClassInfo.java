@@ -36,7 +36,7 @@ public class IncompleteClassInfo
         this.className = className;
         }
     
-    public String getClassName()
+    public String getFullName()
         { return className; }
 
     public boolean isComplete()

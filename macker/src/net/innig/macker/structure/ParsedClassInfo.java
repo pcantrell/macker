@@ -65,10 +65,10 @@ public class ParsedClassInfo
         }
     
     private void parseClassName(JavaClass classFile)
-        { className = classFile.getClassName(); }
+        { fullClassName = classFile.getClassName(); }
     
-    public String getClassName()
-        { return className; }
+    public String getFullName()
+        { return fullClassName; }
     
     public boolean isComplete()
         { return true; }
@@ -152,7 +152,7 @@ public class ParsedClassInfo
                     method.getSignature());
             if(paramsAndReturn.isEmpty())
                 throw new ClassParseException(
-                    "unable to read types for method " + className + '.' + method.getName());
+                    "unable to read types for method " + fullClassName + '.' + method.getName());
             
             for(Iterator i = paramsAndReturn.iterator(); i.hasNext(); )
                 {
@@ -196,7 +196,7 @@ public class ParsedClassInfo
                     field.getSignature());
             if(types.size() != 1)
                 throw new ClassParseException(
-                    "expected one type for field " + className + '.' + field.getName()
+                    "expected one type for field " + fullClassName + '.' + field.getName()
                     + "; got: " + types);
 
             addReference(
@@ -229,7 +229,7 @@ public class ParsedClassInfo
     public MultiMap/*<ClassInfo,Reference>*/ getReferences()
         { return references; }
     
-    private String className;
+    private String fullClassName;
     private boolean isInterface, isAbstract, isFinal;
     private AccessModifier accessModifier;
     private ClassInfo extendsClass;

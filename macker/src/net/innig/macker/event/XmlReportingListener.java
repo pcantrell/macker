@@ -137,12 +137,13 @@ public class XmlReportingListener
         Element fullElem = new Element("full-name");
         Element classElem = new Element("class");
         Element packElem = new Element("package");
-        fullElem.setText(classInfo.getClassName());
-        classElem.setText(classInfo.getClassNameShort());
+        fullElem.setText(classInfo.getFullName());
+        classElem.setText(classInfo.getClassName());
         packElem.setText(classInfo.getPackageName());
         classInfoElem.addContent(fullElem);
         classInfoElem.addContent(classElem);
-        classInfoElem.addContent(packElem);
+        if(classInfo.getPackageName() != null)
+            classInfoElem.addContent(packElem);
         }
     
     public String toString()

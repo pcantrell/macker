@@ -72,7 +72,7 @@ public class ClassManager
     
     private void addClass(ClassInfo classInfo)
         {
-        ClassInfo existing = findClassInfo(classInfo.getClassName());
+        ClassInfo existing = findClassInfo(classInfo.getFullName());
         if(existing != null && !(existing instanceof HollowClassInfo))
             throw new IllegalStateException(
                 "ClassManager already contains a class named " + classInfo);
@@ -82,7 +82,7 @@ public class ClassManager
     private void replaceClass(ClassInfo classInfo)
         {
         allClasses.add(classInfo);
-        classNameToInfo.put(classInfo.getClassName(), classInfo);
+        classNameToInfo.put(classInfo.getFullName(), classInfo);
         }
     
     public void makePrimary(ClassInfo classInfo)
@@ -95,7 +95,7 @@ public class ClassManager
             throw new IllegalArgumentException(
                 classInfo + " cannot be a primary class, because it is a primitive type");
         checkOwner(classInfo);
-        classInfo = findClassInfo(classInfo.getClassName()); // in case of hollow
+        classInfo = findClassInfo(classInfo.getFullName()); // in case of hollow
         primaryClasses.add(classInfo);
         references.putAll(classInfo, classInfo.getReferences().keySet());
         allClasses.addAll(classInfo.getReferences().keySet());

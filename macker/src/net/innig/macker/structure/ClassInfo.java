@@ -32,8 +32,8 @@ public interface ClassInfo
     public ClassManager getClassManager();
     public boolean isComplete();
 
+    public String getFullName();
     public String getClassName();
-    public String getClassNameShort();
     public String getPackageName();
 
     public boolean isInterface();

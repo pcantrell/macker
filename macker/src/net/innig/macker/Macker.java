@@ -199,7 +199,7 @@ public class Macker
                             public boolean select(Object classInfo)
                                 {
                                 return ((ClassInfo) classInfo)
-                                    .getClassName()
+                                    .getFullName()
                                     .startsWith(primaryPrefix);
                                 }
                             });
