@@ -20,6 +20,8 @@
  
 package net.innig.macker.rule;
 
+import net.innig.macker.rule.filter.*;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -30,6 +32,7 @@ import net.innig.util.OrderedType;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.Attribute;
 import org.jdom.input.SAXBuilder;
 import org.jdom.JDOMException;
 
@@ -148,11 +151,15 @@ public class RuleSetBuilder
         
         String otherPatName = patternElem.getAttributeValue("pattern");
         String regex = patternElem.getAttributeValue("regex");
-        if(!isTopElem && (otherPatName == null) == (regex == null))
+        String filterName = patternElem.getAttributeValue("filter");
+        if(!isTopElem
+         && (filterName == null)
+         && (otherPatName == null) == (regex == null))
             throw new RulesDocumentException(
                 patternElem,
                 "<include> and <exclude> tags must have either a \"pattern\" "
                 + " or a \"regex\" attribute, but cannot have both");
+                
         Pattern head = null;
         if(regex != null)
             head = new RegexPattern(regex);
@@ -169,7 +176,7 @@ public class RuleSetBuilder
             Element subElem = (Element) childIter.next();
             if(subElem.getName().equals("message"))
                 continue;
-                            
+            
             CompositePattern pat = forceCompositePattern(buildPattern(subElem, ruleSet, false));
             
             if(firstChildPat == null)
@@ -179,19 +186,43 @@ public class RuleSetBuilder
             prevChildPat = pat;
             }
         
-        if(firstChildPat == null && head == null)
+        Pattern result = null;
+        if(head != null || firstChildPat != null)
+            {
+            if(head == null)
+                result = firstChildPat;
+            else if(firstChildPat == null && patType == CompositePatternType.INCLUDE)
+                result = head;
+            else
+                result = new CompositePattern(patType, head, firstChildPat);
+            }
+
+        if(filterName != null)
+            {
+            Map options = new HashMap();
+            for(Iterator i = patternElem.getAttributes().iterator(); i.hasNext(); )
+                {
+                Attribute attr = (Attribute) i.next();
+                options.put(attr.getName(), attr.getValue());
+                }
+            options.remove("name");
+            options.remove("pattern");
+            options.remove("regex");
+            
+            Filter filter = FilterFinder.findFilter(filterName);
+            result = (result == null)
+                ? filter.createPattern(ruleSet, options)
+                : filter.createPattern(ruleSet, result, options);
+            }
+        
+        if(result == null)
             throw new RulesDocumentException(
                 patternElem,
-                '<' + patternElem.getName() + "> element must have "
-                + "a \"regex\" or \"pattern\" attribute, or "
-                + "contain at least one <include> or <exclude>");
+                '<' + patternElem.getName() + "> element must have"
+                + " a \"regex\", \"pattern\", or \"filter\" attribute, or"
+                + " contain at least one <include> or <exclude>");
         
-        if(head == null)
-            return firstChildPat;
-        else if(firstChildPat == null && patType == CompositePatternType.INCLUDE)
-            return head;
-        else
-            return new CompositePattern(patType, head, firstChildPat);
+        return result;
         }
     
     private CompositePattern forceCompositePattern(Pattern pat)

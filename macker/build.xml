@@ -12,6 +12,7 @@
     <property name="name"                 value="macker" />
 
     <property name="src.dir"              location="${basedir}/src" />
+    <property name="res.dir"              location="${basedir}/res" />
     <property name="lib.dir"              location="${basedir}/lib" />
     <property name="conf.dir"             location="${basedir}/conf" />
     <property name="doc.dir"              location="${basedir}/doc" />
@@ -93,11 +94,8 @@
         description="Copies resource files to the build directory">
         
         <copy todir="${build.classes.dir}">
-            <fileset dir="${src.dir}">
-                <include name="**/*.dtd"/>
-                <include name="**/*.xml"/>
-                <include name="**/*.gif"/>
-                <include name="**/*.ico"/>
+            <fileset dir="${res.dir}">
+                <exclude name="**/*.properties"/>
             </fileset>
         </copy>
         
@@ -106,7 +104,7 @@
                 <filter token="dist.version"      value="${dist.version}"/>
                 <filter token="dist.version.long" value="${dist.version.long}"/>
             </filterset>
-            <fileset dir="${src.dir}">
+            <fileset dir="${res.dir}">
                 <include name="**/*.properties"/>
             </fileset>
         </copy>

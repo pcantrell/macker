@@ -3,6 +3,11 @@
 
 <macker>
 
+    <ruleset name="filter test">
+        
+        
+    </ruleset>
+
     <ruleset name="Macker internal rules" severity="info">
     
 <!--        <var name="basepkg" value="net.innig.macker" /> -->
