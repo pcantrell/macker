@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+
+<project name="Macker" default="build" basedir=".">
+
+    <!-- ================================================================= -->
+    <!-- Properties                                                        -->
+    <!-- ================================================================= -->
+
+    <!-- Global -->
+
+    <property name="Name"                 value="Macker" />
+    <property name="name"                 value="macker" />
+
+    <property name="src.dir"              location="${basedir}/src" />
+    <property name="lib.dir"              location="${basedir}/lib" />
+    <property name="conf.dir"             location="${basedir}/conf" />
+    <property name="doc.dir"              location="${basedir}/doc" />
+    <property name="build.lib.dir"        location="${basedir}/lib/build-only" />
+    
+    <property file="${conf.dir}/build.properties" />
+
+    <!-- Targets -->
+
+    <property name="build.dir"            location="${basedir}/build" />
+    <property name="build.classes.dir"    location="${build.dir}/classes" />
+    
+    <property name="jar.file"             location="${build.dir}/${name}.jar" />
+    <property name="jar.manifest"         location="${src.dir}/manifest.mf" />
+    
+    <property name="javadoc.dir"          location="${build.dir}/javadoc"/>
+    <property name="javadoc.title"        value="${Name} API Documentation"/>
+    <property name="javadoc.packages"     value="net.innig.macker.*" />
+
+    <property name="run.mainclass"        value="net.innig.macker.Macker" />
+    <property name="run.args"             value="" />
+
+    <!-- ================================================================= -->
+    <!-- prepare:                                                          -->
+    <!-- Sets up directories and such for compilation                      -->
+    <!-- ================================================================= -->
+
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes.dir}" />
+
+        <path id="build.classpath">
+            <fileset dir="${lib.dir}" />
+            <fileset dir="${build.lib.dir}" />
+            <pathelement location="${j2ee.home}/lib/j2ee.jar" />
+        </path>
+        <path id="run.classpath">
+            <pathelement location="${build.classes.dir}" />
+            <pathelement location="${conf.dir}" />
+            <fileset dir="${lib.dir}" />
+        </path>
+        <property name="run.classpath" refid="run.classpath" />
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- compile:                                                          -->
+    <!-- Compiles the source code                                          -->
+    <!-- ================================================================= -->
+
+    <target name="compile" 
+        depends="prepare"
+        description="Compiles the source code">
+
+        <javac 
+            srcdir="${src.dir}"
+            destdir="${build.classes.dir}"
+            fork="yes"
+            debug="yes">
+            <classpath refid="build.classpath" />
+        </javac>
+        
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- copy-resources:                                                   -->
+    <!-- Copies resource files to the build directory                      -->
+    <!-- ================================================================= -->
+
+    <target name="copy-resources" 
+        depends="prepare"
+        description="Copies resource files to the build directory">
+        
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.dtd"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.ico"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- build:                                                            -->
+    <!-- The default target                                                -->
+    <!-- ================================================================= -->
+
+    <target name="build" 
+        depends="compile,copy-resources"
+        description="Builds an executable target (default)">
+
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- jar:                                                              -->
+    <!-- Creates jar file                                                  -->
+    <!-- ================================================================= -->
+    
+    <target name="jar" depends="build" description="Creates a jar file">
+
+        <delete file="${jar.file}"/>
+
+        <jar 
+            manifest="${jar.manifest}" 
+            jarfile="${jar.file}" 
+            compress="false">
+
+            <fileset dir="${build.classes.dir}" />
+
+        </jar>
+
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- run:                                                              -->
+    <!-- Runs the darn thing                                               -->
+    <!-- ================================================================= -->
+
+    <target name="run" depends="build" description="Runs the darn thing">
+
+        <java classname="${run.mainclass}" fork="yes">
+            <arg line="${run.args}"/>
+            <classpath refid="run.classpath" />
+        </java>
+
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- javadoc:                                                          -->
+    <!-- Generates javadoc                                                 -->
+    <!-- ================================================================= -->
+
+    <target
+        name="javadoc"
+        description="Builds javadoc"
+        depends="prepare">
+        
+        <mkdir dir="${javadoc.dir}" />
+        <javadoc sourcepath="${src.dir}"
+            destdir="${javadoc.dir}"
+            packagenames="${javadoc.packages}"
+            public="true"
+            windowtitle="${javadoc.title}" 
+            use="true">
+            <classpath refid="build.classpath" />
+            <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
+        </javadoc>
+        <copy todir="${javadoc.dir}">
+            <fileset dir="${src.dir}">
+            <include name="**/*.gif"/>
+            <include name="**/*.jpeg"/>
+            <include name="**/*.jpg"/>
+            <include name="**/*.png"/>
+            <include name="**/*.pdf"/>
+            <include name="**/*.svg"/>
+            </fileset>
+        </copy>
+        
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- clean:                                                            -->
+    <!-- Removes all build files                                           -->
+    <!-- ================================================================= -->
+
+    <target name="clean" description="Removes all build files">
+
+        <delete dir="${javadoc.dir}" />
+        <delete dir="${build.classes.dir}" />
+        <delete dir="${build.dir}" />
+        
+    </target>
+    
+</project>
