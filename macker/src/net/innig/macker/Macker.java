@@ -117,7 +117,7 @@ public class Macker
             }
         catch(MackerIsMadException mime)
             {
-            System.err.println(mime.getMessage());
+            System.out.println(mime.getMessage());
             System.exit(2);
             }
         catch(Exception e)
@@ -173,6 +173,12 @@ public class Macker
             }
         }
     
+    /**
+     * For determining the primary classes when you don't have a hard-coded class
+     * list, or knowledge of the file system where classes are stored. Determines
+     * the set of primary classes by walking the class reference graph out from
+     * the initial class name, and marking all classes which start with primaryPrefix.
+     */
     public void addReachableClasses(String initialClassName, final String primaryPrefix)
         throws ClassNotFoundException
         {

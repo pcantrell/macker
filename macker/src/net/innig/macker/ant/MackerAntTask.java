@@ -64,7 +64,10 @@ public class MackerAntTask extends Task
             try
                 { macker.check(); }
             catch(MackerIsMadException mime)
-                { throw new BuildException(MACKER_IS_MAD_MESSAGE); }
+                {
+                System.out.println(mime.getMessage());
+                throw new BuildException(MACKER_IS_MAD_MESSAGE);
+                }
             catch(RulesException re)
                 {
                 System.out.println(re.getMessage());
@@ -85,7 +88,7 @@ public class MackerAntTask extends Task
                 { jvm.execute(); }
             catch(BuildException be)
                 {
-                // Any necessary stack trace was already reported to stderr
+                // Any necessary stack trace was already reported to stderr by CLI
                 throw new BuildException(MACKER_IS_MAD_MESSAGE);
                 }
             }
