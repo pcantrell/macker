@@ -10,7 +10,7 @@ public class AccessRuleViolation
     {
     public AccessRuleViolation(AccessRule accessRule, ClassInfo from, ClassInfo to, List messages)
         {
-        super(accessRule, "Illegal reference from " + from + " to " + to, messages);
+        super(accessRule, "Illegal reference\n  from " + from + "\n    to " + to, messages);
         this.accessRule = accessRule;
         this.from = from;
         this.to = to;

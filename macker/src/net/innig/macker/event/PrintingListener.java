@@ -20,7 +20,9 @@ public class PrintingListener
     
     public void mackerStarted(RuleSet ruleSet)
         {
+        out.println();
         out.println("Checking Macker ruleset: " + ruleSet.getName() + " ...");
+        out.flush();
         first = true;
         }
     

@@ -20,8 +20,9 @@ public class Macker
         
         ClassManager cm = new ClassManager();
         for(int arg = 0; arg < args.length; arg++)
-            cm.addClass(new ParsedClassInfo(new File(args[arg])));
+            cm.addClass(new ParsedClassInfo(new File(args[arg])), true);
         
+        /*
         Set allClasses = cm.getReferences().keySet();
         for(Iterator i = allClasses.iterator(); i.hasNext(); )
             {
@@ -31,6 +32,7 @@ public class Macker
                 System.out.println("    " + usedIter.next());
             System.out.println();
             }
+        */
         
         System.out.println(cm.getAllClassNames().size() + " total classes");
         System.out.println(cm.getReferences().keySet().size() + " referencing classes");
@@ -41,6 +43,7 @@ public class Macker
             {
             RuleSet rs = (RuleSet) rsIter.next();
             
+            /*
             for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
                 {
                 final Pattern pat = (Pattern) patIter.next();
@@ -54,7 +57,9 @@ public class Macker
                     }
                 System.out.println();
                 }
+            */
             
+            System.out.println("Checking ruleset: " + rs);
             EvaluationContext context = new EvaluationContext(rs);
             context.addListener(new PrintingListener(System.out));
             rs.check(context, cm);

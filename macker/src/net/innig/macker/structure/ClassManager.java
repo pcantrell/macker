@@ -13,20 +13,28 @@ public class ClassManager
     public ClassManager()
         {
         allClassNames = new TreeSet();
+        primaryClassNames = new TreeSet();
         classNameToInfo = new HashMap();
         references = new TreeMultiMap();
         }
     
-    public void addClass(ClassInfo classInfo)
+    public void addClass(ClassInfo classInfo, boolean primary)
         {
         allClassNames.add   (classInfo.getClassName());
-        allClassNames.addAll(classInfo.getReferences());
         classNameToInfo.put (classInfo.getClassName(), classInfo);
-        references.putAll   (classInfo.getClassName(), classInfo.getReferences());
+        if(primary)
+            {
+            primaryClassNames.add(classInfo.getClassName());
+            references.putAll    (classInfo.getClassName(), classInfo.getReferences());
+            allClassNames.addAll (classInfo.getReferences());
+            }
         }
     
     public Set getAllClassNames()
         { return Collections.unmodifiableSet(allClassNames); }
+    
+    public Set getPrimaryClassNames()
+        { return Collections.unmodifiableSet(primaryClassNames); }
     
     public MultiMap getReferences()
         { return references; }
@@ -49,18 +57,17 @@ public class ClassManager
                 }
             catch(Exception e)
                 {
-                System.err.println("WARNING: Cannot load class " + className
-                    + "; rule checking involving its attributes may fail: " + e);
+                System.err.println("WARNING: Cannot load class " + className);
                 classInfo = new IncompleteClassInfo(className);
                 }
             
-            addClass(classInfo);
+            addClass(classInfo, false);
             }
         
         return classInfo;
         }
     
-    private Set/*<String>*/ allClassNames;
+    private Set/*<String>*/ allClassNames, primaryClassNames;
     private Map/*<String,ClassInfo>*/ classNameToInfo;
     private MultiMap/*<String,String>*/ references;
     }

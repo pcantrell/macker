@@ -12,9 +12,12 @@ public class ThrowingListener
     
     public void mackerStarted(RuleSet ruleSet)
         {
-        if(events != null)
-            throw new IllegalStateException("This ThrowListener has already been used");
-        events = new LinkedList();
+        if(ruleSet.getParent() == null)
+            {
+            if(events != null)
+                throw new IllegalStateException("This ThrowingListener is already in use");
+            events = new LinkedList();
+            }
         }
     
     public void mackerFinished(RuleSet ruleSet)
@@ -25,7 +28,7 @@ public class ThrowingListener
         }
 
     public void mackerAborted(RuleSet ruleSet)
-        { } // don't care
+        { events = null; }
     
     public void handleMackerIsMadEvent(RuleSet ruleSet, MackerIsMadEvent event)
         throws MackerIsMadException

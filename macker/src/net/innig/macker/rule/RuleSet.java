@@ -76,10 +76,22 @@ public class RuleSet
     public void check(EvaluationContext context, ClassManager classes)
         throws RulesException, MackerIsMadException
         {
-        for(Iterator ruleIter = rules.iterator(); ruleIter.hasNext(); )
+        context.broadcastStarted();
+        boolean finished = false;
+        try
             {
-            Rule rule = (Rule) ruleIter.next();
-            rule.check(context, classes);
+            for(Iterator ruleIter = rules.iterator(); ruleIter.hasNext(); )
+                {
+                Rule rule = (Rule) ruleIter.next();
+                rule.check(context, classes);
+                }
+            context.broadcastFinished();
+            finished = true;
+            }
+        finally
+            {
+            if(!finished)
+                context.broadcastAborted();
             }
         }
     

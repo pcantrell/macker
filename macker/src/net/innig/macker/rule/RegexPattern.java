@@ -46,8 +46,6 @@ public class RegexPattern
         throws RulesException
         {
         parseExpr(context);
-System.out.println("context=" + context);
-System.out.println("classInfo=" + classInfo);
         return regex.match(classInfo.getClassName());
         }
     
@@ -79,7 +77,6 @@ System.out.println("classInfo=" + classInfo);
                 pos = hasAnotherVar ? var.getParenEnd(0) : -1;
                 }
             }
-//System.out.println("parts = " + parts);
 
         if(regex == null || prevContext != context) // prob shouldn't be ==
             {
@@ -95,7 +92,6 @@ System.out.println("classInfo=" + classInfo);
                     builtRegexStr.append(
                         ((ExpPart) part).exp);
                 }
-//System.out.println("builtRegexStr = " + builtRegexStr);
             try { regex = new RE(builtRegexStr.toString()); }
             catch(RESyntaxException rese)
                 { throw new RegexPatternSyntaxException(regexStr, rese); }
@@ -106,7 +102,6 @@ System.out.println("classInfo=" + classInfo);
         {
         if(allowable == null)
             try {
-//System.out.println("building static patterns");
                 star = new RE("\\*");
                 matchWithin = new RE("@");
                 matchAcross = new RE("@@");
