@@ -14,7 +14,14 @@
             classname="net.innig.macker.ant.MackerAntTask"
             classpath="${run.classpath}"/>
         
-        <macker printthreshold="warning" angerthreshold="error" failonerror="true" fork="false" xmlReportFile="foo.xml">
+        <macker
+            printthreshold="warning"
+            angerthreshold="error"
+            failonerror="true"
+            fork="false"
+            xmlReportFile="build/foo.xml"
+            angerProperty="macker.angry"
+            >
             <rules dir="." includes="test/macker-sample.xml" />
             <classes dir=".">
                 <include name="build/classes/**/*.class" />
@@ -22,6 +29,8 @@
             <var name="basepkg" value="net.innig.macker" />
             <classpath refid="run.classpath" />
         </macker>
+        
+        <echo>macker.angry=${macker.angry}</echo>
 
     </target>
 </project>

@@ -43,7 +43,7 @@ import org.apache.tools.ant.taskdefs.Java;
 /** 
     A task which allows access to Macker from Ant build files.
     
-    @see <a href="http://jakarta.apache.org/ant/manual/develop.html">The Ant manual</a>
+    @see <a href="http://ant.apache.org/manual/">The Ant manual</a>
 */
 public class MackerAntTask extends Task
     {
@@ -57,61 +57,69 @@ public class MackerAntTask extends Task
         throws BuildException
         {
         if(verbose)
-            System.out.println("Macker:");
+            System.out.println("Macker (verbose mode enabled)");
+        if(failOnError && angerProperty != null)
+            System.out.println("WARNING: failOnError is set, so angerProperty will have no effect");
 
-        if(!fork)
+        try
+            { 
+            if(!fork)
+                {
+                if(classPath != null)
+                    macker.setClassLoader(new AntClassLoader(getProject(), classPath, false));
+                
+                macker.check();
+                }
+            else
+                {
+                if(classPath == null)
+                    throw new BuildException("nested <classpath> element is required when fork=true");
+                
+                getJvm().setTaskName("macker");
+                getJvm().setClassname("net.innig.macker.Macker");
+                getJvm().setFork(fork);
+                getJvm().setFailonerror(false);
+                getJvm().clearArgs();
+                
+                for(Iterator i = jvmArgs.iterator(); i.hasNext(); )
+                    getJvm().createArg().setValue((String) i.next());
+                    
+                int resultCode = getJvm().executeJava();
+                if(resultCode == 2)
+                    throw new MackerIsMadException();
+                if(resultCode != 0)
+                    throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
+            }
+        catch(MackerIsMadException mime)
             {
-            if(classPath != null)
-                macker.setClassLoader(new AntClassLoader(getProject(), classPath, false));
-            
-            try
-                { macker.check(); }
-            catch(MackerIsMadException mime)
+            if(mime.getMessage() != null)
                 {
                 System.out.println();
                 System.out.println(mime.getMessage());
-                if(failOnError)
-                    throw new BuildException(MACKER_IS_MAD_MESSAGE);
                 }
-            catch(ListenerException lie)
-                {
-                System.out.println();
-                System.out.println(lie.getMessage());
-                throw new BuildException(MACKER_CHOKED_MESSAGE);
-                }
-            catch(RulesException rue)
-                {
-                System.out.println();
-                System.out.println(rue.getMessage());
-                throw new BuildException(MACKER_CHOKED_MESSAGE);
-                }
-            catch(IncompleteClassInfoException icie)
-                {
-                System.out.println();
-                System.out.println(icie.getMessage());
-                throw new BuildException(MACKER_CHOKED_MESSAGE);
-                }
-            }
-        else
-            {
-            if(classPath == null)
-                throw new BuildException("nested <classpath> element is required when fork=true");
-            
-            getJvm().setTaskName("macker");
-            getJvm().setClassname("net.innig.macker.Macker");
-            getJvm().setFork(fork);
-            getJvm().setFailonerror(failOnError);
-            getJvm().clearArgs();
-            
-            for(Iterator i = jvmArgs.iterator(); i.hasNext(); )
-                getJvm().createArg().setValue((String) i.next());
-            try
-                { getJvm().execute(); }
-            catch(BuildException be)
-                {
-                // Any necessary stack trace was already reported to stderr by CLI
+            if(angerProperty != null)
+                getProject().setProperty(angerProperty, "true");
+            if(failOnError)
                 throw new BuildException(MACKER_IS_MAD_MESSAGE);
-                }
+            }
+        catch(ListenerException lie)
+            {
+            System.out.println();
+            System.out.println(lie.getMessage());
+            throw new BuildException(MACKER_CHOKED_MESSAGE);
+            }
+        catch(RulesException rue)
+            {
+            System.out.println();
+            System.out.println(rue.getMessage());
+            throw new BuildException(MACKER_CHOKED_MESSAGE);
+            }
+        catch(IncompleteClassInfoException icie)
+            {
+            System.out.println();
+            System.out.println(icie.getMessage());
+            throw new BuildException(MACKER_CHOKED_MESSAGE);
             }
         }
 
@@ -134,6 +142,9 @@ public class MackerAntTask extends Task
         jvmArgs.add("--anger");
         jvmArgs.add(threshold);
         }
+
+    public void setAngerProperty(String property)
+        { this.angerProperty = property; }
 
     public void setVerbose(boolean verbose)
         {
@@ -232,6 +243,7 @@ public class MackerAntTask extends Task
     private Macker macker;  // for non-forked
     private Java jvm;       // for forked
     private Path classPath;
+    private String angerProperty;
     
     private static final String MACKER_CHOKED_MESSAGE = "Macker configuration failed";
     private static final String MACKER_IS_MAD_MESSAGE = "Macker rules checking failed";

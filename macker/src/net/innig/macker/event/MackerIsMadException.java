@@ -27,6 +27,12 @@ import java.util.*;
 public class MackerIsMadException
     extends Exception
     {
+    public MackerIsMadException()
+        {
+        super();
+        events = null;
+        }
+
     public MackerIsMadException(MackerEvent event)
         { this(Collections.singletonList(event)); }
 

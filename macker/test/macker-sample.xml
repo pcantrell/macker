@@ -2,9 +2,7 @@
 <!-- <!DOCTYPE macker PUBLIC "-//innig//DTD Macker 0.2//EN" "http://innig.net/macker/src/macker.dtd"> -->
 
 <macker>
-
     <ruleset name="filter test">
-
         <ruleset>
             <ruleset name="nested2"/>
 
@@ -37,7 +35,6 @@
         </ruleset>
         
         <pattern name="foo" filter="interface" />
-        
         <access-rule>
             <deny>
 <!--
@@ -59,7 +56,6 @@
                 <to class="java.lang.xObject" />
             </deny>
         </access-rule>
-        
         <access-rule>
             <message>${from} and ${to} and stuff</message>
             <deny>
@@ -73,7 +69,6 @@
         <foreach var="rule-package" class="(**).*Rule*">
             <message>Rülé package: ${rule-package}</message>
         </foreach>
-        
     </ruleset>
 
 <!--
