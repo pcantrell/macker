@@ -54,12 +54,18 @@
 
 <h4>Bug fixes</h4>
 <p>
+Version 0.4.1:
+<ul>
+    <li> Foreach no longer always causes rule checking to fail (<a href="http://sourceforge.net/tracker/index.php?func=detail&aid=794536&group_id=55296&atid=476503">794536</a>).  This bug, introduced in 0.4, was serious enough to warrant an immediate patch.
+</ul>
+<p>
+Version 0.4:
 <ul>
     <li> Running under Java 1.4 no longer generates "major version" warning messages.
-    <li> The Ant task now always honors the <code>failonerror</code> attribute.
-    <li> Fixed two bugs which caused certain compositions of named patterns to incorrectly modify the patterns' definitions.
+    <li> The Ant task now always honors the <code>failonerror</code> attribute (<a href="http://sourceforge.net/tracker/index.php?func=detail&aid=794422&group_id=55296&atid=476503">794422</a>).
+    <li> Fixed two bugs (<a href="http://sourceforge.net/tracker/index.php?func=detail&aid=729149&group_id=55296&atid=476503">729149</a>, <a href="http://sourceforge.net/tracker/index.php?func=detail&aid=793964&group_id=55296&atid=476503">793964</a>) which caused certain compositions of named patterns to incorrectly modify the patterns' definitions.
     <li> Fixed a bug in which a certain lazy loading sequence would incorrectly cause access rules to match the reference from a class to itself.
-    <li> Macker now detects array instantiations correctly, except the instantiation of single-dimensioned arrays of primitives, which generate special bytecode.
+    <li> Macker now detects array instantiations correctly (<a href="http://sourceforge.net/tracker/index.php?func=detail&aid=791385&group_id=55296&atid=476503">791385</a>), except the instantiation of single-dimensioned arrays of primitives, which generate special bytecode (<a href="http://sourceforge.net/tracker/index.php?func=detail&aid=791721&group_id=55296&atid=476503">791721</a>).
 </ul>
 
 <h4>Known Issues</h4>
