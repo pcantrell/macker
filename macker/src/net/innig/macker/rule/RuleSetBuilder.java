@@ -59,6 +59,8 @@ public class RuleSetBuilder
         try { return build(saxBuilder.build(is)); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
+        catch(IOException ioe)
+            { throw new RulesDocumentException(ioe); }
         }
 
     public Collection/*<RuleSet>*/ build(Reader reader)
@@ -67,6 +69,8 @@ public class RuleSetBuilder
         try { return build(saxBuilder.build(reader)); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
+        catch(IOException ioe)
+            { throw new RulesDocumentException(ioe); }
         }
 
     public Collection/*<RuleSet>*/ build(File file)
@@ -75,6 +79,8 @@ public class RuleSetBuilder
         try { return build(saxBuilder.build(file)); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
+        catch(IOException ioe)
+            { throw new RulesDocumentException(ioe); }
         }
 
     public Collection/*<RuleSet>*/ build(String fileName)
@@ -83,6 +89,8 @@ public class RuleSetBuilder
         try { return build(saxBuilder.build(fileName)); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
+        catch(IOException ioe)
+            { throw new RulesDocumentException(ioe); }
         }
 
     public Collection/*<RuleSet>*/ build(Document doc)
@@ -117,6 +125,8 @@ public class RuleSetBuilder
         try { saxBuilderVerify.build(in); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
+        catch(IOException ioe)
+            { throw new RulesDocumentException(ioe); }
         }
 
     public RuleSet buildRuleSet(Element ruleSetElem, RuleSet parent)

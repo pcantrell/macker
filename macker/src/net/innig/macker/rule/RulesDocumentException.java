@@ -30,9 +30,9 @@ import org.jdom.JDOMException;
 public class RulesDocumentException
     extends RulesException
     {
-    public RulesDocumentException(JDOMException jdome)
+    public RulesDocumentException(Exception e)
         {
-        super("Error in rules document XML", jdome);
+        super("Error in rules document XML", e);
         element = null;
         }
     

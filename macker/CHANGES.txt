@@ -1,11 +1,6 @@
 VERSION HISTORY
 
-version 0.4 (in development):
-  remaning:
-    - add reference type filters for access rules?
-    - document new features
-    - regression tests?
-  done:
+version 0.4 (in beta):
     - filters allows patterns to match on supertypes and basic class attributes
     - severity levels allow rules to generate warnings instead of errors
     - XML reporting
@@ -61,3 +56,5 @@ LIKELY FUTURE FEATURES
 0.7 standard for rules export in META-INF
 ?   more flexible foreach scoping
 ?   line numbers in output
+?   add reference type filters for access rules?
+?   regression tests?
