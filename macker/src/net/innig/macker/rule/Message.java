@@ -21,17 +21,17 @@
 package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassManager;
-import net.innig.macker.event.EchoEvent;
+import net.innig.macker.event.MessageEvent;
 import net.innig.macker.event.MackerIsMadException;
 
-public class Echo
+public class Message
     extends Rule
     {
     //--------------------------------------------------------------------------
     // Constructors
     //--------------------------------------------------------------------------
 
-    public Echo(RuleSet parent, String message)
+    public Message(RuleSet parent, String message)
         {
         super(parent);
         this.message = message;
@@ -58,7 +58,7 @@ public class Echo
         throws RulesException, MackerIsMadException
         {
         context.broadcastEvent(
-            new EchoEvent(
+            new MessageEvent(
                 this,
                 VariableParser.parse(context, getMessage())));
         }

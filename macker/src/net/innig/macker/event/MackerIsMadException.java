@@ -27,10 +27,10 @@ import java.util.*;
 public class MackerIsMadException
     extends Exception
     {
-    public MackerIsMadException(MackerIsMadEvent event)
+    public MackerIsMadException(MackerEvent event)
         { this(Collections.singletonList(event)); }
 
-    public MackerIsMadException(List/*<MackerIsMadEvent>*/ events)
+    public MackerIsMadException(List/*<MackerEvent>*/ events)
         {
         super(BASE_MESSAGE);
         if(events.isEmpty())

@@ -62,7 +62,7 @@ public class PrintingListener
     public void mackerAborted(RuleSet ruleSet)
         { } // don't care
     
-    public void handleMackerIsMadEvent(RuleSet ruleSet, MackerIsMadEvent event)
+    public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
         throws MackerIsMadException
         {
         eventsBySeverity.put(event.getRule().getSeverity(), event);

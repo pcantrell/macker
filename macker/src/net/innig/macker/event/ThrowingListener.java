@@ -63,7 +63,7 @@ public class ThrowingListener
     public void mackerAborted(RuleSet ruleSet)
         { events = null; }
     
-    public void handleMackerIsMadEvent(RuleSet ruleSet, MackerIsMadEvent event)
+    public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
         throws MackerIsMadException
         {
         events.add(event);

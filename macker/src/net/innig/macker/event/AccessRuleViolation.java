@@ -26,7 +26,7 @@ import net.innig.macker.structure.ClassInfo;
 import java.util.List;
 
 public class AccessRuleViolation
-    extends MackerIsMadEvent
+    extends MackerEvent
     {
     public AccessRuleViolation(
             AccessRule accessRule,

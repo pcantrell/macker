@@ -20,7 +20,7 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.event.MackerIsMadEvent;
+import net.innig.macker.event.MackerEvent;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.MackerEventListener;
 
@@ -110,15 +110,15 @@ public class EvaluationContext
             getParent().broadcastAborted(targetRuleSet);
         }
     
-    public void broadcastEvent(MackerIsMadEvent event)
+    public void broadcastEvent(MackerEvent event)
         throws MackerIsMadException
         { broadcastEvent(event, getRuleSet()); }
         
-    protected void broadcastEvent(MackerIsMadEvent event, RuleSet targetRuleSet)
+    protected void broadcastEvent(MackerEvent event, RuleSet targetRuleSet)
         throws MackerIsMadException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).handleMackerIsMadEvent(targetRuleSet, event);
+            ((MackerEventListener) i.next()).handleMackerEvent(targetRuleSet, event);
         if(getParent() != null)
             getParent().broadcastEvent(event, targetRuleSet);
         }

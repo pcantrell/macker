@@ -20,12 +20,12 @@
  
 package net.innig.macker.event;
 
-import net.innig.macker.rule.Echo;
+import net.innig.macker.rule.Message;
 import java.util.*;
 
-public class EchoEvent
-    extends MackerIsMadEvent
+public class MessageEvent
+    extends MackerEvent
     {
-    public EchoEvent(Echo echoRule, String message)
-        { super(echoRule, message, Collections.EMPTY_LIST); }
+    public MessageEvent(Message messageRule, String message)
+        { super(messageRule, message, Collections.EMPTY_LIST); }
     }

@@ -25,10 +25,10 @@ import net.innig.macker.rule.RuleSeverity;
 
 import java.util.*;
 
-public class MackerIsMadEvent
+public class MackerEvent
     extends EventObject
     {
-    public MackerIsMadEvent(
+    public MackerEvent(
             Rule rule,
             String description,
             List messages)

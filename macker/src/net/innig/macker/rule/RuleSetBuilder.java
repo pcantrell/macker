@@ -120,8 +120,8 @@ public class RuleSetBuilder
                 ruleSet.addRule(buildForEach(subElem, ruleSet));
             else if(subElemName.equals("ruleset"))
                 ruleSet.addRule(buildRuleSet(subElem, ruleSet));
-            else if(subElemName.equals("echo"))
-                ruleSet.addRule(buildEcho(subElem, ruleSet));
+            else if(subElemName.equals("message"))
+                ruleSet.addRule(buildMessage(subElem, ruleSet));
             }
         
         return ruleSet;
@@ -219,12 +219,12 @@ public class RuleSetBuilder
         return new Variable(parent, varName, value);
         }
     
-    public Echo buildEcho(Element echoElem, RuleSet parent)
+    public Message buildMessage(Element messageElem, RuleSet parent)
         throws RulesException
         {
-        Echo echo = new Echo(parent, echoElem.getText());
-        buildSeverity(echo, echoElem);
-        return echo;
+        Message message = new Message(parent, messageElem.getText());
+        buildSeverity(message, messageElem);
+        return message;
         }
     
     public ForEach buildForEach(Element forEachElem, RuleSet parent)

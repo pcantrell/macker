@@ -62,7 +62,7 @@
         </foreach>
 
         <foreach var="exception" regex="(**Exception)">
-            <echo>Ahoy! ${exception}</echo>
+            <message>Ahoy! ${exception}</message>
         </foreach>
 
     </ruleset>
