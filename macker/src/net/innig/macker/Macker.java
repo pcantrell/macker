@@ -58,7 +58,14 @@ public class Macker
                     usage();
                     return;
                     }
-                else if(args[arg].equals("-v"))
+                else if(args[arg].equals("-V") || args[arg].equals("--version"))
+                    {
+                    Properties p = new Properties();
+                    p.load(Macker.class.getClassLoader().getResourceAsStream("net/innig/macker/version.properties"));
+                    System.out.println("Macker version " + p.get("macker.version"));
+                    return;
+                    }
+                else if(args[arg].equals("-v") || args[arg].equals("--verbose"))
                     verbose = true;
                 else if(args[arg].startsWith("-D"))
                     {
@@ -175,7 +182,7 @@ public class Macker
     public static void usage()
         {
         System.out.println("arguments:");
-        System.out.println("    macker [-v] [-D var=value]* [-r rulesfile]* classes");
+        System.out.println("    macker [-V|--version] [-v|--verbose] [-D var=value]* [-r rulesfile]* classes");
 //      System.out.println("    macker [javalib.jar]+");
         }
     }

@@ -24,12 +24,12 @@
     <property name="build.dir"            location="${basedir}/build" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
     <property name="build.test.dir"       location="${build.dir}/test" />
+    <property name="dist.dir"             location="${build.dir}/dist" />
     
     <property name="jar.file"             location="${build.dir}/${name}.jar" />
     <property name="jar.manifest"         location="${src.dir}/manifest.mf" />
     
     <property name="javadoc.dir"          location="${doc.dir}/javadoc"/>
-    <property name="javadoc.title"        value="${Name} API Documentation"/>
     <property name="javadoc.packages"     value="net.innig.macker.*" />
 
     <property name="run.mainclass"        value="net.innig.macker.Macker" />
@@ -43,6 +43,7 @@
     <target name="prepare">
         <mkdir dir="${build.dir}" />
         <mkdir dir="${build.classes.dir}" />
+        <mkdir dir="${build.lib.dir}" /> <!-- because it's usually empty -->
 
         <path id="build.classpath">
             <fileset dir="${lib.dir}" />
@@ -55,6 +56,13 @@
             <fileset dir="${lib.dir}" />
         </path>
         <property name="run.classpath" refid="run.classpath" />
+
+        <tstamp><format property="timestamp" pattern="yyyy/MM/dd HH:mm:ss z" locale="en"/></tstamp>
+        <condition property="dist.version.short" value="${dist.version}">
+            <isset property="dist.version" />
+        </condition>
+        <property name="dist.version.short" value="nonrelease" />
+        <property name="dist.version" value="non-release [${timestamp}]" />
     </target>
 
     <!-- ================================================================= -->
@@ -87,11 +95,19 @@
         
         <copy todir="${build.classes.dir}">
             <fileset dir="${src.dir}">
-                <include name="**/*.properties"/>
                 <include name="**/*.dtd"/>
                 <include name="**/*.xml"/>
                 <include name="**/*.gif"/>
                 <include name="**/*.ico"/>
+            </fileset>
+        </copy>
+        
+        <copy todir="${build.classes.dir}" overwrite="yes">
+            <filterset>
+                <filter token="dist.version" value="${dist.version}"/>
+            </filterset>
+            <fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
             </fileset>
         </copy>
 
@@ -197,6 +213,7 @@
         description="Builds javadoc"
         depends="prepare">
         
+        <property name="javadoc.title" value="${Name} ${dist.version} API"/>
         <mkdir dir="${javadoc.dir}" />
         <javadoc sourcepath="${src.dir}"
             destdir="${javadoc.dir}"
@@ -209,12 +226,12 @@
         </javadoc>
         <copy todir="${javadoc.dir}">
             <fileset dir="${src.dir}">
-            <include name="**/*.gif"/>
-            <include name="**/*.jpeg"/>
-            <include name="**/*.jpg"/>
-            <include name="**/*.png"/>
-            <include name="**/*.pdf"/>
-            <include name="**/*.svg"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.png"/>
+                <include name="**/*.pdf"/>
+                <include name="**/*.svg"/>
             </fileset>
         </copy>
         
@@ -226,11 +243,48 @@
     <!-- ================================================================= -->
 
     <target name="clean" description="Removes all build files">
-
         <delete dir="${javadoc.dir}" />
         <delete dir="${build.classes.dir}" />
         <delete dir="${build.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- dist:                                                             -->
+    <!-- Package distribution version                                      -->
+    <!-- ================================================================= -->
+
+    <target name="dist" depends="clean,jar,javadoc">
+        <echo>Bundling dist version: ${dist.version.short} / ${dist.version}</echo>
+        <property name="dist.name" value="${name}-${dist.version.short}" />
+        <property name="dist.file" value="${dist.dir}/${dist.name}.tar.gz" />
         
+        <property name="dist.tmp.dir" value="${dist.dir}/tmp" />
+        <property name="dist.staging.dir" value="${dist.tmp.dir}/${dist.name}" />
+        <mkdir  dir="${dist.staging.dir}" />
+        <copy todir="${dist.staging.dir}">
+            <fileset dir="${basedir}">
+                <include name="**" />
+                <exclude name="build/**" />
+                <include name="build/*.jar" />
+                <exclude name="**/.DS_Store" />
+            </fileset>
+        </copy>
+        <copy todir="${dist.staging.dir}">
+            <fileset dir="${basedir}" includes="build/*.jar" />
+        </copy>
+        <copy todir="${dist.staging.dir}" overwrite="true">
+            <filterset>
+                <filter token="dist.version" value="${dist.version}"/>
+            </filterset>
+            <fileset dir="${basedir}" includes="README.html" />
+        </copy>
+        <tar basedir="${dist.tmp.dir}"
+            destfile="${dist.file}"
+            compression="gzip"
+            longfile="fail" />
+        <!-- delete dir="${dist.tmp.dir}" /-->
+
     </target>
     
 </project>
