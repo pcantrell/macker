@@ -31,7 +31,7 @@
 
 <h3><a name="allowdeny">Allow / Deny</a></h3>
 <p>
-Class <i>A</i> <i>references</i> class <i>B</i> if <i>A</i> extends, implements, contains, aggregates, takes, returns, or otherwise depends on <i>B</i>.  Macker allows you to allow and deny such references between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
+Class <i>A</i> <i>references</i> class <i>B</i> if <i>A</i> extends, implements, contains, aggregates, takes, returns, or otherwise depends on <i>B</i>.  Macker can allow and deny such references between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
 <p>
 The allow/deny construct is very similar to the include/exclude construct, except that it applies to <i>pairs</i> of classes.  An <code>&lt;access-rule&gt;</code> contains <code>&lt;allow&gt;</code> and <code>&lt;deny&gt;</code> rules, each of which may specify a <code>&lt;from&gt;</code> and a <code>&lt;to&gt;</code> pattern, and an optional <code>&lt;message&gt;</code> to display when the rule is broken:
 </p>
@@ -116,7 +116,7 @@ The <code>severity</code> attribute takes the following values:
 <td class="example">debug</td><td align="center">no</td><td align="center">no</td><td></td>
 </tr>
 </table>
-You can override the printing and failing behavior of the differnt severities -- to fail on warnings, for example, or print debug messages.  For more information, read about the <a href="ant.html">Ant task</a>.
+You can override the printing and failing behavior of the different severities -- to fail on warnings, for example, or print debug messages.  For more information, read about the <a href="ant.html">Ant task</a>.
 </p>
 
 
@@ -153,7 +153,7 @@ Ideally, Macker's notion of "reference" would cover all the kinds of relationshi
 <p>
 (A future release of Macker will allow access rules to distinguish these different types of references.)
 <p>
-There are, however, some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  Unused imports won't show up.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.
+There are, however, some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  Unused imports won't show up.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (some operations on arrays of primitives do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.
 <p>
 As long as Macker operates on compiled classes, there's nothing we can do about any of this.  Now it's questionable whether you'd <i>want</i> some of these cases to show up -- in most cases, working on class files gives a much more accurate picture of runtime dependencies than source -- but it's a moot question.  Macker doesn't look at your source.
 

@@ -36,7 +36,7 @@
 
 <h3><a name="using">Declaring the Ant Task</a></h3>
 <p>
-Macker runs reasonably cooperatively as an Ant task.  Is is somewhat more cooperative running under Ant 1.5, which fixed a number of difficulties in the handling of classpaths for custom Ant tasks.  The rest of this page presumes Ant 1.5; if you are using an earlier version, you're on your own.
+Macker runs reasonably cooperatively as an Ant task.  Is is somewhat more cooperative running under Ant 1.5, which resolved a number of difficulties in the handling of classpaths for custom Ant tasks.  The rest of this page presumes Ant 1.5; if you are using an earlier version, you're on your own.
 <p>
 To use the Macker Ant task, you first need to declare it in a taskdef:
 <pre>&lt;taskdef name="macker"
@@ -49,7 +49,7 @@ Specifying the classpath can be tedious, since Macker requires so many jars.  Fo
 &lt;/path&gt;
 &lt;taskdef name="macker"
     classname="net.innig.macker.ant.MackerAntTask"
-    classpathref="${macker.classpath}"/&gt;</pre>
+    classpathref="macker.classpath"/&gt;</pre>
 <p>
 Once you've declared the macker task, you can use it in your Ant file with the options below.
 
@@ -95,7 +95,7 @@ These options appear on the &lt;macker&gt; tag itself.  They are all optional.
     </tr>
     <tr valign="top">
         <td class="example">verbose</td>
-        <td>Instructs Macker to dump information useful for debugging a rules file, including the complete set of references and classes matched by each pattern.</td>
+        <td>Instructs Macker to dump information useful for debugging a rules file, including all references from primary classes, and the primary classes matched by each pattern.</td>
         <td>no</td>
     </tr>
 </table>
@@ -148,14 +148,14 @@ Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starti
 &lt;/path&gt;
 &lt;path id="macker.classpath"&gt;
     &lt;pathelement location="${build.classes.dir}" /&gt;
-    &lt;fileset dir="${lib.dir}" /&gt;
-    &lt;fileset dir="${macker.lib.dir}" /&gt;
+    &lt;fileset dir="${lib.dir}" includes="*.jar" /&gt;
+    &lt;fileset dir="${macker.lib.dir}" includes="*.jar" /&gt;
 &lt;/path&gt;
 
 <span class="comment">&lt;!-- Declare the Macker task --&gt;</span>
 &lt;taskdef name="macker"
     classname="net.innig.macker.ant.MackerAntTask"
-    classpathref="${macker.classpath}" /&gt;
+    classpathref="macker.classpath" /&gt;
 
 <span class="comment">&lt;!-- Run the darn thing! --&gt;</span>
 &lt;macker&gt;
@@ -163,7 +163,7 @@ Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starti
     &lt;classes dir="${build.classes.dir}"&gt;
         &lt;include name="**/*.class" /&gt;
     &lt;/classes&gt;
-    &lt;var name="basepkg" value="com.vaporcorp" /&gt;
+    &lt;var name="basepkg" value="com.foobar" /&gt;
     &lt;classpath refid="build.classpath" /&gt;
 &lt;/macker&gt;</pre>
 <p>

@@ -28,7 +28,7 @@
 
 <h3><a name="rules">Macker's Regex Syntax</a></h3>
 <p>
-Part of Macker's power is its ability to apply rules to a whole categories of classes which have certain roles, or sit it certain architectural layers.  Macker relies on you to use naming and packaging conventions to make these roles and layers well-defined -- the programmer still has to think a bit about what they're doing!  (Macker will is also able to look at some attributes other than name; see <a href="filter.html">filters</a>.  Strong AI which intuits the role of a particular class, however, is not currently in scope.)
+Part of Macker's power is its ability to apply rules to a whole categories of classes which have certain roles or characteristics.  Macker relies on you to use naming and packaging conventions to make these roles and layers well-defined -- the programmer still has to think a bit about what they're doing!  (Macker will is also able to look at some attributes other than name; see <a href="filter.html">filters</a>.  Strong AI which intuits the role of a particular class, however, is not currently in scope.)
 <p>
 At the heart of class categorization is a simple regular expression syntax, governed by just a few rules:
 <ul>
@@ -38,7 +38,7 @@ Names separate into <i>parts</i> (e.g. "<code>java</code>", "<code>lang</code>",
 <li>
 A dot matches a part boundry. There is an implicit boundary at the beginning of the class name (but not at the end).
 <li>
-A Macker expression always matches the entire name.  (To match on substrings, add <code>**</code>.)
+A Macker expression always matches the entire name.  (To match on substrings, add a <code>**</code> prefix and suffix.)
 <li>
 Expressions are case-sensitive.
 </ul>

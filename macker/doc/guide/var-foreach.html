@@ -29,14 +29,14 @@
 
 <h3><a name="var">Variables</a></h3>
 <p>
-If a certain string appears often in your regular expressions, you can assign to a variable.  A variable declaration has a very simple syntax:
+If a certain string appears often in your regular expressions, you can assign it to a variable.  A variable declaration has a very simple syntax:
 <pre>&lt;var name="<span class="comment">var-name</span>" value="<span class="comment">string</span>" /&gt;</pre>
 <p>
-You can then refer to a variable in any pattern or message using a shell-style syntax:
+You can refer to a variable in any pattern or message using a shell-style syntax:
 <pre>${<span class="comment">var-name</span>}</pre>
 <p>
 For example, you could define a variable for your application's base package, then use it in your patterns:
-<pre>&lt;var name="app-base" value="com.vaporcorp.whatsitproject" /&gt;
+<pre>&lt;var name="app-base" value="com.foobar.whatsitproject" /&gt;
 &lt;pattern name="ui" class="${app-base}.ui.**" /&gt;
 &lt;pattern name="db" class="${app-base}.db.**" /&gt;
 </pre>
@@ -109,39 +109,39 @@ Confusing?  Some examples should make it a bit clearer.
 <tr><th>A foreach with this regex...</th><th>...applied to these primary classes...</th><th>...will iterate through these values.</th></tr>
 <tr valign="top">
 <td class="example">**Exception</td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.IllegalThingerException
-<br>com.vaporcorp.NoSuchThingerException</td>
-<td>com.vaporcorp.IllegalThingerException
-<br>com.vaporcorp.NoSuchThingerException</td>
+<td>com.foobar.Thinger
+<br>com.foobar.IllegalThingerException
+<br>com.foobar.NoSuchThingerException</td>
+<td>com.foobar.IllegalThingerException
+<br>com.foobar.NoSuchThingerException</td>
 </tr>
 <tr valign="top">
 <td class="example">(**)Exception</td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.IllegalThingerException
-<br>com.vaporcorp.NoSuchThingerException</td>
-<td>com.vaporcorp.IllegalThinger
-<br>com.vaporcorp.NoSuchThinger</td>
+<td>com.foobar.Thinger
+<br>com.foobar.IllegalThingerException
+<br>com.foobar.NoSuchThingerException</td>
+<td>com.foobar.IllegalThinger
+<br>com.foobar.NoSuchThinger</td>
 </tr>
 <tr valign="top">
 <td class="example">**.(*Exception)</td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.IllegalThingerException
-<br>com.vaporcorp.NoSuchThingerException</td>
+<td>com.foobar.Thinger
+<br>com.foobar.IllegalThingerException
+<br>com.foobar.NoSuchThingerException</td>
 <td>IllegalThingerException
 <br>NoSuchThingerException</td>
 </tr>
 <tr valign="top">
 <td class="example">(**).*Thinger</td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.limb.ArmThinger
-<br>com.vaporcorp.limb.LegThinger
-<br>com.vaporcorp.limb.TentacleThinger
-<br>com.vaporcorp.mood.HappyThinger
-<br>com.vaporcorp.mood.SadThinger</td>
-<td>com.vaporcorp
-<br>com.vaporcorp.limb
-<br>com.vaporcorp.mood</td>
+<td>com.foobar.Thinger
+<br>com.foobar.limb.ArmThinger
+<br>com.foobar.limb.LegThinger
+<br>com.foobar.limb.TentacleThinger
+<br>com.foobar.mood.HappyThinger
+<br>com.foobar.mood.SadThinger</td>
+<td>com.foobar
+<br>com.foobar.limb
+<br>com.foobar.mood</td>
 </tr>
 </table>
 <p>
@@ -150,47 +150,47 @@ Remember that a regex always matches <i>the entire name of the class</i>.  This 
 <table class="example-table" cellspacing=0>
 <tr><th>A foreach with this regex...</th><th>...applied to these primary classes...</th><th>...will iterate through these values.</th></tr>
 <tr valign="top">
-<td class="example">com.vaporcorp.*
-<br><span class="comment">(One might expect this pattern to match each subpackage of com.vaporcorp, but it doesn't -- it needs to match the <b>full</b> class names.)</span></td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.limb.ArmThinger
-<br>com.vaporcorp.limb.LegThinger
-<br>com.vaporcorp.limb.TentacleThinger
-<br>com.vaporcorp.mood.HappyThinger
-<br>com.vaporcorp.mood.SadThinger</td>
-<td>com.vaporcorp.Thinger</td>
+<td class="example">com.foobar.*
+<br><span class="comment">(One might expect this pattern to match each subpackage of com.foobar, but it doesn't -- it needs to match the <b>full</b> class names.)</span></td>
+<td>com.foobar.Thinger
+<br>com.foobar.limb.ArmThinger
+<br>com.foobar.limb.LegThinger
+<br>com.foobar.limb.TentacleThinger
+<br>com.foobar.mood.HappyThinger
+<br>com.foobar.mood.SadThinger</td>
+<td>com.foobar.Thinger</td>
 </tr>
 <tr valign="top">
-<td class="example">(com.vaporcorp**).*
+<td class="example">(com.foobar**).*
 <br><span class="comment">(This pattern gives just the package names. It matches the full class names, but leaves the class part outside the parentheses.)</span></td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.limb.ArmThinger
-<br>com.vaporcorp.limb.LegThinger
-<br>com.vaporcorp.limb.TentacleThinger
-<br>com.vaporcorp.mood.HappyThinger
-<br>com.vaporcorp.mood.SadThinger</td>
-<td>com.vaporcorp
-<br>com.vaporcorp.limb
-<br>com.vaporcorp.mood</td>
+<td>com.foobar.Thinger
+<br>com.foobar.limb.ArmThinger
+<br>com.foobar.limb.LegThinger
+<br>com.foobar.limb.TentacleThinger
+<br>com.foobar.mood.HappyThinger
+<br>com.foobar.mood.SadThinger</td>
+<td>com.foobar
+<br>com.foobar.limb
+<br>com.foobar.mood</td>
 </tr>
 <tr valign="top">
-<td class="example">(com.vaporcorp.**).*
-<br><span class="comment">(The extra dot rules out com.vaporcorp.Thinger.)</span></td>
-<td>com.vaporcorp.Thinger
-<br>com.vaporcorp.limb.ArmThinger
-<br>com.vaporcorp.limb.LegThinger
-<br>com.vaporcorp.limb.TentacleThinger
-<br>com.vaporcorp.mood.HappyThinger
-<br>com.vaporcorp.mood.SadThinger</td>
-<td>com.vaporcorp.limb
-<br>com.vaporcorp.mood</td>
+<td class="example">(com.foobar.**).*
+<br><span class="comment">(The extra dot rules out com.foobar.Thinger.)</span></td>
+<td>com.foobar.Thinger
+<br>com.foobar.limb.ArmThinger
+<br>com.foobar.limb.LegThinger
+<br>com.foobar.limb.TentacleThinger
+<br>com.foobar.mood.HappyThinger
+<br>com.foobar.mood.SadThinger</td>
+<td>com.foobar.limb
+<br>com.foobar.mood</td>
 </tr>
 </table>
 <p>
 Foreach is a powerful construct.  Here, for example, is one possible implementation of the example from the FAQ, "One functional module may access another only through its API."
-In this hypothetical situation, the application has a set of modules in packages named <code>com.vaporcorp.module.<i>xyz</i></code>, with implementation classes in subpackages.
+In this hypothetical situation, the application has a set of modules in packages named <code>com.foobar.module.<i>xyz</i></code>, with implementation classes in subpackages.
 <pre>&lt;ruleset&gt;
-    &lt;var name="base-pkg" value="com.vaporcorp" /&gt;
+    &lt;var name="base-pkg" value="com.foobar" /&gt;
     &lt;foreach var="module" class="(${base-pkg}.module.*).**"&gt;
 
         &lt;pattern name="api" class="${module}.*" /&gt;

@@ -41,7 +41,7 @@
 <p>
 Macker is a Java developers' utility which checks classes against user-defined structural rules.  It's meant to model the architectural ideals programmers always dream up for their projects, and then break -- it helps keep code clean and consistent.  You can use it to check general "good practice" rules, and you can also tailor a rules file to suit a specific project's structure.
 <p>
-Macker operates on compiled Java classes.  It usually runs in your build process just after javac, but you could also make it part of your unit testing or packaging process if you like.  It is available as an Ant task and as a command-line utility, both of which read an XML rules file format.  It also has some Java APIs which you can use directly.
+Macker operates on compiled Java classes.  It usually runs in your build process just after javac, but you could also make it part of your unit testing or packaging process if you like.  It is available as an Ant task and as a command-line utility, both of which read an XML rules file format.  It also has some Java APIs which you can use directly, though they will not be guaranteed stable until the 1.0 release.
 
 <h3><a name="goodfor">What is Macker good for?</a></h3>
 <p>
@@ -51,10 +51,10 @@ If you're designing for a project with a large number of developers, Macker is a
 
 <h3><a name="notgoodfor">What is Macker <i>not</i> good for?</a></h3>
 <p>
-<b><i>Macker is not for security</i></b>.  Java's native access modifiers provide guarantees about information visibility and state integrity -- private members are guaranteed to be private, unless a class chooses to expose them.  Java can do this because "private" is not only enforced by the compiler, but by the JVM itself.
-Because Macker is not part of the Java language, it can provide no such guarantees.  It is a sanity check, not a security check.
+Macker is not for class security.  Java's native access modifiers provide guarantees about information visibility and state integrity -- private members are guaranteed to be private, unless a class chooses to expose them.  Java can do this because "private" is not only enforced by the compiler, but by the JVM itself.
+Because Macker is not part of the Java language, it can provide no such guarantees.  It is a sanity check, not a security check.  (You might use Macker as part of a security audit process, but that's a different question.)
 <p>
-For this reason, and for many other more aesthetic reasons, Macker is not a substitute for first-class Java language constructs like access control and strong typing.  A good object model should use the language to represent and reinforce its architectural intent, Macker or no.
+Macker is not a substitute for first-class Java language constructs like access control and strong typing.  A good object model should use the language to represent and reinforce its architectural intent, Macker or no.
 <p>
 Macker is not meant to enforce nit-picky code formatting conventions, and obviously can't enforce aesthetic standards like "use conceptually clear names".
 <p>
@@ -62,16 +62,17 @@ Finally, Macker isn't good if you don't want to specify your own architectural r
 
 <h3><a name="capabilities">What sorts of rules can Macker check?</a></h3>
 <p>
-Macker allows you to specify broad access rules that Java's native access modifiers can't.  The current version supports name-based class- and package-level access rules, such as:
+Macker allows you to specify broad access rules that Java's native access modifiers can't.  The current version supports class- and package-level access rules, such as:
 <ul>
 <li> Classes in the UI layer may not directly access the data object layer, or use classes in java.sql.
 <li> External systems may not access internal implementation classes (suffixed with 'Impl').
 <li> One functional module may access another only through its API.
+<li> Only classes implementing interfaces in javax.ejb, and certain framework packages, may use the EJB APIs.
 </ul>
 <p>
 (All of these are all just examples.  Macker doesn't check anything by default; it's up to you to write rules to fit what you're doing.)
 <p>
-Future versions will also support attributes other than class/package name, existence/nonexistence rules in addition to access rules, and possibly rules applying at the method as well the class level.  This would allow rules such as:
+Future versions will support more sophisticated matching class matching, existence/nonexistence rules in addition to access rules, and possibly rules applying at the method as well the class level.  This would allow rules such as:
 <ul>
 <li> Classes implementing the SessionBean interface must have the suffix 'EJB'.
 <li> Methods should take and return Java collections interfaces (e.g. List) instead of concrete types (e.g. ArrayList).
@@ -105,13 +106,13 @@ Macker is quite stable, and reasonably bug-free.  It's certainly suitable for re
 <p>
 The reason for the pre-1.0 version number is that there are still some fairly serious feature gaps.  For example, you can only currently apply access rules to classes, and not methods.
 <p>
-So basically, you'll find that Macker doesn't do everything you might want -- but it does do, it does well.
+So basically, you'll find that Macker doesn't do everything you want -- but what it does do, it does well.
 
 <h3><a name="example">Are there examples?</a></h3>
 <p>
-<a href="example/index.html">Here's a few</a> to get you started.  You'll also find some sprinked throughout the <a href="guide/index.html">user's guide</a>.
+<a href="example/index.html">Here's a few</a> to get you started.  You'll also find some sprinkled throughout the <a href="guide/index.html">user's guide</a>.
 <p>
-If you have some Macker you'd like share with the world, <a href="contact.html">send them along</a>!
+If you have other examples you'd like share with the world, <a href="contact.html">send them along</a>!
 
 <h3><a name="name">What does the name "Macker" mean?</a></h3>
 <p>
@@ -129,7 +130,7 @@ But clearly something more than his big ego is eating at him.  Macker, shall we 
 <p align="center">
 <IMG SRC="images/mackerismad.png" border=0 width=527 height=300>
 <p>
-Well, now we know the answer: Macker is mad because you violated your architectural rules.  Aren't you glad knowing that a psychologically unstable anime character cares so much about your code?
+Well, now we know the answer: Macker is mad because you violated your architectural rules.  Aren't you glad that a psychologically unstable anime character cares so much about your code?
 <p>
 The exact cause and nature of Macker's apparent dental problem remain unknown as of this writing.
 <p>

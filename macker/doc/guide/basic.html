@@ -54,11 +54,9 @@ You'll typically run Macker from within Ant, something like this:
     &lt;!-- The classpath here tells Ant where to look for the Macker Ant task. --&gt;</span>
     &lt;taskdef name="macker"
         classname="net.innig.macker.ant.MackerAntTask"
-        classpath="${build.classpath}"/&gt;  
+        classpathref="build.classpath"/&gt;  
     
-    &lt;macker
-        fork="yes"
-        verbose="no"&gt;
+    &lt;macker&gt;
         <span class="comment">&lt;!-- This classpath tells Macker where to look for its own --&gt;
         &lt;!-- libraries, and the libraries used by the primary classes. --&gt;</span>
         &lt;classpath refid="build.classpath" /&gt;

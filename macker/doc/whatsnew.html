@@ -26,8 +26,8 @@
 <h4>New features</h4>
 <p>
 <ul>
-    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="guide/filter.html">more</a>)
-    <li> Rules now have severity levels -- you can generate warnings without failing the build, or include debug messages which are hidden during a normal build. (<a href="guide/accessrule.html#severity">more</a>)
+    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match based on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="guide/filter.html">more</a>)
+    <li> Rules now have severity levels -- you can generate warnings without failing the Ant build, or include debug messages which are hidden during a normal run. (<a href="guide/accessrule.html#severity">more</a>)
     <li> Macker can now generate XML reports.  (<a href="guide/ant.html#xmlReport">more</a>)
     <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="guide/var-foreach.html#message">more</a>)
 	<li> The special from/to variables are now available to patterns in an access rule, in addition to the message.  Two new variables give just the from/to package name.  (<a href="guide/var-foreach.html#var">more</a>)  Two new patterns match the from/to classes.  (<a href="guide/accessrule.html#fromtopats">more</a>)
@@ -57,10 +57,14 @@
 <ul>
     <li> Running under Java 1.4 no longer generates "major version" warning messages.
     <li> The Ant task now always honors the <code>failonerror</code> attribute.
-    <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern.
+    <li> Fixed two bugs which caused certain compositions of named patterns to incorrectly modify the patterns' definitions.
     <li> Fixed a bug in which a certain lazy loading sequence would incorrectly cause access rules to match the reference from a class to itself.
-    <li> Macker now detects array instantiations correctly, except the instantiation of single-dimensioned arrays of primitive.
+    <li> Macker now detects array instantiations correctly, except the instantiation of single-dimensioned arrays of primitives, which generate special bytecode.
 </ul>
+
+<h4>Known Issues</h4>
+<p>
+See the <a href="http://sourceforge.net/tracker/?atid=476503&group_id=55296&func=browse">bug tracker on Sourceforge</a>.
 
 <div class="footer">
 <div class="navbar">

@@ -37,7 +37,7 @@ Here are a few patterns one might define:
 </p>
 <pre>&lt;pattern name="java-api" class="java*.**" /&gt;
 &lt;pattern name="exception" class="**Exception" /&gt;
-&lt;pattern name="ui-layer" class="com.vaporcorp.whatsitproject.ui.**" /&gt;</pre>
+&lt;pattern name="ui-layer" class="com.foobar.whatsitproject.ui.**" /&gt;</pre>
 <p>
 A pattern definition sits inside a &lt;ruleset&gt; or &lt;foreach&gt; (explained in a later section) tag.  The definition is valid until the end of that tag, and applies to child rulesets.  This means that you can combine different rulesets in the same rules file without worrying about name conflicts.
 </p>
@@ -47,14 +47,14 @@ A pattern definition sits inside a &lt;ruleset&gt; or &lt;foreach&gt; (explained
         &lt;pattern name="java-sql" class="java*.sql.**" /&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="ui" class="com.vaporcorp.whatsitproject.ui.**" /&gt;
-                &lt;pattern name="db" class="com.vaporcorp.whatsitproject.db.**" /&gt;
+                &lt;pattern name="ui" class="com.foobar.whatsitproject.ui.**" /&gt;
+                &lt;pattern name="db" class="com.foobar.whatsitproject.db.**" /&gt;
                 <span class="comment">&lt;!-- Whatsitproject rules go here --&gt;</span>
         &lt;/rulset&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="db" class="com.vaporcorp.util.db.**" /&gt;
-                <span class="comment">&lt;!-- Vaporcorp DB util rules go here --&gt;</span>
+                &lt;pattern name="db" class="com.foobar.util.db.**" /&gt;
+                <span class="comment">&lt;!-- General DB util rules go here --&gt;</span>
         &lt;/rulset&gt;
     &lt;/rulset&gt;
 &lt;/macker&gt;</pre>

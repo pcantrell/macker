@@ -85,7 +85,14 @@ Admittedly, this is a small set.  It will grow with future versions of Macker.
     <tr valign="top">
         <td class="example">class-access</td>
         <td>Matches based on the access (visibility) of the class itself.  This does not take into account the visibility of any of the methods -- that's for a future filter.
-        This filter expects the attribute <code>min</code> and/or <code>max</code>.  Each may be one of: <code>public</code>, <code>protected</code>, <code>package</code> (a.k.a. "default access"), and <code>private</code>.  At least one is required.
+        This filter expects the attributes <code>min</code> and/or <code>max</code>.  Each may be one of:
+        <ul class="compact">
+        <li> <code>public</code>,
+        <li> <code>protected</code>,
+        <li> <code>package</code> (a.k.a. "default access"), and
+        <li> <code>private</code>.
+        </ul> 
+        At least one is required.
         <p><b>Examples:</b>
         <br>&lt;pattern name="api-access" filter="access" min="protected" /&gt;
         <br>&lt;pattern name="package-private" filter="access" min="package" max="package" /&gt;
@@ -107,11 +114,11 @@ Admittedly, this is a small set.  It will grow with future versions of Macker.
 
 <h3><a name="custom">Writing Custom Filters </a></h3>
 <p>
-Filters are not limited to the standard set above; filters are inteded for extensibility.  However, I'm not going to document how to write your own filters here, for several incredibly good reasons:
+Filters are not limited to the standard set above; filters are intended for extensibility.  However, I'm not going to document how to write your own filters here, for several incredibly good reasons:
 </p>
 <ul>
    <li> You have to replace Macker's DTD to add custom options, which is really poor, and needs to be fixed before the filter API is really a proper API.
-   <li> Even the parts of the filter API that <i>are</i> proper aren't really stable.
+   <li> Even the parts of the filter API that <i>are</i> at least proper aren't really <i>stable</i>.
    <li> I'm lazy.
 </ul>
 <p>
