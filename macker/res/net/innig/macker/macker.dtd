@@ -44,18 +44,24 @@
 <!ATTLIST pattern class   CDATA #IMPLIED>
 <!ATTLIST pattern regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST pattern filter  CDATA #IMPLIED> 
+<!ATTLIST pattern max     CDATA #IMPLIED> 
+<!ATTLIST pattern min     CDATA #IMPLIED> 
 
 <!ELEMENT include (include|exclude)*>
 <!ATTLIST include pattern CDATA #IMPLIED> 
 <!ATTLIST include class   CDATA #IMPLIED>
 <!ATTLIST include regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST include filter  CDATA #IMPLIED> 
+<!ATTLIST include max     CDATA #IMPLIED> 
+<!ATTLIST include min     CDATA #IMPLIED> 
 
 <!ELEMENT exclude (include|exclude)*>
 <!ATTLIST exclude pattern CDATA #IMPLIED> 
 <!ATTLIST exclude class   CDATA #IMPLIED>
 <!ATTLIST exclude regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST exclude filter  CDATA #IMPLIED> 
+<!ATTLIST exclude max     CDATA #IMPLIED> 
+<!ATTLIST exclude min     CDATA #IMPLIED> 
 
 <!ELEMENT access-rule (message?,(allow|deny)*)>
 <!ATTLIST access-rule severity CDATA #IMPLIED> 
@@ -71,6 +77,10 @@
 <!ATTLIST to   regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST from filter  CDATA #IMPLIED> 
 <!ATTLIST to   filter  CDATA #IMPLIED>
+<!ATTLIST from max     CDATA #IMPLIED> 
+<!ATTLIST to   min     CDATA #IMPLIED>
+<!ATTLIST from max     CDATA #IMPLIED> 
+<!ATTLIST to   min     CDATA #IMPLIED>
 
 <!ELEMENT message (#PCDATA)>
 <!ATTLIST message severity CDATA #IMPLIED> 

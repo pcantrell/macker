@@ -5,8 +5,11 @@
         <var name="base" value="net.innig.macker.example.conventions" />
         
         <pattern name="api">
+            <!-- "api" includes public/protected interfaces from this project -->
             <include filter="primary-class">
-                <include filter="interface" />
+                <include filter="interface">
+                    <include filter="class-access" min="protected" />
+                </include>
             </include>
         </pattern>
         
@@ -17,8 +20,10 @@
         </pattern>
         
         <pattern name="util">
-            <exclude pattern="api" />
-            <exclude pattern="api-impl" />
+            <include filter="primary-class">
+                <exclude pattern="api" />
+                <exclude pattern="api-impl" />
+            </include>
         </pattern>
         
         <pattern name="collections-iface">

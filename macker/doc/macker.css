@@ -178,6 +178,12 @@ pre {
     color : #DDD;
     background : #003;
 }
+.example-table p {
+    margin : 0.6em 0em 0em 0cm;
+}
+.example-table code {
+    font-size : 11px;
+}
 
 .example-nav {
     font-family : Verdana,Monaco,Courier,Courier New;

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<title>Macker Guide: Filters</title>
+<style type="text/css">@import "../macker.css";</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<h1>Macker Guide</h1>
+
+<div class="navbar">
+<span class="next">Next:</span> <a href="ant.html">Using Macker with Ant</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+
+<h2>Filters</h2>
+<ul class="pagecontents">
+<li> <a href="#filterbasic">Patterns Beyond Names</a>
+<li> <a href="#standard">The Standard Filters</a>
+<li> <a href="#custom">Writing Custom Filters</a>
+</ul>
+
+<h3><a name="filterbasic"> Patterns Beyond Names </a></h3>
+<p>
+All the patterns to this point have matched based on class and package names.  With version 0.4, Macker supports matching on other features of a class using <i>filters</i>.  Any pattern tag -- any tag which supports the <code>class</code> and <code>pattern</code> attributes -- also supports the <code>filter</code> attribute:
+</p>
+<pre>&lt;<span class="comment">pattern-tag</span> filter="<span class="comment">filter-name</span>" <span class="comment">...options...</span> /&gt;</pre>
+<p>
+This simple example uses the filter named "interface" to create a pattern which matches all interfaces:
+</p>
+<pre>&lt;pattern name="all-interface" filter="interface" /&gt;</pre>
+<p>
+You can combine patterns based on filters, just as you would combine any other sort of pattern:
+</p>
+<pre>&lt;pattern name="concrete-class"&gt;
+    &lt;exclude filter="interface"&gt;
+    &lt;exclude filter="abstract-class"&gt;
+&lt;/pattern&gt;</pre>
+<p>
+Some filters take a pattern as a parameter.  In this case, the filter expects a <code>class</code> or <code>pattern</code> attribute, which becomes the parameter to the filter.  In this example, <code>java.util.List</code> is a parameter to <code>subtype-of</code>:
+</p>
+<pre>&lt;pattern name="list" filter="subtype-of" class="java.util.List" /&gt;</pre>
+<p>
+Nested elements are <i>not</i> a parameter to the filter -- they behave the same as ever.  This means that you'll sometimes need to declare a named helper pattern to build up the pattern you want.  For example, this pattern would not be possible without the definition of the pattern named <code>all-interface</code> above:
+</p>
+<pre>&lt;pattern name="concrete-iface-impl" filter="subtype-of" pattern="all-interface" /&gt;
+    &lt;include pattern="concrete-class" /&gt;
+&lt;/pattern&gt;</pre>
+
+
+<h3><a name="standard">The Standard Filters </a></h3>
+<p>
+Admittedly, this is a small set.  It will grow with future versions of Macker.
+</p>
+<p>
+<table class="example-table" cellspacing=0>
+    <tr><th>Filter</th><th>Description</th></tr>
+    <tr valign="top">
+        <td class="example">primary-class</td>
+        <td>Matches primary classes (those passed as input to Macker)
+    </tr>
+    <tr valign="top">
+        <td class="example">primitive-type</td>
+        <td>Matches any of the nine Java primitive types (including void).
+    </tr>
+    <tr valign="top">
+        <td class="example">interface</td>
+        <td>Matches interfaces, as the name implies.
+    </tr>
+    <tr valign="top">
+        <td class="example">abstract-class</td>
+        <td>Matches abstract classes (but not interfaces).
+    </tr>
+    <tr valign="top">
+        <td class="example">final-class</td>
+        <td>Matches classes declared final.  Exciting, isn't this?
+    </tr>
+    <tr valign="top">
+        <td class="example">class-access</td>
+        <td>Matches based on the access (visibility) of the class itself.  This does not take into account the visibility of any of the methods -- that's for a future filter.
+        This filter expects the attribute <code>min</code> and/or <code>max</code>.  Each may be one of: <code>public</code>, <code>protected</code>, <code>package</code> (a.k.a. "default access"), and <code>private</code>.  At least one is required.
+        <p><b>Examples:</b>
+        <br>&lt;pattern name="api-access" filter="access" min="protected" /&gt;
+        <br>&lt;pattern name="package-private" filter="access" min="package" max="package" /&gt;
+        </td>
+    </tr>
+    <tr valign="top">
+        <td class="example">subtype-of</td>
+        <td>Matches based on which other classes the given class is assignable from.  This includes anything it extends or implements, directly or indirectly, and the class itself.  I'll repeat that last bit, because it will catch you off guard: a class <i>is</i> considered a subtype of itself.
+        <p><b>Examples:</b>
+        <br>&lt;pattern name="list" filter="subtype-of" class="java.util.List" /&gt;
+        <br>&lt;pattern name="framework-extension" filter="subtype-of" pattern="framework"&gt;
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;exclude pattern="framework"&gt;
+        <br>&lt;/pattern&gt;
+        </td>
+    </tr>
+</table>
+</p>
+
+
+<h3><a name="custom">Writing Custom Filters </a></h3>
+<p>
+Filters are not limited to the standard set above; filters are inteded for extensibility.  However, I'm not going to document how to write your own filters here, for several incredibly good reasons:
+</p>
+<ul>
+   <li> You have to replace Macker's DTD to add custom options, which is really poor, and needs to be fixed before the filter API is really a proper API.
+   <li> Even the parts of the filter API that <i>are</i> proper aren't really stable.
+   <li> I'm lazy.
+</ul>
+<p>
+If you're dying to know, here's the gist of it.  Please keep in mind that anything you write might hit some upgrade bumps until Macker 1.0 ... but please do experiment!
+</p>
+<ul>
+    <li> Implement <code>net.innig.macker.rule.filter.Filter</code> (see the source files in that package for examples).
+    <li> Place a properties file named <code>net/innig/macker/filter.properties</code> in Macker's classpath with the line <code>filter-name=com.whatever.MyFilterClass</code>.  (Macker merges this with the standard filters, so you only need to declare your own.)
+    <li> If you're taking any custom options, modify Macker's DTD, and your own <code>net/innig/macker/macker.dtd</code> in Macker's classpath ahead of <code>macker.jar</code>.  This is a hack; in the future, Macker will allow a filter to declare which options it takes, and not force you to override the DTD.
+</ul>
+
+
+<div class="next">
+Next: <a href="ant.html">Using Macker with Ant</a>
+</div>
+
+<div class="footer">
+<div class="navbar">
+<span class="next">Next:</span> <a href="ant.html">Using Macker with Ant</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+</div>
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img border=0 src="http://innig.net/images/innig_3C0000.gif" alt="innig"></a>
+
+</body>
+</html>
+
