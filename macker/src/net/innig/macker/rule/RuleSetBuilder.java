@@ -120,6 +120,8 @@ public class RuleSetBuilder
                 ruleSet.addRule(buildForEach(subElem, ruleSet));
             else if(subElemName.equals("ruleset"))
                 ruleSet.addRule(buildRuleSet(subElem, ruleSet));
+            else if(subElemName.equals("echo"))
+                ruleSet.addRule(buildEcho(subElem, ruleSet));
             }
         
         return ruleSet;

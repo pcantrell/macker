@@ -27,5 +27,5 @@ public class EchoEvent
     extends MackerIsMadEvent
     {
     public EchoEvent(Echo echoRule, String message)
-        { super(echoRule, message, Collections.singletonList(message)); }
+        { super(echoRule, message, Collections.EMPTY_LIST); }
     }

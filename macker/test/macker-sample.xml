@@ -48,7 +48,7 @@
                 </to>
             </deny>
         </access-rule>
-<!--
+
         <foreach var="type-class" regex="(**Type)">
             <access-rule>
                 <deny>
@@ -60,13 +60,14 @@
                 </deny>
             </access-rule>
         </foreach>
--->
+
         <foreach var="exception" regex="(**Exception)">
-            <echo>${exception}</echo>
+            <echo>Ahoy! ${exception}</echo>
         </foreach>
 
     </ruleset>
-    
+
+
     <ruleset name="Stupid test ruleset" severity="info">
         <subset regex="**Class*" />
             <access-rule>
@@ -86,7 +87,7 @@
             </access-rule>
         </ruleset>
     </ruleset>
-        
+
 </macker>
 
 
