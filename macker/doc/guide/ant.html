@@ -60,12 +60,12 @@ These options appear on the &lt;macker&gt; tag itself.  They are all optional.
     <tr><th>Attribute</th><th>Description</th><th>Default</th></tr>
     <tr valign="top">
         <td class="example">printThreshold</td>
-        <td>Severity of errors / messages Macker will print to the console (one of: debug, info, warning, error)</td>
+        <td>Severity of errors / messages Macker will print to the console (one of: debug, info, warning, error).</td>
         <td>info</td>
     </tr>
     <tr valign="top">
         <td class="example">angerThreshold</td>
-        <td>Severity of error / message which will cause Macker to get mad, and consider rule checking to have failed</td>
+        <td>Severity of error / message which will cause Macker to get mad, and consider rule checking to have failed (debug, info, warning, error).</td>
         <td>error</td>
     </tr>
     <tr valign="top">
@@ -74,18 +74,23 @@ These options appear on the &lt;macker&gt; tag itself.  They are all optional.
         <td>yes</td>
     </tr>
     <tr valign="top">
+        <td class="example">angerProperty</td>
+        <td>The name of an Ant property to set to "true" if rules checking fails.  Note that this setting is moot if failOnError is true.</td>
+        <td><i>none</i></td>
+    </tr>
+    <tr valign="top">
         <td class="example">xmlReportFile</td>
-        <td>Output location of an XML report</td>
+        <td>Output location of an XML report.</td>
         <td><i>none</i></td>
     </tr>
     <tr valign="top">
         <td class="example">fork</td>
-        <td>Should Macker run in its own JVM? (The answer is almost always "no")</td>
+        <td>Should Macker run in its own JVM? (The answer is almost always "no".)</td>
         <td>no</td>
     </tr>
     <tr valign="top">
         <td class="example">verbose</td>
-        <td>Instructs Macker to dump information useful for debugging a rules file, including the complete set of references and classes matched by each pattern</td>
+        <td>Instructs Macker to dump information useful for debugging a rules file, including the complete set of references and classes matched by each pattern.</td>
         <td>no</td>
     </tr>
 </table>
