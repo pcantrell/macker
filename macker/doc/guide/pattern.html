@@ -72,25 +72,25 @@ Macker's regular expressions are rather limited; the real power of its pattern m
 &lt;include pattern="<span class="comment">pattern-name</span>" /&gt;
 &lt;exclude pattern="<span class="comment">pattern-name</span>" /&gt;</pre>
 <p>
-When you list includes and excludes inside a pattern definition, Macker will apply each in turn to see if a class matches.  This patterns, for example, matches the Java APIs which are not automatically imported:
+When you list includes and excludes inside a pattern definition, Macker will apply each in turn to see if a class matches.  This pattern, for example, matches the Java APIs which are not automatically imported:
 </p>
-<pre>&lt;pattern name="java-api-noautoimport" /&gt;
+<pre>&lt;pattern name="java-api-noautoimport"&gt;
     &lt;include regex="java.**" /&gt;
     &lt;exclude regex="java.lang.*" /&gt;
 &lt;/pattern&gt;</pre>
 <p>
-One could also define this pattern incrementally -- first all Java APIs, then those which are auto-imported, then those which are not:
+One could also define this pattern incrementally -- first, all Java APIs, then those which are auto-imported, then those which are not:
 </p>
 <pre>&lt;pattern name="java-api" regex="java.**" /&gt;
 &lt;pattern name="java-api-autoimport" regex="java.lang.*" /&gt;
-&lt;pattern name="java-api-noautoimport" /&gt;
+&lt;pattern name="java-api-noautoimport"&gt;
     &lt;include pattern=java-api" /&gt;
     &lt;exclude pattern="java-api-autoimport" /&gt;
 &lt;/pattern&gt;</pre>
 <p>
 When the first item in the list is an include, everything starts out excluded; conversely, when the first item is an exclude, everything starts out included.  You thus negate a pattern as follows:
 </p>
-<pre>&lt;pattern name="not-java-api" /&gt;
+<pre>&lt;pattern name="not-java-api"&gt;
     &lt;exclude pattern=java-api"" /&gt;
 &lt;/pattern&gt;</pre>
 <p>
@@ -122,8 +122,8 @@ Sequential includes form a boolean OR; nested includes form a boolean AND.
 &lt;/pattern&gt;
 
 &lt;pattern name="A-and-B-and-C"&gt;
-    &lt;include pattern="A" /&gt;
-        &lt;include pattern="B" /&gt;
+    &lt;include pattern="A"&gt;
+        &lt;include pattern="B"&gt;
             &lt;include pattern="C" /&gt;
         &lt;/include&gt;
     &lt;/include&gt;
