@@ -13,7 +13,7 @@ import org.jdom.JDOMException;
 public class RuleSetBuilder
     {
     public RuleSetBuilder()
-        { saxBuilder = new SAXBuilder(true); }
+        { saxBuilder = new SAXBuilder(false); }
         
     public Collection/*<RuleSet>*/ build(InputStream is)
         throws JDOMException, RulesException

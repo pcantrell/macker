@@ -46,7 +46,7 @@ public class RegexPattern
         throws RulesException
         {
         parseExpr(context);
-        return regex.match(classInfo.getClassName());
+        return regex.match('.' + classInfo.getClassName());
         }
     
     public String getParen(EvaluationContext context, ClassInfo classInfo)
@@ -74,10 +74,11 @@ public class RegexPattern
                 if(pos < expEnd)
                     {
                     String exp = regexStr.substring(pos, expEnd);
-                    exp = partBoundary.subst(exp, "\\.");
+                    exp = partBoundary.subst(exp, "[\\.\\$]");
+                    exp = innerClassBoundary.subst(exp, "\\$");
                     exp = star.subst(exp, "@");
                     exp = matchAcross.subst(exp, ".*");
-                    exp = matchWithin.subst(exp, "[^\\.]*");
+                    exp = matchWithin.subst(exp, "[^\\.\\$]*");
                     parts.add(new ExpPart(exp));
                     }
                 if(hasAnotherVar)
@@ -89,7 +90,7 @@ public class RegexPattern
 
         if(regex == null || prevContext != context) // prob shouldn't be ==
             {
-            StringBuffer builtRegexStr = new StringBuffer('^');
+            StringBuffer builtRegexStr = new StringBuffer("^\\.?");
             for(Iterator i = parts.iterator(); i.hasNext(); )
                 {
                 Part part = (Part) i.next();
@@ -120,12 +121,13 @@ public class RegexPattern
                 matchWithin = new RE("@");
                 matchAcross = new RE("@@");
                 partBoundary = new RE("\\.");
+                innerClassBoundary = new RE("\\$");
 
                 String varS  = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
                 String partS = "(([:javastart:]|[\\(\\)]|\\*|" + varS + ")"
                                + "([:javapart:]|[\\(\\)]|\\*|" + varS + ")*)";
                 var = new RE(varS);
-                allowable = new RE("^" + partS + "(\\." + partS + ")*$", RE.MATCH_SINGLELINE);
+                allowable = new RE("^" + partS + "([\\$\\.]" + partS + ")*$", RE.MATCH_SINGLELINE);
                 }
             catch(RESyntaxException rese)
                 {
@@ -137,7 +139,7 @@ public class RegexPattern
     private RE regex;
     private List/*<Part>*/ parts;
     private EvaluationContext prevContext;
-    static private RE star, matchWithin, matchAcross, partBoundary, var, allowable;
+    static private RE star, matchWithin, matchAcross, partBoundary, innerClassBoundary, var, allowable;
     
     private class Part { }
     private class VarPart extends Part
