@@ -43,35 +43,51 @@ To use the Macker Ant task, you first need to declare it in a taskdef:
     classname="net.innig.macker.ant.MackerAntTask"
     classpath="<span class="comment">macker.jar and macker libs</span>"/&gt;</pre>
 <p>
-Specifying the classpath can be tedious, since Macker requires so many jars.  Fortunately, Ant provides a nice trick for this: you can assign a classpath to an Ant property, and use the property in the taskdef tag -- like so:
+Specifying the classpath can be tedious, since Macker requires so many jars.  Fortunately, Ant provides a nice trick for this: you can use a pattern to grab all the macker jars at once, and then place a classpathref in the taskdef tag -- like so:
 <pre>&lt;path id="macker.classpath"&gt;
     &lt;fileset dir="<span class="comment">dir with macker.jar and Macker libs</span>" /&gt;
 &lt;/path&gt;
-&lt;property name="macker.classpath" refid="macker.classpath" /&gt;
 &lt;taskdef name="macker"
     classname="net.innig.macker.ant.MackerAntTask"
-    classpath="${macker.classpath}"/&gt;</pre>
+    classpathref="${macker.classpath}"/&gt;</pre>
 <p>
 Once you've declared the macker task, you can use it in your Ant file with the options below.
 
 <h3>Parameters</h3>
+<p>
+These options appear on the &lt;macker&gt; tag itself.  They are all optional.
 <table class="example-table" cellspacing=0>
-<tr><th>Attribute</th><th>Description</th><th>Default</th></tr>
-<tr valign="top">
-<td class="example">fork</td>
-<td>Should Macker run in its own JVM? As of version 0.3, the answer is probably "no", unless you encounter problems.</td>
-<td>no</td>
-</tr>
-<tr valign="top">
-<td class="example">failonerror</td>
-<td>Should a Macker error cause the Ant build to fail?</td>
-<td>yes</td>
-</tr>
-<tr valign="top">
-<td class="example">verbose</td>
-<td>Instructs Macker to dump some information useful for debugging a rules file, including the complete set of references and classes matched by each pattern.</td>
-<td>no</td>
-</tr>
+    <tr><th>Attribute</th><th>Description</th><th>Default</th></tr>
+    <tr valign="top">
+        <td class="example">printThreshold</td>
+        <td>Severity of errors / messages Macker will print to the console (one of: debug, info, warning, error)</td>
+        <td>info</td>
+    </tr>
+    <tr valign="top">
+        <td class="example">angerThreshold</td>
+        <td>Severity of error / message which will cause Macker to get mad, and consider rule checking to have failed</td>
+        <td>error</td>
+    </tr>
+    <tr valign="top">
+        <td class="example">failOnError</td>
+        <td>Should Macker getting mad cause the Ant build to fail? (An internal error, such as a malformed rules file, will <i>always</i> cause the build to fail; this setting applies only to rule violations.)</td>
+        <td>yes</td>
+    </tr>
+    <tr valign="top">
+        <td class="example">xmlReportFile</td>
+        <td>Output location of an XML report</td>
+        <td><i>none</i></td>
+    </tr>
+    <tr valign="top">
+        <td class="example">fork</td>
+        <td>Should Macker run in its own JVM? (The answer is almost always "no")</td>
+        <td>no</td>
+    </tr>
+    <tr valign="top">
+        <td class="example">verbose</td>
+        <td>Instructs Macker to dump information useful for debugging a rules file, including the complete set of references and classes matched by each pattern</td>
+        <td>no</td>
+    </tr>
 </table>
 
 <h3><a name="nested">Nested Elements</a></h3>
@@ -97,14 +113,20 @@ Like <code>&lt;rules&gt;</code>, this tag is a fileset.  It typically won't look
 
 <h4><a name="var">&lt;var&gt;</a></h4>
 <p>
-You can define variables for your rules files to use.  This tag has exactly the <a href="var-foreach.html#var">same syntax</a> in your Ant file as it does in a rules file -- you specify a name and a value attribute.
+You can optionally define variables for your rules files to use.  This tag has exactly the <a href="var-foreach.html#var">same syntax</a> in your Ant file as it does in a rules file -- you specify a name and a value attribute.
 <p>
 The Macker task does not automatically pass Ant properties through as Macker variables; you need to do this manually:
 <pre>&lt;var name="base.package" value="${base.package}" /&gt;</pre>
 
 <h4><a name="classpath">&lt;classpath&gt;</a></h4>
 <p>
-If you'd like Macker to be able to load information about classes other than the primary classes -- stuff from your libraries -- you can specify a custom classpath for Macker to look for classes used by the primary classes.
+Macker will look here for information about other classes referenced by the primary classes (typically third party libraries).
+<p>
+If fork is false, this tag is optional.   However, if you provide no classpath, Macker can infer only the names of external classes, and that's it -- many kinds of rule checking will fail.  In a typical build file, you'll simply pass your build classpath here.  
+<p>
+If fork is true, this tag is required, and must contain (at the very least) macker.jar and all the third party jars Macker depends on.  In a typical build file, you'd pass in both your build classpath and the same Macker classpath you used in the taskdef.
+<p>
+Including the primary classes in this classpath has no effect.
 
 <h3><a name="example">An Example</a></h3>
 <p>
@@ -119,12 +141,11 @@ Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starti
     &lt;fileset dir="${lib.dir}" /&gt;
     &lt;fileset dir="${macker.lib.dir}" /&gt;
 &lt;/path&gt;
-&lt;property name="macker.classpath" refid="macker.classpath" /&gt;
 
 <span class="comment">&lt;!-- Declare the Macker task --&gt;</span>
 &lt;taskdef name="macker"
     classname="net.innig.macker.ant.MackerAntTask"
-    classpath="${macker.classpath}" /&gt;
+    classpathref="${macker.classpath}" /&gt;
 
 <span class="comment">&lt;!-- Run the darn thing! --&gt;</span>
 &lt;macker&gt;
@@ -136,7 +157,7 @@ Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starti
     &lt;classpath refid="build.classpath" /&gt;
 &lt;/macker&gt;</pre>
 <p>
-Congratulations!  You have now completed the Macker Online Training Course.  If you wish, you may print this page as evidence of your certification and post it on your wall.  Feel free to <a href="../contact.html">contact me</a> with questions -- I'd love to know that people are interested in the project!
+Congratulations!  You have now completed the Macker Online Training Course.  If you wish, you may print this page as evidence of your accomplishment and post it on your wall.  Feel free to <a href="../contact.html">contact me</a> with questions -- I'd love to know that people are interested in the project!  There are even some open tasks....
 
 <div class="next">
 Next: <a href="../example/index.html">Examples</a>

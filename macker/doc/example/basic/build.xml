@@ -19,6 +19,8 @@ With all of these examples, you can:
   * Type "ant" to see macker apply the rules
   * Type "ant -Dmacker.verbose=true" to see some details of what's going on
   * Edit "src/macker.xml" to fool with different rules
+  * View an XML report in:
+    ${build.dir}/macker-report.xml
   
 Enjoy!
 ________________________________________________________________________________

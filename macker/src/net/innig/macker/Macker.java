@@ -70,10 +70,10 @@ public class Macker
                     }
                 else if(args[arg].equals("-v") || args[arg].equals("--verbose"))
                     macker.setVerbose(true);
-                else if(args[arg].startsWith("-D"))
+                else if(args[arg].startsWith("-D") || args[arg].equals("--define"))
                     {
                     int initialPos = 0, equalPos;
-                    if(args[arg].length() == 2)
+                    if(args[arg].length() == 2 || args[arg].equals("--define"))
                         arg++;
                     else
                         initialPos = 2;
@@ -90,11 +90,12 @@ public class Macker
                     macker.setVariable(varName, value);
                     }
                 else if(args[arg].equals("-o") || args[arg].equals("--output")) 
-                    {
-                    arg++;
-                    macker.setXmlReportFile(new File(args[arg]));
-                    }
-                else if(args[arg].equals("-r"))
+                    macker.setXmlReportFile(new File(args[++arg]));
+                else if(args[arg].equals("--print"))
+                    macker.setPrintThreshold(RuleSeverity.fromName(args[++arg]));
+                else if(args[arg].equals("--anger"))
+                    macker.setAngerThreshold(RuleSeverity.fromName(args[++arg]));
+                else if(args[arg].equals("-r") || args[arg].equals("--rulesfile"))
                     nextIsRule = true;
                 else if(args[arg].endsWith(".xml") || nextIsRule)
                     {
@@ -123,6 +124,11 @@ public class Macker
             System.out.println(mime.getMessage());
             System.exit(2);
             }
+        catch(IncompleteClassInfoException icie)
+            {
+            System.out.println(icie.getMessage());
+            throw icie;
+            }
         catch(Exception e)
             {
             e.printStackTrace(System.out);
@@ -133,9 +139,14 @@ public class Macker
     
     public static void commandLineUsage()
         {
-        System.out.println("arguments:");
-        System.out.println("    macker [-V|--version] [-v|--verbose] [-o|--output file.xml] [-D var=value]* [-r rulesfile]* classes");
-//      System.out.println("    macker [javalib.jar]+");
+        System.out.println("usage: macker [opts]* <rules files> <classes>");
+        System.out.println("          -r, --rulesfile <rules.xml>");
+        System.out.println("          -o, --output <report.xml>");
+        System.out.println("          -D, --define <var>=<value>");
+        System.out.println("              --print <threshold>");
+        System.out.println("              --anger <threshold>");
+        System.out.println("          -v, --verbose");
+        System.out.println("          -V, --version");
         }
     
     //------------------------------------------------------------------------

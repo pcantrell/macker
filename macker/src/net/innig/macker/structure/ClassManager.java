@@ -128,6 +128,7 @@ public class ClassManager
         ClassInfo classInfo = findClassInfo(className);
         if(classInfo == null || classInfo instanceof HollowClassInfo)
             {
+            classInfo = null; // don't use hollow!
             String resourceName = ClassNameTranslator.classToResourceName(className);
             InputStream classStream = classLoader.getResourceAsStream(resourceName);
             
@@ -152,7 +153,7 @@ public class ClassManager
                     try { classStream.close(); }
                     catch(IOException ioe) { } // nothing we can do
                     }
-                
+
             if(classInfo == null)
                 classInfo = new IncompleteClassInfo(this, className);
             

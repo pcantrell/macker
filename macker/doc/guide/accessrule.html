@@ -112,6 +112,8 @@ Ideally, Macker's notion of "access" would cover all the kinds of relationships 
 <li> <i>A</i> contains code that would cause the JVM to load class <i>B</i> (which covers any attempt to instantiate, invoke methods on, or typecast to or from <i>B</i>).
 </ul>
 <p>
+(A future release of Macker will allow access rules to distinguish these different types of references.)
+<p>
 There are, however, also some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.  Unfortunately, as long as Macker operates on compiled classes, there's nothing we can do about any of this.
 
 

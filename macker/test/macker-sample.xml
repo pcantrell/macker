@@ -14,7 +14,16 @@
         <access-rule>
             <deny>
 <!--
-                <from filter="extends" class="........">
+                <from filter="has-method" signature="@{thinger} get*(**)">
+                </from>
+
+
+                <from filter="has-method" return="@{thinger}" name="get*">
+                </from>
+
+
+                <from filter="has-method">
+                    <filter-param name="signature" value="@{thinger} get*(**)" />
                 </from>
 -->
                 <from filter="abstract-class">

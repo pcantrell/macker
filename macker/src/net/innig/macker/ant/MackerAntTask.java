@@ -28,6 +28,7 @@ import net.innig.macker.Macker;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.ListenerException;
 import net.innig.macker.structure.ClassParseException;
+import net.innig.macker.structure.IncompleteClassInfoException;
 import net.innig.macker.rule.RulesException;
 import net.innig.macker.rule.RuleSeverity;
 
@@ -67,33 +68,45 @@ public class MackerAntTask extends Task
                 { macker.check(); }
             catch(MackerIsMadException mime)
                 {
+                System.out.println();
                 System.out.println(mime.getMessage());
                 if(failOnError)
                     throw new BuildException(MACKER_IS_MAD_MESSAGE);
                 }
             catch(ListenerException lie)
                 {
+                System.out.println();
                 System.out.println(lie.getMessage());
                 throw new BuildException(MACKER_CHOKED_MESSAGE);
                 }
             catch(RulesException rue)
                 {
+                System.out.println();
                 System.out.println(rue.getMessage());
+                throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
+            catch(IncompleteClassInfoException icie)
+                {
+                System.out.println();
+                System.out.println(icie.getMessage());
                 throw new BuildException(MACKER_CHOKED_MESSAGE);
                 }
             }
         else
             {
-            jvm.setTaskName("macker");
-            jvm.setClassname("net.innig.macker.Macker");
-            jvm.setFork(fork);
-            jvm.setFailonerror(failOnError);
-            jvm.clearArgs();
+            if(classPath == null)
+                throw new BuildException("nested <classpath> element is required when fork=true");
+            
+            getJvm().setTaskName("macker");
+            getJvm().setClassname("net.innig.macker.Macker");
+            getJvm().setFork(fork);
+            getJvm().setFailonerror(failOnError);
+            getJvm().clearArgs();
             
             for(Iterator i = jvmArgs.iterator(); i.hasNext(); )
-                jvm.createArg().setValue((String) i.next());
+                getJvm().createArg().setValue((String) i.next());
             try
-                { jvm.execute(); }
+                { getJvm().execute(); }
             catch(BuildException be)
                 {
                 // Any necessary stack trace was already reported to stderr by CLI
@@ -111,13 +124,15 @@ public class MackerAntTask extends Task
     public void setPrintThreshold(String threshold)
         {
         macker.setPrintThreshold(RuleSeverity.fromName(threshold));
-        // no forked equiv!
+        jvmArgs.add("--print");
+        jvmArgs.add(threshold);
         }
 
     public void setAngerThreshold(String threshold)
         {
         macker.setAngerThreshold(RuleSeverity.fromName(threshold));
-        // no forked equiv!
+        jvmArgs.add("--anger");
+        jvmArgs.add(threshold);
         }
 
     public void setVerbose(boolean verbose)

@@ -4,8 +4,8 @@
     <ruleset name="Simple example">
         <access-rule>
             <deny>
-                <from regex="**Print*" />
-                <to regex="java.**" />
+                <from class="**Print*" />
+                <to class="java.**" />
             </deny>
         </access-rule>
     </ruleset>

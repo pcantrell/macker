@@ -13,7 +13,6 @@
             <fileset dir="${lib.dir}" />
             <pathelement location="${macker.jar.file}" />
         </path>
-        <property name="build.classpath" refid="build.classpath" />
         
         <available property="macker.jar.file.exists" file="${macker.jar.file}" />
     </target>
@@ -41,12 +40,9 @@
         <!-- The classpath here tells Ant where to look for Macker classes. -->
         <taskdef name="macker"
             classname="net.innig.macker.ant.MackerAntTask"
-            classpath="${build.classpath}"/>  
+            classpathref="build.classpath"/>  
         
-        <macker verbose="${macker.verbose}">
-            <!-- This classpath tells Macker where to look for classes. -->
-            <classpath refid="build.classpath" />
-
+        <macker verbose="${macker.verbose}" xmlReportFile="${build.dir}/macker-report.xml">
             <!-- Rules come from this file: -->
             <rules dir="${src.dir}" includes="macker.xml" />
 
@@ -54,6 +50,9 @@
             <classes dir="${build.classes.dir}">
                 <include name="**/*.class" />
             </classes>
+
+            <!-- The primary classes depend on classes in this classpath: -->
+            <classpath refid="build.classpath" />
         </macker>
         
     </target>
