@@ -3,7 +3,7 @@
 
 <macker>
 
-    <ruleset name="Macker internal rules">
+    <ruleset name="Macker internal rules" severity="info">
     
 <!--        <var name="basepkg" value="net.innig.macker" /> -->
         

@@ -107,9 +107,9 @@ public class MackerAntTask extends Task
         // no forked equiv!
         }
 
-    public void setFailThreshold(String threshold)
+    public void setAngerThreshold(String threshold)
         {
-        macker.setFailThreshold(RuleSeverity.fromName(threshold));
+        macker.setAngerThreshold(RuleSeverity.fromName(threshold));
         // no forked equiv!
         }
 

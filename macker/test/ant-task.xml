@@ -14,7 +14,7 @@
             classname="net.innig.macker.ant.MackerAntTask"
             classpath="${run.classpath}"/>
         
-        <macker>
+        <macker printthreshold="warning" angerthreshold="error">
             <rules dir="." includes="test/macker-sample.xml" />
             <classes dir=".">
                 <include name="build/classes/**/*.class" />

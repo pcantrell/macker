@@ -234,8 +234,8 @@ public class Macker
     public void setPrintThreshold(RuleSeverity printThreshold)
         { this.printThreshold = printThreshold; }
     
-    public void setFailThreshold(RuleSeverity failThreshold)
-        { this.failThreshold = failThreshold; }
+    public void setAngerThreshold(RuleSeverity angerThreshold)
+        { this.angerThreshold = angerThreshold; }
     
     public void check()
         throws MackerIsMadException, RulesException
@@ -289,12 +289,12 @@ public class Macker
             rs.check(context, cm);
             }
         printing.printSummary();
-        throwing.timeToGetMad(failThreshold);
+        throwing.timeToGetMad(angerThreshold);
         }
 
     private ClassManager cm;
     private Collection/*<RuleSet>*/ ruleSets;
     private Map/*<String,String>*/ vars;
     private boolean verbose;
-    private RuleSeverity printThreshold = RuleSeverity.INFO, failThreshold = RuleSeverity.ERROR;
+    private RuleSeverity printThreshold = RuleSeverity.INFO, angerThreshold = RuleSeverity.ERROR;
     }
