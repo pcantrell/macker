@@ -192,19 +192,6 @@ public class RuleSetBuilder
             prevChildPat = pat;
             }
         
-        // pull together composite
-        
-        Pattern result = null;
-        if(head != null || firstChildPat != null)
-            {
-            if(head == null)
-                result = firstChildPat;
-            else if(firstChildPat == null && patType == CompositePatternType.INCLUDE)
-                result = head;
-            else
-                result = new CompositePattern(patType, head, firstChildPat);
-            }
-        
         // wrap it in a filter if necessary
         
         if(filterName != null)
@@ -220,15 +207,28 @@ public class RuleSetBuilder
             options.remove("regex");
             
             Filter filter = FilterFinder.findFilter(filterName);
-            result = filter.createPattern(
+            head = filter.createPattern(
                 ruleSet,
-                (result == null) // this is screwy -- should really be a <filter-param> tag or somesuch
+                (head == null)
                     ? Collections.EMPTY_LIST
-                    : Collections.singletonList(result),
+                    : Collections.singletonList(head),
                 options);
                 
             if(patternElem.getName().equals("exclude"))
-                result = new CompositePattern(CompositePatternType.EXCLUDE, result, null);
+                head = new CompositePattern(CompositePatternType.EXCLUDE, head, null);
+            }
+        
+        // pull together composite
+        
+        Pattern result = null;
+        if(head != null || firstChildPat != null)
+            {
+            if(head == null)
+                result = firstChildPat;
+            else if(firstChildPat == null && patType == CompositePatternType.INCLUDE)
+                result = head;
+            else
+                result = new CompositePattern(patType, head, firstChildPat);
             }
         
         // did we get something out of all that nonsense?

@@ -92,7 +92,7 @@ public class ClassManager
                     }
                 else
                     try {
-                        classInfo = new ParsedClassInfo(classStream);
+                        classInfo = new ParsedClassInfo(this, classStream);
                         }
                     catch(Exception e)
                         {
@@ -108,7 +108,7 @@ public class ClassManager
                         }
                     
                 if(classInfo == null)
-                    classInfo = new IncompleteClassInfo(className);
+                    classInfo = new IncompleteClassInfo(this, className);
                 }
             
             addClass(classInfo, false);

@@ -25,7 +25,7 @@ import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
 
 public class CompositePattern
-    extends Pattern
+    implements Pattern
     {
     //--------------------------------------------------------------------------
     // Constructors

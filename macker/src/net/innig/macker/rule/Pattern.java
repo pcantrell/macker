@@ -22,7 +22,7 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
 
-public abstract class Pattern
+public interface Pattern
     {
     public static final Pattern ALL =
         new Pattern()
@@ -32,6 +32,6 @@ public abstract class Pattern
             public String toString() { return "Pattern.ALL"; }
             };
     
-    public abstract boolean matches(EvaluationContext context, ClassInfo classInfo)
+    public boolean matches(EvaluationContext context, ClassInfo classInfo)
         throws RulesException;
     }

@@ -33,17 +33,19 @@ import org.apache.bcel.classfile.*;
 public class ParsedClassInfo
     extends ClassInfo
     {
-    public ParsedClassInfo(File classFile)
+    public ParsedClassInfo(ClassManager classManager, File classFile)
         throws IOException, ClassParseException
         {
+        super(classManager);
         try { parse(new ClassParser(classFile.getPath()).parse()); }
         catch(ClassFormatError cfe)
             { throw new ClassParseException(cfe); }
         }
     
-    public ParsedClassInfo(InputStream classFileStream)
+    public ParsedClassInfo(ClassManager classManager, InputStream classFileStream)
         throws IOException, ClassParseException
         {
+        super(classManager);
         try { parse(new ClassParser(classFileStream, null).parse()); }
         catch(ClassFormatError cfe)
             { throw new ClassParseException(cfe); }

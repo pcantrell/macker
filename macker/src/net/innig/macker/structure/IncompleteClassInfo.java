@@ -26,8 +26,11 @@ import net.innig.collect.MultiMap;
 public class IncompleteClassInfo
     extends ClassInfo
     {
-    public IncompleteClassInfo(String className)
-        { this.className = className; }
+    public IncompleteClassInfo(ClassManager classManager, String className)
+        {
+        super(classManager);
+        this.className = className;
+        }
     
     public String getClassName()
         { return className; }

@@ -9,7 +9,20 @@
         
         <access-rule>
             <deny>
-                <from filter="class-access" min="protected" max="protected" />
+<!--                <from filter="extends" regex="net.innig.macker.rule.Rule">-->
+                <from filter="abstract-class">
+                    <include regex="**Filter*" />
+                </from>
+                <to regex="java.lang.xObject" />
+            </deny>
+        </access-rule>
+        
+        <access-rule>
+            <deny>
+                <from filter="subtype-of" regex="net.innig.macker.rule.Rule">
+                    <include regex="**Rule*" />
+                </from>
+                <to regex="void" />
             </deny>
         </access-rule>
         

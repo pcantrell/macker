@@ -148,11 +148,11 @@ public class Macker
     
     public void addClass(File classFile)
         throws IOException, ClassParseException
-        { cm.addClass(new ParsedClassInfo(classFile), true); }
+        { cm.addClass(new ParsedClassInfo(cm, classFile), true); }
     
     public void addClass(InputStream classFile)
         throws IOException, ClassParseException
-        { cm.addClass(new ParsedClassInfo(classFile), true); }
+        { cm.addClass(new ParsedClassInfo(cm, classFile), true); }
     
     public void addClass(String className)
         throws ClassNotFoundException

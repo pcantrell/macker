@@ -26,6 +26,9 @@ import net.innig.collect.*;
 public abstract class ClassInfo
     implements Comparable
     {
+    public ClassInfo(ClassManager classManager)
+        { this.classManager = classManager; }
+    
     public String getClassNameShort()
         {
         String className = getClassName();
@@ -34,29 +37,33 @@ public abstract class ClassInfo
     
     public Set/*<String>*/ getDirectSupertypes()
         {
-        if(allDirectSuper == null)
+        if(cachedAllDirectSuper == null)
             {
             Set newAllDirectSuper = new HashSet(getImplements());
             newAllDirectSuper.add(getExtends());
-            allDirectSuper = newAllDirectSuper; // failure atomicity
+            cachedAllDirectSuper = newAllDirectSuper; // failure atomicity
             }
-        return allDirectSuper;
+        return cachedAllDirectSuper;
         }
     
     public Set/*<String>*/ getSupertypes()
         {
-        if(allSuper == null)
-            allSuper = Graphs.reachableNodes(
-                this,
+        if(cachedAllSuper == null)
+            cachedAllSuper = Graphs.reachableNodes(
+                this.getClassName(),
                 new GraphWalker()
                     {
                     public Collection getEdgesFrom(Object node)
-                        { return ((ClassInfo) node).getDirectSupertypes(); }
+                        {
+                        return getClassManager()
+                              .getClassInfo((String) node)
+                              .getDirectSupertypes();
+                        }
                     } );
-        return allSuper;
+        return cachedAllSuper;
         }
     
-    /** Compares fully qualified class names;
+    /** Compares fully qualified class names
      */
     public int compareTo(Object that)
         { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
@@ -75,6 +82,9 @@ public abstract class ClassInfo
     public int hashCode()
         { return getClassName().hashCode(); }
     
+    public final ClassManager getClassManager()
+        { return classManager; }
+    
     public abstract String getClassName();
     public abstract boolean isInterface();
     public abstract boolean isAbstract();
@@ -84,6 +94,7 @@ public abstract class ClassInfo
     public abstract Set/*<String>*/ getImplements();
     public abstract MultiMap/*<String,Reference>*/ getReferences();
     
-    private Set allSuper, allDirectSuper;
+    private ClassManager classManager;
+    private Set cachedAllSuper, cachedAllDirectSuper;
     }
 

@@ -46,7 +46,10 @@ public class PrimitiveTypeInfo
         }
     
     private PrimitiveTypeInfo(String className)
-        { this.className = className; }
+        {
+        super(null);
+        this.className = className;
+        }
     
     public String getClassName() { return className; }
     public boolean isInterface() { return false; }

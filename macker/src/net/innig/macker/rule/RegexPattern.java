@@ -28,7 +28,7 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
 public class RegexPattern
-    extends Pattern
+    implements Pattern
     {
     //--------------------------------------------------------------------------
     // Constructors
