@@ -31,10 +31,18 @@ public class IncompleteClassInfo
     public String getClassName()
         { return className; }
 
-    public Set/*<String>*/ getReferences()
+    public boolean isInterface()               { throw newIncompleteException("get access flags"); }
+    public boolean isAbstract()                { throw newIncompleteException("get access flags"); }
+    public boolean isFinal()                   { throw newIncompleteException("get access flags"); }
+    public AccessModifier getAccessModifier()  { throw newIncompleteException("determine accessibility"); }
+    public String getExtends()                 { throw newIncompleteException("determine superclass"); }
+    public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces"); }
+    public Set/*<String>*/ getReferences()     { throw newIncompleteException("check refereces"); }
+    
+    private IncompleteClassInfoException newIncompleteException(String action)
         {
-        throw new IncompleteClassInfoException(
-            "Unable to check references for class " + className
+        return new IncompleteClassInfoException(
+            "Unable to " + action + " for class " + className
             + ", because the class file could not be loaded."
             + " Make sure it is in Macker's classpath.");
         }
@@ -44,6 +52,5 @@ public class IncompleteClassInfo
     
     private String className, classNameUq;
     }
-
 
 

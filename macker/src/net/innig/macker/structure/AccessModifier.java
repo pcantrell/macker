@@ -20,29 +20,16 @@
  
 package net.innig.macker.structure;
 
-import java.util.Set;
+import net.innig.util.EnumeratedType;
 
-public abstract class ClassInfo
-    implements Comparable
+public class AccessModifier
+    extends EnumeratedType
     {
-    public String getClassNameShort()
-        {
-        String className = getClassName();
-        return className.substring(className.lastIndexOf('.') + 1);
-        }
+    public static final AccessModifier
+        PUBLIC    = new AccessModifier("public"),
+        PROTECTED = new AccessModifier("protected"),
+        PACKAGE   = new AccessModifier("package"),
+        PRIVATE   = new AccessModifier("private");
     
-    /** Compares fully qualified class names;
-     */
-    public int compareTo(Object that)
-        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
-    
-    public abstract String getClassName();
-    public abstract boolean isInterface();
-    public abstract boolean isAbstract();
-    public abstract boolean isFinal();
-    public abstract AccessModifier getAccessModifier();
-    public abstract String getExtends();
-    public abstract Set/*<String>*/ getImplements();
-    public abstract Set/*<String>*/ getReferences();
+    private AccessModifier(String name) { super(name); }
     }
-

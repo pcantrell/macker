@@ -46,17 +46,17 @@ public class PrimitiveTypeInfo
     private PrimitiveTypeInfo(String className)
         { this.className = className; }
     
-    public String getClassName()
-        { return className; }
-    
-    public Set/*<String>*/ getReferences()
-        { return Collections.EMPTY_SET; }
-    
-    public String toString()
-        { return getClassName(); }
+    public String getClassName() { return className; }
+    public boolean isInterface() { return false; }
+    public boolean isAbstract()  { return false; }
+    public boolean isFinal()     { return true; }
+    public AccessModifier getAccessModifier() { return AccessModifier.PUBLIC; }
+    public String getExtends() { return null; }
+    public Set/*<String>*/ getImplements() { return Collections.EMPTY_SET; }
+    public Set/*<String>*/ getReferences() { return Collections.EMPTY_SET; }
+    public String toString() { return getClassName(); }
     
     public String className;
     }
-
 
 

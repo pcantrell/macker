@@ -37,7 +37,7 @@ public class ParsedClassInfo
     public ParsedClassInfo(File classFile)
         throws IOException, ClassParseException
         {
-        try { init(ClassFileReader.readFromFile(classFile)); }
+        try { parse(ClassFileReader.readFromFile(classFile)); }
         catch(InvalidByteCodeException ibce)
             { throw new ClassParseException (ibce); }
         }
@@ -45,57 +45,129 @@ public class ParsedClassInfo
     public ParsedClassInfo(InputStream classFileStream)
         throws IOException, ClassParseException
         {
-        try { init(ClassFileReader.readFromInputStream(classFileStream)); }
+        try { parse(ClassFileReader.readFromInputStream(classFileStream)); }
         catch(InvalidByteCodeException ibce)
             { throw new ClassParseException (ibce); }
         }
     
-    private void init(ClassFile classFile)
+    private void parse(ClassFile classFile)
         throws ClassParseException
         {
         try {
-            CPInfo[] constantPool = classFile.getConstantPool();
-            className =
-                ClassNameTranslator.typeConstantToClassName(
-                    ((ConstantClassInfo) constantPool[classFile.getThisClass()]).getName());
-            references = new TreeSet();
-            
-            // Add accessed classes from constant pool entries
-            for(int n = 1; n < constantPool.length; n++)
-                if(constantPool[n] instanceof ConstantClassInfo)
-                    references.add(
-                        ClassNameTranslator.typeConstantToClassName(
-                            ((ConstantClassInfo) constantPool[n]).getName()));
-            
-            // Add yet more accessed classes from method & field signatures
-            Collection members = new ArrayList(50);
-            members.addAll(Arrays.asList(classFile.getMethods()));
-            members.addAll(Arrays.asList(classFile.getFields()));
-            for(Iterator i = members.iterator(); i.hasNext(); )
-                {
-                ClassMember member = (ClassMember) i.next();
-                references.addAll(
-                    ClassNameTranslator.signatureToClassNames(
-                        classFile.getConstantPoolUtf8Entry(member.getDescriptorIndex())
-                                 .getString()));
-                }
-            
-            references = Collections.unmodifiableSet(references);
+            parseClassName(classFile);
+            parseFlags(classFile);
+            parseExtends(classFile);
+            parseImplements(classFile);
+            parseReferences(classFile);
             }
         catch(InvalidByteCodeException ibce)
             { throw new ClassParseException(ibce); }
         }
     
+    private String decodeClassName(ClassFile classFile, int index)
+        throws InvalidByteCodeException
+        {
+        if(index == 0)
+            return null;
+        return ClassNameTranslator.typeConstantToClassName(
+            ((ConstantClassInfo) classFile.getConstantPool()[index]).getName());
+        }
+    
+    private void parseClassName(ClassFile classFile)
+        throws InvalidByteCodeException
+        { className = decodeClassName(classFile, classFile.getThisClass()); }
+    
     public String getClassName()
         { return className; }
     
+    private void parseFlags(ClassFile classFile)
+        throws InvalidByteCodeException
+        {
+        int flags = classFile.getAccessFlags();
+        isInterface = 0 != (flags & AccessFlags.ACC_INTERFACE);
+        isAbstract  = 0 != (flags & AccessFlags.ACC_ABSTRACT);
+        isFinal     = 0 != (flags & AccessFlags.ACC_FINAL);
+        
+        int accessFlags = flags & ( AccessFlags.ACC_PUBLIC
+                                  | AccessFlags.ACC_PRIVATE
+                                  | AccessFlags.ACC_PROTECTED);
+        if(accessFlags == AccessFlags.ACC_PUBLIC)
+            accessModifier = AccessModifier.PUBLIC;
+        else if(accessFlags == AccessFlags.ACC_PROTECTED)
+            accessModifier = AccessModifier.PROTECTED;
+        else if(accessFlags == AccessFlags.ACC_PRIVATE)
+            accessModifier = AccessModifier.PRIVATE;
+        else if(accessFlags == 0)
+            accessModifier = AccessModifier.PACKAGE;
+        else
+            throw new IllegalStateException("Unknown access flags: " + accessFlags);
+        }
+        
+    public boolean isInterface() { return isInterface; }
+    public boolean isAbstract()  { return isAbstract; }
+    public boolean isFinal()     { return isFinal; }
+
+    public AccessModifier getAccessModifier()
+        { return accessModifier; }
+
+    private void parseExtends(ClassFile classFile)
+        throws InvalidByteCodeException
+        { extendsName = decodeClassName(classFile, classFile.getSuperClass()); }
+    
+    public String getExtends()
+        { return extendsName; }
+    
+    private void parseImplements(ClassFile classFile)
+        throws InvalidByteCodeException
+        {
+        implementsNames = new TreeSet();
+        int[] interfaces = classFile.getInterfaces();
+        for(int n = 0; n < interfaces.length; n++)
+            implementsNames.add(decodeClassName(classFile, interfaces[n]));
+        implementsNames = Collections.unmodifiableSet(implementsNames);
+        }
+    
+    public Set/*<String>*/ getImplements()
+        { return implementsNames; }
+    
+    private void parseReferences(ClassFile classFile)
+        throws InvalidByteCodeException
+        {
+        CPInfo[] constantPool = classFile.getConstantPool();
+        referenceNames = new TreeSet();
+        
+        // Add accessed classes from constant pool entries
+        for(int n = 1; n < constantPool.length; n++)
+            if(constantPool[n] instanceof ConstantClassInfo)
+                referenceNames.add(
+                    ClassNameTranslator.typeConstantToClassName(
+                        ((ConstantClassInfo) constantPool[n]).getName()));
+        
+        // Add yet more accessed classes from method & field signatures
+        Collection members = new ArrayList(50);
+        members.addAll(Arrays.asList(classFile.getMethods()));
+        members.addAll(Arrays.asList(classFile.getFields()));
+        for(Iterator i = members.iterator(); i.hasNext(); )
+            {
+            ClassMember member = (ClassMember) i.next();
+            referenceNames.addAll(
+                ClassNameTranslator.signatureToClassNames(
+                    classFile.getConstantPoolUtf8Entry(member.getDescriptorIndex())
+                                .getString()));
+            }
+        
+        referenceNames = Collections.unmodifiableSet(referenceNames);
+        }
+    
     public Set/*<String>*/ getReferences()
-        { return references; }
+        { return referenceNames; }
     
     public String toString()
         { return getClassName(); }
     
-    public String className;
-    private Set/*<String>*/ references;
+    private String className, extendsName;
+    private boolean isInterface, isAbstract, isFinal;
+    private AccessModifier accessModifier;
+    private Set/*<String>*/ referenceNames, implementsNames;
     }
 

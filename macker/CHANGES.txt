@@ -1,3 +1,4 @@
+    - parsing support several new class attributes
     - verbose output shows classes in sorted order
 
 version 0.3.1:
