@@ -84,7 +84,7 @@
         </ruleset>
     </rules-file>
         
-    <expected-events>
+    <expected-events expectedAngerEvents="12">
         <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
         <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
         <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>

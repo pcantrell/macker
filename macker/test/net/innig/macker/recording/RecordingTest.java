@@ -134,7 +134,15 @@ public final class RecordingTest
         for(Iterator cfIter = classFiles.iterator(); cfIter.hasNext();)
             macker.addClass((File) cfIter.next());
         
-        macker.checkRaw();
+        macker.setPrintThreshold(null);
+        
+        Collection actualAngerEvents;
+        try {
+            macker.check();
+            actualAngerEvents = Collections.EMPTY_LIST;
+        } catch(MackerIsMadException mime) {
+            actualAngerEvents = mime.getEvents();
+        }
         
         EventRecording actual = recordingListener.getRecording();
         
@@ -151,6 +159,9 @@ public final class RecordingTest
             actual.dump(System.out, 4);
             throw new AssertionFailedError(mismatches.toString());
             }
+        if(expectedAngerEvents >= 0 && actualAngerEvents.size() != expectedAngerEvents)
+            throw new AssertionFailedError(
+                "Expected " + expectedAngerEvents + " anger events, but got " + actualAngerEvents.size() + ": " + actualAngerEvents);
         }
     
     private void dump(Collection c)
@@ -250,6 +261,7 @@ public final class RecordingTest
         {
         expected = new RuleSetRecording(null);
         expected.read(expectedEventsElem);
+        expectedAngerEvents = Integer.parseInt(expectedEventsElem.getAttributeValue("expectedAngerEvents", "-1"));
         }
     
     // -----------------------------------------------------------------
@@ -262,6 +274,7 @@ public final class RecordingTest
     private Collection/*<File>*/ classFiles;
 
     private EventRecording expected;
+    private int expectedAngerEvents;
     }
 
 

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <pattern name="e" class="thing**e*" />
+            
+            <access-rule>
+                <deny>
+                    <from pattern="e" />
+                    <to pattern="e" />
+                    <allow>
+                        <from class="thing.*" />
+                    </allow>
+                </deny>
+            </access-rule>
+    
+            <ruleset>
+                <foreach var="superlative" class="thing(*).*">
+                    <access-rule>
+                        <deny>
+                            <from class="**" />
+                            <to   class="${from}" />
+                        </deny>
+                    </access-rule>
+                </foreach>
+            </ruleset>
+
+            <foreach var="never" class="frazbot">
+                <message severity="error">Yipes!</message>
+                <deny/>
+            </foreach>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events expectedAngerEvents="0">
+        <foreach var="superlative">
+            <iteration value="" />
+            <iteration value="er" />
+            <iteration value="est" />
+        </foreach>
+        <foreach var="never" />
+    </expected-events>
+    
+    <test-classes>
+        <source package="thing" class="Zero">
+            package thing;
+            public class Zero { public thinger.One x; }
+        </source>
+        <source package="thinger" class="One">
+            package thinger;
+            public class One { public thingest.Two y; }
+        </source>
+        <source package="thingest" class="Two">
+            package thingest;
+            public class Two { public thing.Zero z; }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

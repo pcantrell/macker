@@ -28,9 +28,6 @@ import java.util.*;
 public class ThrowingListener
     implements MackerEventListener
     {
-    public ThrowingListener()
-        { this(null, null); }
-    
     public ThrowingListener(
             RuleSeverity throwOnFirstThreshold,
             RuleSeverity throwOnFinishThreshold)
@@ -54,10 +51,7 @@ public class ThrowingListener
         throws MackerIsMadException
         {
         if(ruleSet.getParent() == null)
-            {
             inUse = false;
-            timeToGetMad(throwOnFinishThreshold);
-            }
         }
 
     public void mackerAborted(RuleSet ruleSet)
@@ -69,11 +63,12 @@ public class ThrowingListener
         if(event instanceof ForEachEvent)
             return;
         
-        events.add(event);
-
         RuleSeverity severity = event.getRule().getSeverity();
         if(maxSeverity == null || severity.compareTo(maxSeverity) >= 0)
             maxSeverity = severity;
+
+        if(throwOnFinishThreshold != null && severity.compareTo(throwOnFinishThreshold) >= 0)
+            events.add(event);
 
         timeToGetMad(throwOnFirstThreshold);
         }

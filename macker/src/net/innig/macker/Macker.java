@@ -308,7 +308,7 @@ public class Macker
             throwing = null;
         else
             {
-            throwing = new ThrowingListener();
+            throwing = new ThrowingListener(null, angerThreshold);
             addListener(throwing);
             }
 
@@ -329,7 +329,7 @@ public class Macker
             xmlReporting.close();
             }
         if(throwing != null)
-            throwing.timeToGetMad(angerThreshold);
+            throwing.timeToGetMad();
         }
     
     /**
