@@ -31,7 +31,7 @@ public class MackerEvent
     public MackerEvent(
             Rule rule,
             String description,
-            List messages)
+            List/*<String>*/ messages)
         {
         super(rule);
         this.rule = rule;
@@ -73,6 +73,6 @@ public class MackerEvent
     
     private final Rule rule;
     private final String description;
-    private final List messages;
+    private final List/*<String>*/ messages;
     }
 

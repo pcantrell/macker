@@ -29,12 +29,13 @@ public interface MackerEventListener
     {
     /** Called before rule checking begins for the given ruleset.
      */
-    public void mackerStarted(RuleSet ruleSet);
+    public void mackerStarted(RuleSet ruleSet)
+        throws ListenerException;
     
     /** Called after rule checking has finished for the given ruleset.
      */
     public void mackerFinished(RuleSet ruleSet)
-        throws MackerIsMadException;
+        throws MackerIsMadException, ListenerException;
     
     /** Called after an exception has aborted rule checking for the given ruleset.
      *  <b>??</b>: Is mackerAborted called if mackerFinished() was already called, but
@@ -45,5 +46,5 @@ public interface MackerEventListener
     /** Handles Macker's irrational anger.
      */
     public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
-        throws MackerIsMadException;
+        throws MackerIsMadException, ListenerException;
     }

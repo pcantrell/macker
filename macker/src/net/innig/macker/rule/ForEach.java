@@ -23,6 +23,7 @@ package net.innig.macker.rule;
 import net.innig.macker.structure.ClassManager;
 import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.ListenerException;
 
 import java.util.*;
 
@@ -57,7 +58,7 @@ public class ForEach
     public void check(
             EvaluationContext parentContext,
             ClassManager classes)
-        throws RulesException, MackerIsMadException
+        throws RulesException, MackerIsMadException, ListenerException
         {
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
         

@@ -32,7 +32,7 @@ public class AccessRuleViolation
             AccessRule accessRule,
             ClassInfo from,
             ClassInfo to,
-            List messages)
+            List/*<String>*/ messages)
         {
         super(accessRule,
             "Illegal reference" + CR //! hokey, hokey, hokey!

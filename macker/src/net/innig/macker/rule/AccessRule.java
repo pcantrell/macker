@@ -26,6 +26,7 @@ import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
 import net.innig.macker.event.AccessRuleViolation;
 import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.ListenerException;
 
 import java.util.*;
 import net.innig.collect.MultiMap;
@@ -99,7 +100,7 @@ public class AccessRule
     //--------------------------------------------------------------------------
 
     public void check(EvaluationContext context, ClassManager classes)
-        throws RulesException, MackerIsMadException
+        throws RulesException, MackerIsMadException, ListenerException
         {
         for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
             {

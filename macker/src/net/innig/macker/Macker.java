@@ -26,9 +26,7 @@ import net.innig.macker.event.*;
 
 import net.innig.collect.*;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.jdom.input.SAXBuilder;
@@ -91,6 +89,11 @@ public class Macker
                     String value   = args[arg].substring(equalPos + 1);
                     macker.setVariable(varName, value);
                     }
+                else if(args[arg].equals("-o") || args[arg].equals("--output")) 
+                    {
+                    arg++;
+                    macker.setXmlReportFile(new File(args[arg]));
+                    }
                 else if(args[arg].equals("-r"))
                     nextIsRule = true;
                 else if(args[arg].endsWith(".xml") || nextIsRule)
@@ -123,6 +126,7 @@ public class Macker
         catch(Exception e)
             {
             e.printStackTrace(System.out);
+            commandLineUsage();
             throw e;
             }
         }
@@ -130,7 +134,7 @@ public class Macker
     public static void commandLineUsage()
         {
         System.out.println("arguments:");
-        System.out.println("    macker [-V|--version] [-v|--verbose] [-D var=value]* [-r rulesfile]* classes");
+        System.out.println("    macker [-V|--version] [-v|--verbose] [-o|--output file.xml] [-D var=value]* [-r rulesfile]* classes");
 //      System.out.println("    macker [javalib.jar]+");
         }
     
@@ -238,8 +242,11 @@ public class Macker
     public void setAngerThreshold(RuleSeverity angerThreshold)
         { this.angerThreshold = angerThreshold; }
     
+    public void setXmlReportFile(File xmlReportFile) 
+        { this.xmlReportFile = xmlReportFile; }
+
     public void check()
-        throws MackerIsMadException, RulesException
+        throws MackerIsMadException, RulesException, ListenerException
         {
         if(!hasRules())
             System.out.println("WARNING: No rules files specified");
@@ -265,6 +272,11 @@ public class Macker
         PrintingListener printing = new PrintingListener(System.out);
         ThrowingListener throwing = new ThrowingListener();
         printing.setThreshold(printThreshold);
+
+        XmlReportingListener xmlReporting = null;
+        if(xmlReportFile != null)
+            xmlReporting = new XmlReportingListener(xmlReportFile);
+
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
@@ -288,9 +300,17 @@ public class Macker
             context.setVariables(vars);
             context.addListener(throwing);
             context.addListener(printing);
+            if(xmlReporting != null)
+                context.addListener(xmlReporting);
+            
             rs.check(context, cm);
             }
         printing.printSummary();
+        if(xmlReporting != null)
+            {
+            xmlReporting.flush();
+            xmlReporting.close();
+            }
         throwing.timeToGetMad(angerThreshold);
         }
 
@@ -298,5 +318,6 @@ public class Macker
     private Collection/*<RuleSet>*/ ruleSets;
     private Map/*<String,String>*/ vars;
     private boolean verbose;
+    private File xmlReportFile;
     private RuleSeverity printThreshold = RuleSeverity.INFO, angerThreshold = RuleSeverity.ERROR;
     }

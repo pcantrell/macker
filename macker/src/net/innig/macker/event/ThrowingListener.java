@@ -92,6 +92,9 @@ public class ThrowingListener
     public void clear()
         { events = new LinkedList(); }
     
+    public String toString()
+        { return "ThrowingListener"; }
+    
     private final RuleSeverity throwOnFirstThreshold, throwOnFinishThreshold;
     private RuleSeverity maxSeverity;
     private List events;

@@ -33,6 +33,10 @@
             </deny>
         </access-rule>
         
+        <foreach var="grug" class="(**).*Rule*">
+            <message>Rule package: ${grug}</message>
+        </foreach>
+        
     </ruleset>
 
 <!--

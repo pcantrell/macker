@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import net.innig.macker.Macker;
 import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.ListenerException;
 import net.innig.macker.structure.ClassParseException;
 import net.innig.macker.rule.RulesException;
 import net.innig.macker.rule.RuleSeverity;
@@ -70,9 +71,14 @@ public class MackerAntTask extends Task
                 if(failOnError)
                     throw new BuildException(MACKER_IS_MAD_MESSAGE);
                 }
-            catch(RulesException re)
+            catch(ListenerException lie)
                 {
-                System.out.println(re.getMessage());
+                System.out.println(lie.getMessage());
+                throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
+            catch(RulesException rue)
+                {
+                System.out.println(rue.getMessage());
                 throw new BuildException(MACKER_CHOKED_MESSAGE);
                 }
             }
@@ -130,6 +136,13 @@ public class MackerAntTask extends Task
         macker.setVariable(var.getName(), var.getValue());
         jvmArgs.add("-D");
         jvmArgs.add(var.getName() + "=" + var.getValue());
+        }
+
+    public void setXmlReportFile(File xmlReportFile)
+        {
+        macker.setXmlReportFile(xmlReportFile);
+        jvmArgs.add("-o");
+        jvmArgs.add(xmlReportFile.getPath());
         }
     
     static public class Var

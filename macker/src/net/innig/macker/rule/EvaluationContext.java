@@ -21,8 +21,9 @@
 package net.innig.macker.rule;
 
 import net.innig.macker.event.MackerEvent;
-import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.MackerEventListener;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.ListenerException;
 import net.innig.macker.structure.ClassManager;
 
 import java.util.*;
@@ -81,9 +82,11 @@ public class EvaluationContext
         { listeners.remove(listener); }
     
     public void broadcastStarted()
+        throws ListenerException
         { broadcastStarted(getRuleSet()); }
         
     protected void broadcastStarted(RuleSet targetRuleSet)
+        throws ListenerException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
             ((MackerEventListener) i.next()).mackerStarted(targetRuleSet);
@@ -92,11 +95,11 @@ public class EvaluationContext
         }
     
     public void broadcastFinished()
-        throws MackerIsMadException
+        throws MackerIsMadException, ListenerException
         { broadcastFinished(getRuleSet()); }
         
     protected void broadcastFinished(RuleSet targetRuleSet)
-        throws MackerIsMadException
+        throws MackerIsMadException, ListenerException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
             ((MackerEventListener) i.next()).mackerFinished(targetRuleSet);
@@ -116,11 +119,11 @@ public class EvaluationContext
         }
     
     public void broadcastEvent(MackerEvent event)
-        throws MackerIsMadException
+        throws MackerIsMadException, ListenerException
         { broadcastEvent(event, getRuleSet()); }
         
     protected void broadcastEvent(MackerEvent event, RuleSet targetRuleSet)
-        throws MackerIsMadException
+        throws MackerIsMadException, ListenerException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
             ((MackerEventListener) i.next()).handleMackerEvent(targetRuleSet, event);

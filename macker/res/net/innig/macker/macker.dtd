@@ -20,7 +20,7 @@
 
 <!ELEMENT macker (ruleset)+>
 
-<!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset|subset)*>
+<!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset|subset|message)*>
 <!ATTLIST ruleset name     CDATA #IMPLIED> 
 <!ATTLIST ruleset severity CDATA #IMPLIED> 
 
@@ -32,10 +32,10 @@
 <!ATTLIST var name  CDATA #REQUIRED>
 <!ATTLIST var value CDATA #REQUIRED>
 
-<!ELEMENT foreach (pattern|access-rule|var|foreach|ruleset|subset)*>
+<!ELEMENT foreach (pattern|access-rule|var|foreach|ruleset|subset|message)*>
 <!ATTLIST foreach var      CDATA #REQUIRED> 
-<!ATTLIST foreach class    CDATA #REQUIRED>
-<!ATTLIST foreach regex    CDATA #REQUIRED> <!-- deprecated -->
+<!ATTLIST foreach class    CDATA #IMPLIED>
+<!ATTLIST foreach regex    CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST foreach severity CDATA #IMPLIED> 
 
 <!ELEMENT pattern (include|exclude)*>
@@ -70,5 +70,6 @@
 <!ATTLIST from regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST to   regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST from filter  CDATA #IMPLIED> 
-<!ATTLIST to   filter  CDATA #IMPLIED> 
+<!ATTLIST to   filter  CDATA #IMPLIED>
+
 <!ELEMENT message (#PCDATA)>

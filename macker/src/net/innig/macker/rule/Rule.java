@@ -22,6 +22,7 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassManager;
 import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.ListenerException;
 
 public abstract class Rule
     {
@@ -47,7 +48,7 @@ public abstract class Rule
     public abstract void check(
             EvaluationContext context,
             ClassManager classes)
-        throws RulesException, MackerIsMadException;
+        throws RulesException, MackerIsMadException, ListenerException;
 
     private RuleSet parent;
     private RuleSeverity severity;

@@ -104,6 +104,9 @@ public class PrintingListener
         if(!firstSeverity)
             out.println(')');
         }
+    
+    public String toString()
+        { return "PrintingListener"; }
         
     private boolean first;
     private PrintWriter out;
