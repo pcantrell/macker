@@ -77,9 +77,7 @@
 
         <javac 
             srcdir="${src.dir}"
-            destdir="${build.classes.dir}"
-            fork="yes"
-            debug="yes">
+            destdir="${build.classes.dir}">
             <classpath refid="build.classpath" />
         </javac>
         
