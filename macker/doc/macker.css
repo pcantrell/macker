@@ -21,6 +21,11 @@ A:active  { color:#FF0; }
     font-weight : bold;
     font-size : .9em;
 }
+.pagecontents li ul {
+    margin : .4em 1em .4em 0.6cm;
+    padding-left : 0cm;
+    list-style-type : circle;
+}
 .pagecontents A, .pagecontents A:link, .pagecontents A:visited {
     color : #FFF;
     text-decoration : none;
@@ -62,7 +67,7 @@ h3 {
     font-weigth : bold;
 }
 h4 {
-    background-color : #700;
+    background-color : #600;
     color : #FFF;
     padding : .14cm .14cm .14cm 1.1cm;
     border : 2px 1px;
@@ -70,7 +75,7 @@ h4 {
     border-color : #000;
     border-width : 1px;
     font-family : Verdana,Geneva,Helvetica;
-    font-size   : 1.2em;
+    font-size   : 1em;
     font-weigth : bold;
 }
 
