@@ -9,10 +9,12 @@ version 0.4 (in development):
     - regression tests?
   done:
     - added filter patterns
+    - severity levels allow rules to generate warnings instead of errors
+    - XML reporting
     - parsing for superclass, interfaces, access modifiers
     - parsing distinguishes different types of signature-level reference
     - ForEach now checks more than just the primary classes
-    - severity levels allow rules to generate warnings instead of errors
+    - better-structured event callbacks (inching closer to IDE integration)
     - Macker now uses BCEL for class parsing
     - Macker now forces validation against its internal DTD
     - verbose output shows classes in sorted order
@@ -57,4 +59,3 @@ LIKELY FUTURE FEATURES
 0.7 standard for rules export in META-INF
 ?   more flexible foreach scoping
 ?   line numbers in output
-?   better-structured event callbacks (for tool integration)
