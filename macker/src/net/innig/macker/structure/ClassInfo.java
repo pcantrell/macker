@@ -23,6 +23,7 @@ package net.innig.macker.structure;
 import java.util.Set;
 
 public abstract class ClassInfo
+    implements Comparable
     {
     public abstract String getClassName();
     
@@ -31,6 +32,9 @@ public abstract class ClassInfo
         String className = getClassName();
         return className.substring(className.lastIndexOf('.') + 1);
         }
+    
+    public int compareTo(Object that)
+        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
     
     public abstract Set/*<String>*/ getReferences();
     }

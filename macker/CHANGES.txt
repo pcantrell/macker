@@ -17,7 +17,7 @@ version 0.3:
     - numerous output formatting tweaks (getting readable!)
 
 version 0.2:
-	- Macker really works
+    - Macker really works
     
 version 0.1:
     - Macker sorta works

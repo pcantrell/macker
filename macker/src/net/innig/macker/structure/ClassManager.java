@@ -32,9 +32,10 @@ public class ClassManager
     {
     public ClassManager()
         {
+        // Trees make nice sorted output
         allClassNames = new TreeSet();
-        primaryClasses = new HashSet();
-        classNameToInfo = new HashMap();
+        primaryClasses = new TreeSet();
+        classNameToInfo = new TreeMap();
         references = new TreeMultiMap();
         classLoader = Thread.currentThread().getContextClassLoader();
         }
