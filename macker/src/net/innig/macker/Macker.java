@@ -157,7 +157,7 @@ public class Macker
     public void addClass(String className)
         throws ClassNotFoundException
         {
-        if(cm.getClassInfo(className) instanceof IncompleteClassInfo)
+        if(!cm.getClassInfo(className).isComplete())
             throw new ClassNotFoundException(className);
         cm.makePrimary(className);
         }

@@ -31,7 +31,7 @@ import net.innig.collect.*;
 import org.apache.bcel.classfile.*;
 
 public class ParsedClassInfo
-    extends ClassInfo
+    extends AbstractClassInfo
     {
     public ParsedClassInfo(ClassManager classManager, File classFile)
         throws IOException, ClassParseException
@@ -66,6 +66,9 @@ public class ParsedClassInfo
     
     public String getClassName()
         { return className; }
+    
+    public boolean isComplete()
+        { return true; }
     
     private void parseFlags(JavaClass classFile)
         throws ClassParseException

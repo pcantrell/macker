@@ -24,7 +24,7 @@ import java.util.Set;
 import net.innig.collect.MultiMap;
 
 public class IncompleteClassInfo
-    extends ClassInfo
+    extends AbstractClassInfo
     {
     public IncompleteClassInfo(ClassManager classManager, String className)
         {
@@ -35,6 +35,9 @@ public class IncompleteClassInfo
     public String getClassName()
         { return className; }
 
+    public boolean isComplete()
+        { return false; }
+    
     public boolean isInterface()               { throw newIncompleteException("get attributes of"); }
     public boolean isAbstract()                { throw newIncompleteException("get attributes of"); }
     public boolean isFinal()                   { throw newIncompleteException("get attributes of"); }

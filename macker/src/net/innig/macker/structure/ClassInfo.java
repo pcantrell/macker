@@ -23,78 +23,25 @@ package net.innig.macker.structure;
 import java.util.*;
 import net.innig.collect.*;
 
-public abstract class ClassInfo
-    implements Comparable
+public interface ClassInfo
+    extends Comparable
     {
-    public ClassInfo(ClassManager classManager)
-        { this.classManager = classManager; }
+    public ClassManager getClassManager();
+    public boolean isComplete();
+
+    public String getClassName();
+    public String getClassNameShort();
+
+    public boolean isInterface();
+    public boolean isAbstract();
+    public boolean isFinal();
+    public AccessModifier getAccessModifier();
     
-    public String getClassNameShort()
-        {
-        String className = getClassName();
-        return className.substring(className.lastIndexOf('.') + 1);
-        }
-    
-    public Set/*<String>*/ getDirectSupertypes()
-        {
-        if(cachedAllDirectSuper == null)
-            {
-            Set newAllDirectSuper = new HashSet(getImplements());
-            newAllDirectSuper.add(getExtends());
-            cachedAllDirectSuper = newAllDirectSuper; // failure atomicity
-            }
-        return cachedAllDirectSuper;
-        }
-    
-    public Set/*<String>*/ getSupertypes()
-        {
-        if(cachedAllSuper == null)
-            cachedAllSuper = Graphs.reachableNodes(
-                this.getClassName(),
-                new GraphWalker()
-                    {
-                    public Collection getEdgesFrom(Object node)
-                        {
-                        return getClassManager()
-                              .getClassInfo((String) node)
-                              .getDirectSupertypes();
-                        }
-                    } );
-        return cachedAllSuper;
-        }
-    
-    /** Compares fully qualified class names
-     */
-    public int compareTo(Object that)
-        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
-    
-    public boolean equals(Object that)
-        {
-        if(this == that)
-            return true;
-        if(that == null)
-            return false;
-        if(this.getClass() != that.getClass())
-            return false;
-        return getClassName().equals(((ClassInfo) that).getClassName());
-        }
-    
-    public int hashCode()
-        { return getClassName().hashCode(); }
-    
-    public final ClassManager getClassManager()
-        { return classManager; }
-    
-    public abstract String getClassName();
-    public abstract boolean isInterface();
-    public abstract boolean isAbstract();
-    public abstract boolean isFinal();
-    public abstract AccessModifier getAccessModifier();
-    public abstract String getExtends();
-    public abstract Set/*<String>*/ getImplements();
-    public abstract MultiMap/*<String,Reference>*/ getReferences();
-    
-    private ClassManager classManager;
-    private Set cachedAllSuper, cachedAllDirectSuper;
+    public String getExtends();
+    public Set/*<String>*/ getImplements();
+    public Set/*<String>*/ getDirectSupertypes();
+    public Set/*<String>*/ getSupertypes();
+
+    public MultiMap/*<String,Reference>*/ getReferences();
     }
 

@@ -24,8 +24,8 @@ import java.util.*;
 import net.innig.collect.InnigCollections;
 import net.innig.collect.MultiMap;
 
-public class PrimitiveTypeInfo
-    extends ClassInfo
+public final class PrimitiveTypeInfo
+    implements ClassInfo
     {
     static public PrimitiveTypeInfo getPrimitiveTypeInfo(String typeName)
         { return (PrimitiveTypeInfo) nameToTypeMap.get(typeName); }
@@ -46,23 +46,35 @@ public class PrimitiveTypeInfo
         }
     
     private PrimitiveTypeInfo(String className)
-        {
-        super(null);
-        this.className = className;
-        }
+        { this.className = className; }
     
-    public String getClassName() { return className; }
+    public ClassManager getClassManager()
+        { return null; }
+    
+    public boolean isComplete()
+        { return true; }
+    
+    public String getClassName()      { return className; }
+    public String getClassNameShort() { return className; }
+    
     public boolean isInterface() { return false; }
     public boolean isAbstract()  { return false; }
     public boolean isFinal()     { return true; }
-    public AccessModifier getAccessModifier() { return AccessModifier.PUBLIC; }
-    public String getExtends() { return null; }
-    public Set/*<String>*/ getImplements() { return Collections.EMPTY_SET; }
+    
+    public AccessModifier getAccessModifier()    { return AccessModifier.PUBLIC; }
+    public String getExtends()                   { return null; }
+    public Set/*<String>*/ getImplements()       { return Collections.EMPTY_SET; }
+    public Set/*<String>*/ getDirectSupertypes() { return Collections.EMPTY_SET; }
+    public Set/*<String>*/ getSupertypes()       { return Collections.EMPTY_SET; }
     public MultiMap/*<String,Reference>*/ getReferences()
         { return InnigCollections.EMPTY_MULTIMAP; }
+    
+    public int compareTo(Object that)
+        { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
+
     public String toString() { return getClassName(); }
     
-    public String className;
+    private final String className;
     }
 
 

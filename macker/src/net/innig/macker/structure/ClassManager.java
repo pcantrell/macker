@@ -48,7 +48,7 @@ public class ClassManager
     
     public void addClass(ClassInfo classInfo, boolean primary)
         {
-        if(primary && classInfo instanceof IncompleteClassInfo)
+        if(primary && !classInfo.isComplete())
             throw new IncompleteClassInfoException(
                 classInfo.getClassName() + " cannot be a primary class, because the class"
                 + " file isn't on Macker's classpath");
