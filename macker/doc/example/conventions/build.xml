@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+
+<project name="conventions" default="macker" basedir="../../..">
+    &stdbuild;
+
+    <target name="explain">
+        <echo>
+________________________________________________________________________________
+
+This example demonstrates the use of Macker to build patterns from, and to
+enforce, the implementation conventions of classes in different roles.
+
+In this example, instead of using a naming convention to separate API from impl,
+the rules file considers interfaces in the project to be APIs, and the classes
+which implement them to be impls.  The rules are contrived to highlight the
+filters added in version 0.4.
+
+Macker's ability to enforce implementation conventions remains somewhat limited,
+as two important features don't exist yet:
+
+   * Macker currently only supports access rules, which deal with dependencies
+     between classes.  New kinds of rules which deal with each class taken by
+     itself, rules with forms like "all X must match Y", will tie implementation
+     features and naming conventions together.  This is tentatively on the plate
+     for version 0.5.
+
+   * The current set of filters is limited to basic attributes of classes.
+     Future filters will support more sophisticated matching, e.g. "classes with
+     a private constructor" or "class which expose floating-point primitives on
+     public or protected method signatures".
+________________________________________________________________________________
+        </echo>
+    </target>
+</project>

@@ -1,0 +1,79 @@
+Searching for build.xml ...
+Buildfile: /Users/paul/macker/doc/example/conventions/build.xml
+
+prepare:
+
+build-macker-jar:
+
+compile:
+
+explain:
+
+________________________________________________________________________________
+
+This example demonstrates the use of Macker to build patterns from, and to
+enforce, the implementation conventions of classes in different roles.
+
+In this example, instead of using a naming convention to separate API from impl,
+the rules file considers interfaces in the project to be APIs, and the classes
+which implement them to be impls.  The rules are contrived to highlight the
+filters added in version 0.4.
+
+Macker's ability to enforce implementation conventions remains somewhat limited,
+as two important features don't exist yet:
+
+   * Macker currently only supports access rules, which deal with dependencies
+     between classes.  New kinds of rules which deal with each class taken by
+     itself, rules with forms like "all X must match Y", will tie implementation
+     features and naming conventions together.  This is tentatively on the plate
+     for version 0.5.
+
+   * The current set of filters is limited to basic attributes of classes.
+     Future filters will support more sophisticated matching, e.g. "classes with
+     a private constructor" or "class which expose floating-point primitives on
+     public or protected method signatures".
+________________________________________________________________________________
+        
+
+macker:
+
+(Checking ruleset: Coding conventions demo ...)
+
+APIs may not reference API implementations
+Illegal reference
+  from net.innig.macker.example.conventions.BrokenApi
+    to net.innig.macker.example.conventions.AlphaTree
+
+WARNING: API Tree should use a collections interface instead of HashSet
+Illegal reference
+  from net.innig.macker.example.conventions.Tree
+    to java.util.HashSet
+
+FileTree may not reference StringTree, which is another impl, unless it extends it
+Illegal reference
+  from net.innig.macker.example.conventions.FileTree
+    to net.innig.macker.example.conventions.StringTree
+
+Util class Main may not reference API impl AlphaTree
+Illegal reference
+  from net.innig.macker.example.conventions.Main
+    to net.innig.macker.example.conventions.AlphaTree
+
+Util class Main may not reference API impl FactorialTree
+Illegal reference
+  from net.innig.macker.example.conventions.Main
+    to net.innig.macker.example.conventions.FactorialTree
+
+Util class Main may not reference API impl FileTree
+Illegal reference
+  from net.innig.macker.example.conventions.Main
+    to net.innig.macker.example.conventions.FileTree
+
+(5 errors, 1 warning)
+
+Macker rules checking failed
+
+BUILD FAILED
+file:/Users/paul/macker/doc/example/build-shared.xml:45: Macker rules checking failed
+
+Total time: 10 seconds
