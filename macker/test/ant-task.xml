@@ -3,32 +3,25 @@
 <project name="Macker Ant Task Test" default="test-ant-task" basedir="..">
 
     <target name="prepare">
+
         <path id="run.classpath">
             <pathelement location="build/classes" />
             <pathelement location="conf" />
             <fileset dir="lib" />
         </path>
         <property name="run.classpath" refid="run.classpath" />
-    </target>
-    
-    <target name="test-ant-task" depends="prepare">
-
         <taskdef name="macker"
             classname="net.innig.macker.ant.MackerAntTask"
             classpath="${run.classpath}"/>
         
-        <macker
-            fork="yes"
-            verbose="no">
-            <classpath refid="run.classpath" />
-
+        <macker>
+            <rules dir="." includes="test/macker-sample.xml" />
             <classes dir=".">
                 <include name="build/classes/**/*.class" />
             </classes>
-            <rules dir="." includes="test/macker-sample.xml" />
-            
+            <var name="basepkg" value="net.innig.macker" />
+            <classpath refid="run.classpath" />
         </macker>
 
     </target>
-
 </project>

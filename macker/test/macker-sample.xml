@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE macker SYSTEM "file:///Users/paul/macker/src/macker.dtd">
+<!-- <!DOCTYPE macker PUBLIC "-//innig//DTD Macker 0.2//EN" "http://innig.net/macker/src/macker.dtd"> -->
 
 <macker>
-    
+
     <ruleset name="Macker internal rules">
     
-        <pattern name="macker" regex="net.innig.macker.**" />
+<!--        <var name="basepkg" value="net.innig.macker" /> -->
+        
+        <pattern name="macker" regex="${basepkg}.**" />
         
         <pattern name="structure">
             <include pattern="macker">
@@ -27,7 +29,7 @@
         
         <pattern name="main">
             <include pattern="macker">
-                <exclude regex="net.innig.macker.*.**" />
+                <exclude regex="${basepkg}.*.**" />
             </include>
         </pattern>
         
