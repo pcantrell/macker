@@ -20,24 +20,15 @@
  
 package net.innig.macker.structure;
 
-import net.innig.util.GraphType;
-
-public class AccessModifier
-    extends GraphType
+public class Reference
     {
-    public static final AccessModifier
-        PRIVATE   = new AccessModifier("private"),
-        PACKAGE   = new AccessModifier("package", PRIVATE),
-        PROTECTED = new AccessModifier("protected", PRIVATE),
-        PUBLIC    = new AccessModifier("public", new AccessModifier[] { PROTECTED, PACKAGE} );
+    //public ClassInfo getFrom()
+    //public ClassInfo getTo()
+    //public ReferenceType getType()
     
-    public boolean isLooserEq(AccessModifier that)
-        { return this.is(that); }
+    //public String getMemberName()
+    //public AccessModifier getMemberAccess()
     
-    public boolean isTighterEq(AccessModifier that)
-        { return that.is(this); }
-    
-    private AccessModifier(String name) { super(name); }
-    private AccessModifier(String name, AccessModifier parent) { super(name, parent); }
-    private AccessModifier(String name, AccessModifier[] parents) { super(name, parents); }
+    //public String getFileName()
+    //public int getLine()
     }
