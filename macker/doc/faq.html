@@ -28,6 +28,7 @@
 <li> <a href="#goodfor">What is Macker good for?</a>
 <li> <a href="#notgoodfor">What is Macker <i>not</i> good for?</a>
 <li> <a href="#capabilities">What sorts of rules can Macker check?</a>
+<li> <a href="#similar">How is Macker like / unlike similar products?</a>
 <li> <a href="#license">How is Macker licensed?</a>
 <li> <a href="#download">Where do I get it?</a>
 <li> <a href="#instructions">How do I use it?</a>
@@ -78,6 +79,15 @@ Future versions will support more sophisticated matching class matching, existen
 <li> Methods should take and return Java collections interfaces (e.g. List) instead of concrete types (e.g. ArrayList).
 <li> Objects implementing a certain interface should have static factory methods instead of public constructors.
 </ul>
+
+<h3><a name="similar">How is Macker like / unlike similar products?</a></h3>
+<p>
+There are several lint checkers and style checkers available for Java, such as <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>, <a href="http://jcsc.sourceforge.net/">JCSC</a>, which verify that code adheres to formatting, naming, and style conventions.  (The nascent project <a href="http://sourceforge.net/projects/testpattern/">TestPattern</a> also seems to belong in this category.)  These projects also sometimes flag potential errors (such as empty catch blocks), a task which <a href="http://pmd.sourceforge.net/">PMD</a> is specially designed for.
+<p>
+Macker is, for the most part, complementary to these tools: they operate on source code, mostly one file at a time, and deal with line-by-line implementation details; Macker operates on compiled classes, taken all at once, and focuses on large-scale structure.  Macker can't catch misnamed local variables, misplaced braces, or empty catch blocks; conversely, these other tools aren't very good for expressing and checking architecture-level code structure.
+Putting it differently, these other tools live in the realm of the <a href="http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html">Java coding conventions</a>, and Macker lives in the realm of the <a href="http://java.sun.com/blueprints/">Java Blueprints</a>. This is why Macker's rules files must be entirely project-specific -- there is no single "Java architecture".
+<p>
+At the time of this writing (August 2003), the only other project we're aware of that fits the same niche as Macker is <a href="http://patterntesting.sourceforge.net/">PatternTesting</a>.  The project's online documentation is a bit thin -- it appears to be built on top of AspectJ, and use aspects to declare rules.  Intriguing!
 
 <h3><a name="license">How is Macker licensed?</a></h3>
 <p>
