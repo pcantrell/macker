@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <!-- Test var gets set -->
+            <foreach var="foo" class="*">
+                <message>foo=${foo}</message>
+            </foreach>
+
+            <!-- Test that pool extends one ref out -->
+            <foreach var="foo" class="**.(*)Stream" />
+
+            <!-- Test match folding -->
+            <foreach var="foo" class="**.(*)Stream" />
+        </ruleset>
+    </rules-file>
+    
+    <expected-events>
+        <eventset var="foo">
+        </eventset>
+    </expected-events>
+
+    <test-classes>
+        <source class="X">
+            import java.io.*;
+            
+            public class X
+                {
+                OutputStream os;
+                InputStream is;
+                FileInputStream fs;
+                }
+        </source>
+        <source class="Y">
+            import java.util.jar.*;
+            public class Y
+                {
+                JarInputStream jis;
+                }
+        </source>
+    </test-classes>
+
+</macker-ruleset-test>
+
+<!--
+{severity=error, type=ForEachStarted, var=foo}
+{severity=error, type=ForEachIterationStarted, value=.X, var=foo}
+    {message0=foo=.X, severity=info, type=MessageEvent}
+{severity=error, type=ForEachIterationFinished, value=.X, var=foo}
+{severity=error, type=ForEachIterationStarted, value=.Y, var=foo}
+    {message0=foo=.Y, severity=info, type=MessageEvent}
+{severity=error, type=ForEachIterationFinished, value=.Y, var=foo}
+{severity=error, type=ForEachIterationStarted, value=.void, var=foo}
+    {message0=foo=.void, severity=info, type=MessageEvent}
+{severity=error, type=ForEachFinished, var=foo}
+-->

@@ -234,9 +234,11 @@ public class Macker
         throws IOException, RulesException
         { ruleSets.add(ruleSet); }
     
+    public void addListener(MackerEventListener listener)
+        { listeners.add(listener); }
+    
     public boolean hasRules()
         { return !ruleSets.isEmpty(); }
-    
     
     public void setVariable(String name, String value)
         { vars.put(name, value); }
@@ -256,6 +258,9 @@ public class Macker
     public void setXmlReportFile(File xmlReportFile) 
         { this.xmlReportFile = xmlReportFile; }
 
+    /**
+     * Performs rule checking with the default printing, throwing, and XML reporting listeners.
+     **/
     public void check()
         throws MackerIsMadException, RulesException, ListenerException
         {
@@ -280,14 +285,51 @@ public class Macker
                 }
             }
 
-        PrintingListener printing = new PrintingListener(System.out);
-        ThrowingListener throwing = new ThrowingListener();
-        printing.setThreshold(printThreshold);
+        PrintingListener printing;
+        if(printThreshold == null)
+            printing = null;
+        else
+            {
+            printing = new PrintingListener(System.out);
+            printing.setThreshold(printThreshold);
+            addListener(printing);
+            }
+
+        ThrowingListener throwing;
+        if(angerThreshold == null)
+            throwing = null;
+        else
+            {
+            throwing = new ThrowingListener();
+            addListener(throwing);
+            }
 
         XmlReportingListener xmlReporting = null;
         if(xmlReportFile != null)
+            {
             xmlReporting = new XmlReportingListener(xmlReportFile);
-
+            addListener(xmlReporting);
+            }
+        
+        checkRaw();
+        
+        if(printing != null)
+            printing.printSummary();
+        if(xmlReporting != null)
+            {
+            xmlReporting.flush();
+            xmlReporting.close();
+            }
+        if(throwing != null)
+            throwing.timeToGetMad(angerThreshold);
+        }
+    
+    /**
+     * Performs rule checking without any default listeners.
+     **/
+    public void checkRaw()
+        throws MackerIsMadException, RulesException, ListenerException
+        {
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
@@ -309,20 +351,11 @@ public class Macker
                     
             EvaluationContext context = new EvaluationContext(cm, rs);
             context.setVariables(vars);
-            context.addListener(throwing);
-            context.addListener(printing);
-            if(xmlReporting != null)
-                context.addListener(xmlReporting);
+            for(Iterator listenIter = listeners.iterator(); listenIter.hasNext(); )
+                context.addListener((MackerEventListener) listenIter.next());
             
             rs.check(context, cm);
             }
-        printing.printSummary();
-        if(xmlReporting != null)
-            {
-            xmlReporting.flush();
-            xmlReporting.close();
-            }
-        throwing.timeToGetMad(angerThreshold);
         }
 
     private ClassManager cm;
@@ -330,5 +363,6 @@ public class Macker
     private Map/*<String,String>*/ vars;
     private boolean verbose;
     private File xmlReportFile;
+    private List/*<MackerEventListener>*/ listeners = new ArrayList();
     private RuleSeverity printThreshold = RuleSeverity.INFO, angerThreshold = RuleSeverity.ERROR;
     }

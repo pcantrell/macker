@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 
 <project name="Macker" default="build" basedir=".">
-
+    
     <!-- ================================================================= -->
     <!-- Properties                                                        -->
     <!-- ================================================================= -->
-
+    
     <!-- Global -->
-
+    
     <property name="Name"                 value="Macker" />
     <property name="name"                 value="macker" />
-
+    
     <property name="src.dir"              location="${basedir}/src" />
     <property name="res.dir"              location="${basedir}/res" />
     <property name="lib.dir"              location="${basedir}/lib" />
@@ -21,9 +21,9 @@
     <property name="example.dir"          location="${doc.dir}/example" />
     
     <property file="${conf.dir}/build.properties" />
-
+    
     <!-- Targets -->
-
+    
     <property name="build.dir"            location="${basedir}/build" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
     <property name="build.test.dir"       location="${build.dir}/test" />
@@ -34,15 +34,15 @@
     
     <property name="javadoc.dir"          location="${doc.dir}/javadoc"/>
     <property name="javadoc.packages"     value="net.innig.macker.*" />
-
+    
     <property name="run.mainclass"        value="net.innig.macker.Macker" />
     <property name="run.args"             value="" />
-
+    
     <!-- ================================================================= -->
     <!-- prepare:                                                          -->
     <!-- Sets up directories and such for compilation                      -->
     <!-- ================================================================= -->
-
+    
     <target name="prepare">
         <mkdir dir="${build.dir}" />
         <mkdir dir="${build.classes.dir}" />
@@ -138,7 +138,7 @@
     <!-- ================================================================= -->
 
     <target name="build" 
-        depends="jar"
+        depends="jar,compile-tests"
         description="Builds an executable target (default)">
 
     </target>
@@ -183,7 +183,7 @@
     <!-- ================================================================= -->
 
     <target name="compile-tests"
-        depends="build">
+        depends="jar">
         
         <mkdir dir="${build.test.dir}" />
 
@@ -214,12 +214,15 @@
         <junit
             printsummary="${test.printsummary}"
             timeout="${test.timeout}"
+            showoutput="${test.showoutput}"
             haltonerror="yes"
             haltonfailure="yes"
-            fork="yes">
+            fork="no">
             
             <formatter type="plain" usefile="no" />
             <classpath refid="test.classpath" />
+            <sysproperty key="Macker.RulesFileTest.testDir" value="${test.dir}/rulesfiles"/>
+            <sysproperty key="Macker.RulesFileTest.buildDir" value="${build.test.dir}"/>
 
             <batchtest>
                 <fileset dir="${test.dir}">

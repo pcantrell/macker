@@ -1,7 +1,0 @@
-#!/bin/bash
-
-cp=build/classes:conf
-for lib in lib/*.jar lib/*.zip; do
-    cp="$cp:$lib"
-done
-exec bsh -cp "$cp" "$@"

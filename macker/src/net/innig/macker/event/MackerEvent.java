@@ -45,7 +45,7 @@ public class MackerEvent
     public String getDescription()
         { return description; }
         
-    public List getMessages()
+    public List/*<String>*/ getMessages()
         { return messages; }
     
     public String toString()

@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <access-rule> <deny> <to class="void"    /> </deny> </access-rule>
+            <access-rule> <deny> <to class="byte"    /> </deny> </access-rule>
+            <access-rule> <deny> <to class="short"   /> </deny> </access-rule>
+            <access-rule> <deny> <to class="int"     /> </deny> </access-rule>
+            <access-rule> <deny> <to class="long"    /> </deny> </access-rule>
+            <access-rule> <deny> <to class="char"    /> </deny> </access-rule>
+            <access-rule> <deny> <to class="boolean" /> </deny> </access-rule>
+            <access-rule> <deny> <to class="float"   /> </deny> </access-rule>
+            <access-rule> <deny> <to class="double"  /> </deny> </access-rule>
+        </ruleset>
+    </rules-file>
+    
+    <expected-events>
+        <eventset type="AccessRuleViolation" severity="error" to="void">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="byte">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="short">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="int">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="long">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="char">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="boolean">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="float">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="double">
+            <event from="MethodTakesX" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+    </expected-events>
+
+    <test-classes>
+        <source class="MethodTakesX">
+            public class MethodTakesX
+                {
+                public void f(byte b, short s, int i, long l, char c, boolean bool, float f, double d) { }
+                }
+        </source>
+        <source class="MethodReturnsX">
+            public class MethodReturnsX
+                {
+                public byte b() { return 0; }
+                public short s() { return 0; }
+                public int i() { return 0; }
+                public long l() { return 0; }
+                public char c() { return 0; }
+                public boolean bool() { return false; }
+                public float f() { return 0; }
+                public double d() { return 0; }
+                public void v() { }
+                }
+        </source>
+        <source class="CtorTakesX">
+            public class CtorTakesX
+                {
+                public CtorTakesX(byte b, short s, int i, long l, char c, boolean bool, float f, double d) { }
+                }
+        </source>
+        <source class="XField">
+            public class XField
+                {
+                byte b; short s; int i; long l;
+                char c; boolean bool; float f; double d;
+                }
+        </source>
+        <source class="XArrayField">
+            public class XArrayField
+                {
+                byte[] b; short[] s; int[] i; long[] l;
+                char[] c; boolean[] bool; float[] f; double[] d;
+                }
+        </source>
+    </test-classes>
+
+</macker-ruleset-test>
+

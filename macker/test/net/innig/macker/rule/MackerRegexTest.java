@@ -33,7 +33,7 @@ public final class MackerRegexTest
     protected void setUp()
         throws Exception
         {
-        context = new EvaluationContext(new ClassManager(), new RuleSet(null));
+        context = new EvaluationContext(new ClassManager(), new RuleSet(RuleSet.getMackerDefaults()));
         }
 
     protected void tearDown()

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-for jar in lib/*; do
-    cp="$cp:$jar"
-done
-
-java -cp "build/classes:$cp" net.innig.macker.Macker "$@"

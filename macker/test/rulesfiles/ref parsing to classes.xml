@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <access-rule>
+                <deny>
+                    <to class="X" />
+                </deny>
+            </access-rule>
+            <access-rule>
+                <deny>
+                    <to class="Y" />
+                </deny>
+            </access-rule>
+        </ruleset>
+    </rules-file>
+    
+    <expected-events>
+        <eventset type="AccessRuleViolation" severity="error" to="X">
+            <event from="ExtendsX" />
+            <event from="MethodTakesXOnly" />
+            <event from="MethodTakesXFirst" />
+            <event from="MethodTakesXLast" />
+            <event from="MethodReturnsX" />
+            <event from="CtorTakesX" />
+            <event from="CastToX" />
+            <event from="AccessXMethod" />
+            <event from="XField" />
+            <event from="XArrayField" />
+        </eventset>
+        <eventset type="AccessRuleViolation" severity="error" to="Y">
+            <event from="X" />
+        </eventset>
+    </expected-events>
+
+    <test-classes>
+        <source class="Y">
+            public interface Y
+                {
+                public void nothing();
+                }
+        </source>
+        <source class="X">
+            public class X
+                implements Y
+                {
+                public void nothing() { }
+                }
+        </source>
+        <source class="ExtendsX">
+            public class ExtendsX extends X { }
+        </source>
+        <source class="MethodTakesXOnly">
+            public class MethodTakesXOnly
+                {
+                public void f(X x)
+                    { }
+                }
+        </source>
+        <source class="MethodTakesXFirst">
+            public class MethodTakesXFirst
+                {
+                public long f(X x, int q)
+                    { return 0; }
+                }
+        </source>
+        <source class="MethodTakesXLast">
+            public class MethodTakesXLast
+                {
+                public long f(X x, int q)
+                    { return 0; }
+                }
+        </source>
+        <source class="MethodReturnsX">
+            public class MethodReturnsX
+                {
+                public static X f(int q)
+                    { return null; }
+                }
+        </source>
+        <source class="CtorTakesX">
+            public class CtorTakesX
+                {
+                public CtorTakesX(X x)
+                    { }
+                }
+        </source>
+        <source class="CastToX">
+            public class CastToX
+                {
+                public Object f(Object x)
+                    { return (X) x; }
+                }
+        </source>
+        <source class="AccessXMethod">
+            public class AccessXMethod
+                {
+                public void f()
+                    { MethodReturnsX.f(3).nothing(); }
+                }
+        </source>
+        <source class="XField">
+            public class XField
+                { private X x; }
+        </source>
+        <source class="XArrayField">
+            public class XArrayField
+                { private X[][] xarray; }
+        </source>
+    </test-classes>
+
+</macker-ruleset-test>
