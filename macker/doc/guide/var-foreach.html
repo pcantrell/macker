@@ -39,12 +39,33 @@ For example, you could define a variable for your application's base package, th
 </pre>
 <p>
 As with patterns, the scope of a variable is the ruleset or foreach element which contains it.
+<p>
+An access rule's <code>&lt;message&gt;</code> may references variables using the <code>${var-name}</code> syntax, including four variables special special to the <code>&lt;message&gt;</code> tag:
+<table class="example-table" cellspacing=0>
+<tr valign="top">
+<td class="example">${from}</td>
+<td>The name of the class matching &lt;from&gt;, without the package name</td>
+</tr>
+<tr valign="top">
+<td class="example">${to}</td>
+<td>The name of the class matching &lt;to&gt;, without the package name</td>
+</tr>
+<tr valign="top">
+<td class="example">${from-full}</td>
+<td>The fully qualified (including the package) name of the &lt;from&gt; class</td>
+</tr>
+<tr valign="top">
+<td class="example">${to-full}</td>
+<td>The fully qualified (including the package) name of the &lt;to&gt; class</td>
+</tr>
+</table>
+<p>
 
 <h3><a name="foreach">For Each</a></h3>
 <p>
 Astute observers will note that, up to this point, patterns and rules always apply to "any X" -- it is possible to say things like "any logic class may access any data object", but not to say "any logic class may access <i>its own</i> data object".  The Macker foreach construct provides a way of doing this.
 <p>
-The <code>&lt;foreach&gt;</code> tag iterates a variable over all the matches of a given pattern in the input classes.  The tag takes a variable name and a regex, which may optionally contain a set of parentheses.
+The <code>&lt;foreach&gt;</code> tag iterates a variable over all the matches of a given pattern in the primary classes.  The tag takes a variable name and a regex, which may optionally contain a set of parentheses.
 </p>
 <pre>&lt;foreach var="<span class="comment">var-name</span>" regex="<span class="comment">var-value</span>)" /&gt;
 &lt;foreach var="<span class="comment">var-name</span>" regex="<span class="comment">...</span>(<span class="comment">var-value</span>)<span class="comment">...</span>" /&gt;</pre>
@@ -53,7 +74,7 @@ For the matching classes, the variable will iterate over the substrings falling 
 <p>
 Confusing?  Some examples should make it a bit clearer.
 <table class="example-table" cellspacing=0>
-<tr><th>A foreach with this regex...</th><th>...applied to these input classes...</th><th>...will iterate through these values.</th></tr>
+<tr><th>A foreach with this regex...</th><th>...applied to these primary classes...</th><th>...will iterate through these values.</th></tr>
 <tr valign="top">
 <td class="example">**Exception</td>
 <td>com.vaporcorp.Thinger
@@ -95,7 +116,7 @@ Confusing?  Some examples should make it a bit clearer.
 Remember that a regex always matches <i>the entire name of the class</i>.  This can give confusing results -- be careful!
 
 <table class="example-table" cellspacing=0>
-<tr><th>A foreach with this regex...</th><th>...applied to these input classes...</th><th>...will iterate through these values.</th></tr>
+<tr><th>A foreach with this regex...</th><th>...applied to these primary classes...</th><th>...will iterate through these values.</th></tr>
 <tr valign="top">
 <td class="example">com.vaporcorp.*
 <br><span class="comment">(One might expect this pattern to match each subpackage of com.vaporcorp, but it doesn't -- it needs to match the <b>full</b> class names.)</span></td>
@@ -137,7 +158,8 @@ Remember that a regex always matches <i>the entire name of the class</i>.  This 
 Foreach is a powerful construct.  Here, for example, is one possible implementation of the example from the FAQ, "One functional module may access another only through its API."
 In this hypothetical situation, the application has a set of modules in packages named <code>com.vaporcorp.module.<i>xyz</i></code>, with implementation classes in subpackages.
 <pre>&lt;ruleset&gt;
-    &lt;foreach var="module" regex="(com.vaporcorp.module.*).**"&gt;
+    &lt;var name="base-pkg" value="com.vaporcorp" /&gt;
+    &lt;foreach var="module" regex="(${base-pkg}.module.*).**"&gt;
 
         &lt;pattern name="api" regex="${module}.*" /&gt;
         &lt;pattern name="inside" regex="${module}.**" /&gt;
@@ -146,6 +168,7 @@ In this hypothetical situation, the application has a set of modules in packages
         &lt;/pattern&gt;
 
         &lt;access-rule&gt;
+            &lt;message&gt;${from} must access the module ${module} through its API&lt;/message&gt;
             &lt;deny&gt;
                 &lt;from pattern="outside" /&gt;
                 &lt;to pattern="inside" /&gt;

@@ -73,14 +73,14 @@ Specifying the classpath can be tedious, since Macker requires so many jars.  Fo
 <h3><a name="nested">Nested Elements</a></h3>
 <h4><a name="rules">&lt;rules&gt;</a></h4>
 <p>
-Specifies XML rules files.  Macker will apply each rules file in the fileset to the input classes.
+Specifies XML rules files.  Macker will apply each rules file in the fileset to the primary classes.
 <p>
 This tag uses the standard Ant fileset mechanisms.  An example:
 <pre>&lt;rules dir="${src.dir}" includes="**/*macker*.xml" /&gt;</pre>
 
 <h4><a name="classes">&lt;classes&gt;</a></h4>
 <p>
-Specifies the set of input class files.  These are only the classes to which Macker's rules actually apply; you don't need to include libraries on which your classes depend.
+Specifies the set of primary class files.  These are only the classes to which Macker's rules actually apply; you don't need to include libraries on which your classes depend.
 <p>
 Note that this tag specifies compiled class files -- not source files, and not jars.
 <p>
@@ -100,7 +100,7 @@ The Macker task does not automatically pass Ant properties through as Macker var
 
 <h4><a name="classpath">&lt;classpath&gt;</a></h4>
 <p>
-If you have set the <code>fork</code> attribute, you can specify a custom classpath for Macker to look for classes used by the input classes.
+If you have set the <code>fork</code> attribute, you can specify a custom classpath for Macker to look for classes used by the primary classes.
 
 <h3><a name="example">An Example</a></h3>
 <p>

@@ -21,23 +21,26 @@
 <h2>Access Rules</h2>
 <ul class="pagecontents">
 <li> <a href="#allowdeny">Allow / Deny</a>
+<li> <a href="#subset">Input Classes and Subsets</a>
 <li> <a href="#limitations">Limitations</a>
 </ul>
+
 
 <h3><a name="allowdeny">Allow / Deny</a></h3>
 <p>
 Class <i>A</i> <i>accesses</i> class <i>B</i> if <i>A</i> extends, implements, contains, aggregates, references, or otherwise depends on <i>B</i>.  Macker allows you to allow and deny such accesses between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
 <p>
-The allow/deny construct is very similar to the include/exclude construct, except that it applies to <i>pairs</i> of classes.  An <code>&lt;access-rule&gt;</code> contains <code>&lt;allow&gt;</code> and <code>&lt;deny&gt;</code> rules, each of which may specify a <code>&lt;from&gt;</code> and a <code>&lt;to&gt;</code> pattern:
+The allow/deny construct is very similar to the include/exclude construct, except that it applies to <i>pairs</i> of classes.  An <code>&lt;access-rule&gt;</code> contains <code>&lt;allow&gt;</code> and <code>&lt;deny&gt;</code> rules, each of which may specify a <code>&lt;from&gt;</code> and a <code>&lt;to&gt;</code> pattern, and an optional <code>&lt;message&gt;</code> to display when the rule is broken:
 </p>
 <pre>&lt;access-rule&gt;
+    &lt;message&gt;The UI layer may not directly access the DB layer&lt;/message&gt;
     &lt;deny&gt;
         &lt;from pattern="ui-layer" /&gt;
         &lt;to pattern="db-layer" /&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
-If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any input class from using <code>ThreadGroup</code>:
+If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any primary class from using <code>ThreadGroup</code>:
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
         &lt;to regex="java.lang.ThreadGroup" /&gt;
@@ -62,6 +65,7 @@ The <code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> tags are secretly anon
 Nesting allow/deny tags works just as nesting include/exclude does: the inner rules apply only if the outer one did.  One common idiom is to specicfy that only a specific set of classes are allowed to use a certain API or layer by first ruling out everything, then adding back in the privileged classes.  Here, for example, is a rule that says only the DB layer is allowed to access Java's database APIs:
 </p>
 <pre>&lt;access-rule&gt;
+    &lt;message&gt;Only the DB layer may access database APIs&lt;/message&gt;
     &lt;deny&gt;
         &lt;to&gt;
             &lt;include regex="java.sql.**" /&gt;
@@ -75,12 +79,34 @@ Nesting allow/deny tags works just as nesting include/exclude does: the inner ru
 &lt;/access-rule&gt;</pre>
 
 
+<h3><a name="subset">Input Classes and Subsets</a></h3>
+<p>
+Access rules do not apply to all relationships between every class in your classpath.  Rather, a <code>&lt;from&gt;</code> tag will only match from a set of <i>primary classes</i>, which you specify when you invoke Macker.
+<p>
+You can make a particular ruleset apply only to a particular subset of the input classes by placing a <code>&lt;subset;&gt;</code> pattern immediately inside a <code>&lt;ruleset;&gt;</code>.
+<p>
+Here, for example, is a ruleset which ignores test classes:
+</p>
+<pre>&lt;ruleset&gt;
+    &lt;pattern name="not-test"&gt;
+        &lt;exclude regex="**Test**" /&gt;
+    &lt;/pattern&gt;
+    
+    &lt;ruleset name="App rules (excludes tests)"&gt;
+        <b>&lt;subset pattern="not-test" /&gt;</b>
+        <span class="comment">&lt;!-- rules go here --&gt;</span>
+    &lt;/ruleset&gt;
+&lt;/ruleset&gt;</pre>
+<p>
+Note that subsets do not affect the set of all possible classes for pattern matching -- only the set of <i>primary</i> classes.  This limits only what <code>&lt;from&gt;</code> and  <code>&lt;foreach&gt;</code> (explained later) will match.
+
+
 <h3><a name="limitations">Limitations</a></h3>
 <p>
 Ideally, Macker's notion of "access" would cover all the kinds of relationships that Java itself would check if <i>B</i> were private and inaccessible to <i>A</i>.  This is almost the case; Macker can detect that class <i>A</i> accesses class <i>B</i> if:
 <ul>
-<li> <i>A</i> contains a method which takes or returns <i>B</i>,
-<li> <i>A</i> contains a field of type <i>B</i>, or
+<li> <i>A</i> contains a method which takes, returns, or throws <i>B</i>;
+<li> <i>A</i> contains a field of type <i>B</i>; or
 <li> <i>A</i> contains code that would cause the JVM to load class <i>B</i> (which covers any attempt to instantiate, invoke methods on, or typecast to or from <i>B</i>).
 </ul>
 <p>

@@ -58,13 +58,13 @@ You'll typically run Macker from within Ant, something like this:
         fork="yes"
         verbose="no"&gt;
         <span class="comment">&lt;!-- This classpath tells Macker where to look for its own --&gt;
-        &lt;!-- libraries, and the libraries used by the input classes. --&gt;</span>
+        &lt;!-- libraries, and the libraries used by the primary classes. --&gt;</span>
         &lt;classpath refid="build.classpath" /&gt;
 
         <span class="comment">&lt;!-- Rules come from this file: --&gt;</span>
         &lt;rules dir="${src.dir}" includes="macker.xml" /&gt;
 
-        <span class="comment">&lt;!-- Macker will apply those rules to these input classes: --&gt;</span>
+        <span class="comment">&lt;!-- Macker will apply those rules to these primary classes: --&gt;</span>
         &lt;classes dir="${build.classes.dir}"&gt;
             &lt;include name="**/*.class" /&gt;
         &lt;/classes&gt;
@@ -120,7 +120,7 @@ Illegal reference
 <p>
 Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.
 <p>
-Note also that Macker did <i>not</i> get mad about any of the references from <code>java.io.PrintStream</code> to other java utilities, even though its name contains "Print", and our rule would apply.  Macker only applies rules to the input classes you specify, not to every class it can find in your classpath.
+Note also that Macker did <i>not</i> get mad about any of the references from <code>java.io.PrintStream</code> to other java utilities, even though its name contains "Print", and our rule would apply.  Macker only applies rules to the primary classes you specify, not to every class it can find in your classpath. (See the <a href="accessrule.html#subset">Access Rules</a> section.)
 
 <div class="next">
 Next: <a href="regex.html">Regular Expressions</a>
