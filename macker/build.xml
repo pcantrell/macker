@@ -205,7 +205,7 @@
             
             <formatter type="plain" usefile="no" />
             <classpath refid="test.classpath" />
-            <sysproperty key="Macker.RulesFileTest.testDir" value="${test.dir}/recordings"/>
+            <sysproperty key="Macker.RulesFileTest.testDir" value="${test.dir}/recording-tests"/>
             <sysproperty key="Macker.RulesFileTest.buildDir" value="${build.test.dir}"/>
 
             <batchtest>
