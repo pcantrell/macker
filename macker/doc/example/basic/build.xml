@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<project name="Macker example" default="macker" basedir=".">
+
+    <property name="src.dir"              location="${basedir}/src" />
+    <property name="lib.dir"              location="${basedir}/../../../lib" />
+    <property name="macker.jar.file"      location="${basedir}/../../../build/macker.jar" />
+
+    <property name="build.dir"            location="${basedir}/build" />
+    <property name="build.classes.dir"    location="${build.dir}/classes" />
+    
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes.dir}" />
+
+        <path id="build.classpath">
+            <fileset dir="${lib.dir}" />
+            <pathelement location="${macker.jar.file}" />
+        </path>
+        <property name="build.classpath" refid="build.classpath" />
+    </target>
+
+    <target name="compile" depends="prepare">
+        <javac 
+            srcdir="${src.dir}"
+            destdir="${build.classes.dir}">
+            <classpath refid="build.classpath" />
+        </javac>        
+    </target>
+
+    <target name="macker" depends="compile">
+    
+        <!-- Defines the macker ant task.  You need this once per build file. -->
+        <!-- The classpath here tells Ant where to look for Macker classes. -->
+        <taskdef name="macker"
+            classname="net.innig.macker.ant.MackerAntTask"
+            classpath="${build.classpath}"/>  
+        
+        <macker
+            fork="yes"
+            verbose="no">
+            <!-- This classpath tells Macker where to look for classes. -->
+            <classpath refid="build.classpath" />
+
+            <!-- Rules come from this file: -->
+            <rules dir="${src.dir}" includes="macker.xml" />
+
+            <!-- Macker will apply those rules to these classes: -->
+            <classes dir="${build.classes.dir}">
+                <include name="**/*.class" />
+            </classes>
+        </macker>
+        
+    </target>
+
+    <target name="clean" description="Removes all build files">
+        <delete dir="${build.classes.dir}" />
+        <delete dir="${build.dir}" />
+    </target>
+    
+</project>

@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>Macker Guide: Basic Example</title>
+<style>@import "../macker.css";</style>
+</head>
+<body>
+
+<h1>Macker Guide</h1>
+
+<div class="navbar">
+<span class="next">Next:</span> <a href="regex.html">Regular Expressions</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+
+<h2>Basic Example</h2>
+<ul class="pagecontents">
+<li> <a href="#rules">A Simple (and Absurd) Rules File</a>
+<li> <a href="#running">Running the Example</a>
+<li> <a href="#output">The Example's Output</a>
+</ul>
+
+<h3><a name="rules">A Simple (and Absurd) Rules File</a></h3>
+<p>
+Here is a very simple Macker rules file:
+<pre>&lt;?xml version="1.0"?&gt;
+&lt;macker&gt;    
+    &lt;ruleset name="Simple example"&gt;
+        &lt;access-rule&gt;
+            &lt;deny&gt;
+                &lt;from regex="**Print*" /&gt;
+                &lt;to regex="java.**" /&gt;
+            &lt;/deny&gt;
+        &lt;/access-rule&gt;
+    &lt;/ruleset&gt;
+&lt;/macker&gt;</pre>
+<p>
+The <code>&lt;macker&gt;</code> tag encloses a whole rules file. The <code>&lt;ruleset&gt;</code> groups related rules.  An <code>&lt;access-rule&gt;</code> governs which classes may refer to other classes; it can contain <code>&lt;deny&gt;</code> and <code>&lt;allow&gt;</code> rules. The deny rule above says that any class whose name contains an "Print" may not reference any of the Java platform classes. (It's a rather absurd rule, but illustrative.)
+
+<h3><a name="running">Running the Example</a></h3>
+<p>
+You'll typically run Macker from within Ant, something like this:
+<p>
+<pre>&lt;target name="macker" depends="compile"&gt;
+
+    <span class="comment">&lt;!-- Defines the macker ant task.  You need this once per build file. --&gt;
+    &lt;!-- The classpath here tells Ant where to look for Macker classes. --&gt;</span>
+    &lt;taskdef name="macker"
+        classname="net.innig.macker.ant.MackerAntTask"
+        classpath="${build.classpath}"/&gt;  
+    
+    &lt;macker
+        fork="yes"
+        verbose="no"&gt;
+        <span class="comment">&lt;!-- This classpath tells Macker where to look for classes. --&gt;</span>
+        &lt;classpath refid="build.classpath" /&gt;
+
+        <span class="comment">&lt;!-- Rules come from this file: --&gt;</span>
+        &lt;rules dir="${src.dir}" includes="macker.xml" /&gt;
+
+        <span class="comment">&lt;!-- Macker will apply those rules to these classes: --&gt;</span>
+        &lt;classes dir="${build.classes.dir}"&gt;
+            &lt;include name="**/*.class" /&gt;
+        &lt;/classes&gt;
+    &lt;/macker&gt;
+    
+&lt;/target&gt;</pre>
+<p>
+(See the full working Ant file at <a href="example/basic/build.xml"><code>doc/example/basic/build.xml</code></a>.  You'll need version 1.5 or newer of Ant; get it from the <a href="http://jakarta.apache.org/ant/index.html">Ant site</a>.)
+<p>
+If you are on a UNIX system (or at least have a Bourne shell), you can also use macker from the command line:
+<pre><span class="comment"><i>macker-home</i></span>/bin/macker -r <span class="comment"><i>rulefile</i></span>.xml <span class="comment"><i>SomeJavaClass</i></span>.class <span class="comment">...</span></pre>
+<p>
+(If somebody would like to write a good .bat file to do the same thing the shell script does, <a href="contact.html">send it to me</a> and I'll include it.)
+<p>
+For both the ant task and the command line, you will need to include the following libraries in Macker's classpath when it runs:
+<ul class="compact">
+<li> <code>innig-util.jar</code>
+<li> <code>jakarta-regexp-1.2.jar</code>
+<li> <code>jclasslib.jar</code>
+<li> <code>jdom.jar</code>
+<li> <code>jaxp.jar</code> (for Java versions < 1.4)
+<li> a JAXP-compliant XML parser
+</ul>
+<p>
+All these libraries are included in the <code>lib/</code> directory of the Macker distribution.
+
+<h3><a name="output">The Example's Output</a></h3>
+<p>
+If we tell Macker to apply this rule to the following Java class...
+</p>
+<pre>public class PrintHelloWorld
+    {
+    public static void main(String[] args)
+        { System.out.println("Hello world, as they say!"); }
+    }</pre>
+<p>
+...then Macker will tell us the following:
+</p>
+<pre>Checking ruleset: Simple example ...
+
+Illegal reference
+  from PrintHelloWorld
+    to java.io.PrintStream
+
+Illegal reference
+  from PrintHelloWorld
+    to java.lang.Object
+
+Illegal reference
+  from PrintHelloWorld
+    to java.lang.System</pre>
+<p>
+Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.  (It also currently ignores certain things it should not; see the bug database on Sourceforge for details.)
+<p>
+Note also that Macker did <i>not</i> get mad about any of the references from <code>java.io.PrintStream</code> to other java utilities, even though its name contains "Print", and our rule would apply.  Macker only applies rules to the input classes you specify, not to every class it can find in your classpath.
+
+<div class="next">
+Next: <a href="regex.html">Regular Expressions</a>
+</div>
+
+<div class="footer">
+<div class="navbar">
+<span class="next">Next:</span> <a href="regex.html">Regular Expressions</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+</div>
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img src="http://innig.net/images/innig_3C0000.gif"></a>
+
+</body>
+</html>
+

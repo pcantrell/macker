@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>Macker Guide: Regular Expressions</title>
+<style>@import "../macker.css";</style>
+</head>
+<body>
+
+<h1>Macker Guide</h1>
+
+<div class="navbar">
+<span class="next">Next:</span> <a href="pattern.html">Naming and Combining Patterns</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+
+<h2>Regular Expressions</h2>
+<ul class="pagecontents">
+<li> <a href="#syntax">Macker's Regex Syntax</a>
+<li> <a href="#alt">Using an Alternate Syntax</a>
+</ul>
+
+<h3><a name="rules">Macker's Regex Syntax</a></h3>
+<p>
+Part of Macker's power is its ability to apply rules to a whole categories of classes which have certain roles, or sit it certain architectural layers.  Macker relies on you to use naming and packaging conventions which make these roles and layers visible -- the programmer still has to think a bit about what they're doing!  (In the future, it will also be able to look at attributes other than name, such as implemented interfaces.  Strong AI which intuits the role of a particular class, however, is not currently in scope.)
+<p>
+At the heart of class categorization is a simple regular expression syntax, governed by just a few rules:
+<ul>
+<li> Macker always matches fully qualified class names (e.g. "<code>java.lang.String</code>").
+<li>
+Names separate into <i>parts</i> (e.g. "<code>java</code>", "<code>lang</code>", "<code>String</code>").  The wildcard <code>*</code> matches zero or more characters within a part, while <code>**</code> matches across part boundaries.
+<li>
+A dot matches a part boundry. There is an implicit boundary at the beginning of the class name (but not at the end).
+<li>
+A Macker expression always matches the entire name.  (To match on substrings, add <code>**</code>.)
+<li>
+Expressions are case-sensitive.
+</ul>
+<p>
+Here are a few examples to give you the idea:
+<table class="example-table" cellspacing=0>
+<tr><th>This regex...</th><th>...will match these classes...</th><th>...but not these.</th></tr>
+<tr valign="top">
+<td class="example">java.lang.*</td>
+<td>java.lang.String</td>
+<td>java.lang.reflect.Method
+<br>java.language.MadeUpClass</td>
+</tr>
+<tr valign="top">
+<td class="example">java.lang.**</td>
+<td>java.lang.String
+<br>java.lang.reflect.Method</td>
+<td>java.language.MadeUpClass</td>
+</tr>
+<tr valign="top">
+<td class="example">java.lang**</td>
+<td>java.lang.String
+<br>java.lang.reflect.Method
+<br>java.language.MadeUpClass</td>
+<td>&nbsp;</td>
+</tr>
+<tr valign="top">
+<td class="example">String</td>
+<td>String<br><span class="comment">(a hypothetical class named "String" not in a package)</span></td>
+<td>java.lang.String<br><span class="comment">(the actual Java language String class)</span></td>
+</tr>
+<tr valign="top">
+<td class="example">java.lang.String</td>
+<td>java.lang.String</td>
+<td>String</td>
+</tr>
+<tr valign="top">
+<td class="example">*String*</td>
+<td>String</td>
+<td>java.lang.String
+<br>java.lang.StringBuffer
+<br>java.text.AttributedString</td>
+</tr>
+<tr valign="top">
+<td class="example">**String*</td>
+<td>String
+<br>java.lang.String
+<br>java.lang.StringBuffer
+<br>java.text.AttributedString</td>
+<td>&nbsp;</td>
+</tr>
+<tr valign="top">
+<td class="example">**String</td>
+<td>String
+<br>java.lang.String
+<br>java.text.AttributedString</td>
+<td>java.lang.StringBuffer</td>
+</tr>
+<tr valign="top">
+<td class="example">**.String*</td>
+<td>String
+<br>java.lang.String
+<br>java.lang.StringBuffer</td>
+<td>java.text.AttributedString</td>
+</tr>
+</table>
+<p>
+Note that the Macker regex syntax currently does not support any sort of "OR" construct.  This is because one can accomplish the same thing using include/exclude (see the <a href="pattern.html">next section</a>).  I might consider adding this functionality to the actual regex syntax if there is demand for it.
+
+<h3><a name="alt">Using an Alternate Syntax</a></h3>
+<p>
+Macker does not currently support any alternate regex syntaxes.  In the future, it will include support for Java regex and/or Apache regexp.  Although Macker currently uses Apache regexp internally, I'm holding off on exposing its syntax as part of Macker's published API.
+
+<div class="next">
+Next: <a href="pattern.html">Naming and Combining Patterns</a>
+</div>
+
+<div class="footer">
+<div class="navbar">
+<span class="next">Next:</span> <a href="pattern.html">Naming and Combining Patterns</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+</div>
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img src="http://innig.net/images/innig_3C0000.gif"></a>
+
+</body>
+</html>
+
