@@ -67,23 +67,28 @@ public class RegexPattern
 
     public boolean matches(EvaluationContext context, ClassInfo classInfo)
         throws RulesException
-        {
-        parseExpr(context);
-        String className = classInfo.getClassName();
-        Boolean match = (Boolean) matchCache.get(className);
-        if(match == null)
-            {
-            match = regex.match('.' + className) ? Boolean.TRUE : Boolean.FALSE;
-            matchCache.put(className, match);
-            }
-        return match.booleanValue();
-        }
+        { return getParen(context, classInfo) != null; }
     
     public String getParen(EvaluationContext context, ClassInfo classInfo)
         throws RulesException
         {
-        if(matches(context,classInfo))
-            return regex.getParen(regex.getParenCount() - 1);
+        parseExpr(context);
+        String className = classInfo.getClassName();
+        
+        Boolean match = (Boolean) matchCache.get(className);
+        if(Boolean.FALSE.equals(match))
+            return null;
+        if(Boolean.TRUE.equals(match))
+            return (String) parenCache.get(className);
+            
+        match = regex.match('.' + className) ? Boolean.TRUE : Boolean.FALSE;
+        matchCache.put(className, match);
+        if(match.booleanValue())
+            {
+            String paren = regex.getParen(regex.getParenCount() - 1);
+            parenCache.put(className, paren);
+            return paren;
+            }
         else
             return null;
         }
@@ -153,6 +158,7 @@ public class RegexPattern
             if(regex.getParenCount() > 1)
                 throw new RegexPatternSyntaxException(regexStr, "Too many parenthesized expressions");
             matchCache = new HashMap();
+            parenCache = new HashMap();
             }
         }
     
@@ -194,7 +200,7 @@ public class RegexPattern
     private RE regex;
     private List/*<Part>*/ parts;
     private EvaluationContext prevContext;
-    private Map prevVarValues, matchCache;
+    private Map prevVarValues, matchCache, parenCache;
     static private RE star, matchWithin, matchAcross, partBoundary, innerClassBoundary, var, allowable;
     
     private class Part { }

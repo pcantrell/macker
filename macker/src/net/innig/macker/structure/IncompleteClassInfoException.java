@@ -18,33 +18,16 @@
  *______________________________________________________________________________
  */
  
-package net.innig.macker.event;
+package net.innig.macker.structure;
 
-import net.innig.macker.rule.Rule;
+import java.util.Set;
 
-import java.util.*;
-
-public class MackerIsMadException
-    extends Exception
+public class IncompleteClassInfoException
+    extends UnsupportedOperationException
     {
-    public MackerIsMadException(MackerIsMadEvent event)
-        {
-        super(BASE_MESSAGE);
-        this.events = Collections.singletonList(event);
-        }
-
-    public MackerIsMadException(List/*<MackerIsMadEvent>*/ events)
-        {
-        super(BASE_MESSAGE + " (" + events.size() + " errors)");
-        if(events.isEmpty())
-            throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
-        this.events = Collections.unmodifiableList(new ArrayList(events));
-        }
-    
-    public List getEvents()
-         { return events; }
-    
-    private final List events;
-    
-    private static final String BASE_MESSAGE = "Macker rules checking failed";
+    public IncompleteClassInfoException(String message)
+        { super(message); }
     }
+
+
+

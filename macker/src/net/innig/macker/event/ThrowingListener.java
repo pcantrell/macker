@@ -31,6 +31,7 @@ public class ThrowingListener
         {
         this.throwOnFirst = throwOnFirst;
         this.throwOnFinish = throwOnFinish;
+        clear();
         }
     
     public void mackerStarted(RuleSet ruleSet)
@@ -39,7 +40,6 @@ public class ThrowingListener
             {
             if(inUse)
                 throw new IllegalStateException("This ThrowingListener is already in use");
-            events = new LinkedList();
             inUse = true;
             }
         }
@@ -72,6 +72,9 @@ public class ThrowingListener
         if(!events.isEmpty())
             throw new MackerIsMadException(events);
         }
+    
+    public void clear()
+        { events = new LinkedList(); }
     
     private boolean throwOnFirst, throwOnFinish;
     private List events;

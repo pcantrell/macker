@@ -33,7 +33,7 @@ public class IncompleteClassInfo
 
     public Set/*<String>*/ getReferences()
         {
-        throw new UnsupportedOperationException(
+        throw new IncompleteClassInfoException(
             "Unable to check references for class " + className
             + ", because the class file could not be loaded."
             + " Make sure it is in Macker's classpath.");

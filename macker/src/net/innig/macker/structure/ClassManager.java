@@ -40,6 +40,10 @@ public class ClassManager
     
     public void addClass(ClassInfo classInfo, boolean primary)
         {
+        if(primary && classInfo instanceof IncompleteClassInfo)
+            throw new IncompleteClassInfoException(
+                classInfo.getClassName() + " cannot be a primary class, because the class"
+                + " file isn't on Macker's classpath");
         allClassNames.add   (classInfo.getClassName());
         classNameToInfo.put (classInfo.getClassName(), classInfo);
         if(primary)
@@ -49,6 +53,9 @@ public class ClassManager
             allClassNames.addAll(classInfo.getReferences());
             }
         }
+    
+    public void makePrimary(String className)
+        { addClass(getClassInfo(className), true); }
     
     public Set/*<String>*/ getAllClassNames()
         { return Collections.unmodifiableSet(allClassNames); }
@@ -71,8 +78,8 @@ public class ClassManager
                 String resourceName = ClassNameTranslator.classToResourceName(className);
                 InputStream classStream =
                     Thread.currentThread()
-                        .getContextClassLoader()
-                        .getResourceAsStream(resourceName);
+                          .getContextClassLoader()
+                          .getResourceAsStream(resourceName);
                 
                 try {
                     classInfo = new ParsedClassInfo(classStream);
@@ -83,12 +90,13 @@ public class ClassManager
                     if(!incompleteClassWarning)
                         {
                         incompleteClassWarning = true;
-                        System.out.println("WARNING: Macker is unable to find some of the classes"
-                            + " accessed by the input classes (see messages below).  Rules which"
-                            + " depend on attributes of these classes other than their names will"
-                            + " fail.  Check your classpath.");
+                        System.out.println(
+                            "WARNING: Macker is unable to find some of the external classes"
+                            + " used by the primary classes (see warnings below).  Rules which"
+                            + " depend on attributes of these missing classes other than their"
+                            + " names will fail.  Check your classpath.");
                         }
-                    System.out.println("(Cannot load class " + className + ')');
+                    System.out.println("WARNING: Cannot load class " + className);
                     classInfo = new IncompleteClassInfo(className);
                     }
                 }

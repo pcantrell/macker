@@ -127,7 +127,10 @@ public class Macker
             macker.check();
             }
         catch(MackerIsMadException mime)
-            { System.exit(2); }
+            {
+            System.err.println(mime.getMessage());
+            System.exit(2);
+            }
         catch(Exception e)
             {
             e.printStackTrace(System.out);
@@ -162,8 +165,51 @@ public class Macker
         throws IOException, ClassParseException
         { cm.addClass(new ParsedClassInfo(classFile), true); }
     
+    public void addClass(String className)
+        throws ClassNotFoundException
+        {
+        if(cm.getClassInfo(className) instanceof IncompleteClassInfo)
+            throw new ClassNotFoundException(className);
+        cm.makePrimary(className);
+        }
+    
+    public void addReachableClasses(Class initialClass, final String primaryPrefix)
+        {
+        try { addReachableClasses(initialClass.getName(), primaryPrefix); }
+        catch(ClassNotFoundException cnfe)
+            {
+            throw new IllegalArgumentException(
+                "Macker can't find the bytecode for \"" + initialClass.getName()
+                + "\".  Perhaps it wasn't loaded by the thread's context classloader?");
+            }
+        }
+    
+    public void addReachableClasses(String initialClassName, final String primaryPrefix)
+        throws ClassNotFoundException
+        {
+        addClass(initialClassName);
+        Graphs.reachableNodes(
+            initialClassName,
+            new GraphWalker()
+                {
+                public Collection getEdgesFrom(Object node)
+                    {
+                    String className = (String) node;
+                    cm.makePrimary(className);
+                    return InnigCollections.select(
+                        cm.getClassInfo(className).getReferences(),
+                        new Selector()
+                            {
+                            public boolean select(Object className)
+                                { return ((String) className).startsWith(primaryPrefix); }
+                            });
+                    }
+                });
+        }
+    
     public boolean hasClasses()
         { return !cm.getPrimaryClasses().isEmpty(); }
+        
     
     public void addRulesFile(File rulesFile)
         throws IOException, RulesException
@@ -185,6 +231,7 @@ public class Macker
     
     public void setVerbose(boolean verbose)
         { this.verbose = verbose; }
+    
     
     public void check()
         throws MackerIsMadException, RulesException
