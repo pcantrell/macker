@@ -1,3 +1,4 @@
+    - added filtering capability
     - parsing for superclass, interfaces, access modifiers
     - parsing differentiates signature-level reference types
     - ForEach now checks more than just the primary classes

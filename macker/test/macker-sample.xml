@@ -9,8 +9,7 @@
         
         <access-rule>
             <deny>
-                <from filter="interface" />
-                <to filter="primary" />
+                <from filter="class-access" min="protected" max="protected" />
             </deny>
         </access-rule>
         

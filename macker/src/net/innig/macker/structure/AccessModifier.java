@@ -20,24 +20,19 @@
  
 package net.innig.macker.structure;
 
-import net.innig.util.GraphType;
+import net.innig.util.OrderedType;
 
 public class AccessModifier
-    extends GraphType
+    extends OrderedType
     {
     public static final AccessModifier
         PRIVATE   = new AccessModifier("private"),
-        PACKAGE   = new AccessModifier("package", PRIVATE),
-        PROTECTED = new AccessModifier("protected", PRIVATE),
-        PUBLIC    = new AccessModifier("public", new AccessModifier[] { PROTECTED, PACKAGE} );
+        PACKAGE   = new AccessModifier("package"),
+        PROTECTED = new AccessModifier("protected"),
+        PUBLIC    = new AccessModifier("public");
     
-    public boolean isLooserEq(AccessModifier that)
-        { return this.is(that); }
-    
-    public boolean isTighterEq(AccessModifier that)
-        { return that.is(this); }
+    public static AccessModifier fromName(String name)
+        { return (AccessModifier) resolveFromName(AccessModifier.class, name); }
     
     private AccessModifier(String name) { super(name); }
-    private AccessModifier(String name, AccessModifier parent) { super(name, parent); }
-    private AccessModifier(String name, AccessModifier[] parents) { super(name, parents); }
     }
