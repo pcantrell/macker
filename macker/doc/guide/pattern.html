@@ -42,16 +42,16 @@ A pattern definition sits inside a &lt;ruleset&gt; or &lt;foreach&gt; (explained
 <pre>&lt;macker&gt;
     &lt;ruleset&gt;
         <span class="comment">&lt;!-- This pattern definition applies to both rulesets below --&gt;</span>
-        &lt;pattern name="java-sql" regex="java*.sql.**"&gt;
+        &lt;pattern name="java-sql" regex="java*.sql.**" /&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="ui" regex="com.vaporcorp.whatsitproject.ui.**"&gt;
-                &lt;pattern name="db" regex="com.vaporcorp.whatsitproject.db.**"&gt;
+                &lt;pattern name="ui" regex="com.vaporcorp.whatsitproject.ui.**" /&gt;
+                &lt;pattern name="db" regex="com.vaporcorp.whatsitproject.db.**" /&gt;
                 <span class="comment">&lt;!-- Whatsitproject rules go here --&gt;</span>
         &lt;/rulset&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="db" regex="com.vaporcorp.util.db.**"&gt;
+                &lt;pattern name="db" regex="com.vaporcorp.util.db.**" /&gt;
                 <span class="comment">&lt;!-- Vaporcorp DB util rules go here --&gt;</span>
         &lt;/rulset&gt;
     &lt;/rulset&gt;
@@ -99,12 +99,12 @@ Note that the order of includes and excludes within a list <i>is</i> important -
 You can place an include/exclude list <i>inside</i> another include or exclude tag.  When you do this, Macker will apply the nested rules only when the outer one applied.
 <p>
 <pre>&lt;pattern name="java2-collections"&gt;
-    &lt;include regex="java.util.*" /&gt;
+    &lt;include regex="java.util.*"&gt;
         &lt;include regex="**Collection*" /&gt;
         &lt;include regex="**List*" /&gt;
         &lt;include regex="**Map**" /&gt;
         &lt;include regex="**Set*"&gt;
-            &lt;exclude regex="**.BitSet"&gt;
+            &lt;exclude regex="**.BitSet" /&gt;
         &lt;/include&gt;
         &lt;include regex="**Array*" /&gt;
         &lt;include regex="**.Iterator" /&gt;
@@ -129,7 +129,7 @@ Sequential includes form a boolean OR; nested includes form a boolean AND.
 <p>
 You can specify both a <code>regex</code> or <code>pattern</code> attribute on a <code>&lt;pattern&gt;</code> tag, <i>and</i> nested include/exclude rules.  When you do this, the outer <code>&lt;pattern&gt;</code> behaves like an outer <code>&lt;include&gt;</code> element.  We can thus slightly simplify one of the patterns above:
 <pre>
-&lt;pattern name="java-api-noautoimport" pattern=java-api" /&gt;
+&lt;pattern name="java-api-noautoimport" pattern=java-api"&gt;
     &lt;exclude pattern="java-api-autoimport" /&gt;
 &lt;/pattern&gt;
 </pre>
