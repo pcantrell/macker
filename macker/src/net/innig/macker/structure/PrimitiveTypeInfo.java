@@ -54,6 +54,7 @@ public class PrimitiveTypeInfo
     public String getExtends() { return null; }
     public Set/*<String>*/ getImplements() { return Collections.EMPTY_SET; }
     public Set/*<String>*/ getReferences() { return Collections.EMPTY_SET; }
+    public Set/*<String>*/ getApiReferences() { return Collections.EMPTY_SET; }
     public String toString() { return getClassName(); }
     
     public String className;

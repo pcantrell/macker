@@ -135,6 +135,7 @@ public class ParsedClassInfo
         {
         CPInfo[] constantPool = classFile.getConstantPool();
         referenceNames = new TreeSet();
+        apiReferenceNames = new TreeSet();
         
         // Add accessed classes from constant pool entries
         for(int n = 1; n < constantPool.length; n++)
@@ -150,24 +151,34 @@ public class ParsedClassInfo
         for(Iterator i = members.iterator(); i.hasNext(); )
             {
             ClassMember member = (ClassMember) i.next();
-            referenceNames.addAll(
+            Collection refNames =
                 ClassNameTranslator.signatureToClassNames(
                     classFile.getConstantPoolUtf8Entry(member.getDescriptorIndex())
-                                .getString()));
+                             .getString());
+            referenceNames.addAll(refNames);
+            if(isApi(classFile.getAccessFlags()) && isApi(member.getAccessFlags()))
+                apiReferenceNames.addAll(refNames);
             }
         
         referenceNames = Collections.unmodifiableSet(referenceNames);
+        apiReferenceNames = Collections.unmodifiableSet(apiReferenceNames);
         }
     
     public Set/*<String>*/ getReferences()
         { return referenceNames; }
     
+    public Set/*<String>*/ getApiReferences()
+        { return apiReferenceNames; }
+    
     public String toString()
         { return getClassName(); }
+    
+    private boolean isApi(int accessFlags)
+        { return 0 != (accessFlags & (AccessFlags.ACC_PUBLIC | AccessFlags.ACC_PROTECTED)); }
     
     private String className, extendsName;
     private boolean isInterface, isAbstract, isFinal;
     private AccessModifier accessModifier;
-    private Set/*<String>*/ referenceNames, implementsNames;
+    private Set/*<String>*/ referenceNames, apiReferenceNames, implementsNames;
     }
 

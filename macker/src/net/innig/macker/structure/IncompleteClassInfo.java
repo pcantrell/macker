@@ -38,6 +38,7 @@ public class IncompleteClassInfo
     public String getExtends()                 { throw newIncompleteException("determine superclass"); }
     public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces"); }
     public Set/*<String>*/ getReferences()     { throw newIncompleteException("check refereces"); }
+    public Set/*<String>*/ getApiReferences()  { throw newIncompleteException("check refereces"); }
     
     private IncompleteClassInfoException newIncompleteException(String action)
         {

@@ -44,5 +44,6 @@ public abstract class ClassInfo
     public abstract String getExtends();
     public abstract Set/*<String>*/ getImplements();
     public abstract Set/*<String>*/ getReferences();
+    public abstract Set/*<String>*/ getApiReferences();
     }
 
