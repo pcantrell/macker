@@ -1,3 +1,8 @@
+version 0.3.1:
+    - added a few examples
+    - fixed broken links in docs
+    - fixed output omission in non-forked ant task
+
 version 0.3:
     - Macker now detects API-only accesses of other classes
     - rulesets now support input class subsetting
@@ -24,6 +29,7 @@ ___________________________
 
 Sketch of future versions:
 
-0.4? filtering on attributes other than name
-0.5? forall / exists rules
-0.6? method-based matching
+0.4 filtering on attributes other than name
+0.5 forall / exists rules
+0.6 method-based matching
+0.? META-INF

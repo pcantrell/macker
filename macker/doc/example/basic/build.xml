@@ -1,61 +1,27 @@
 <?xml version="1.0"?>
 
+<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+
 <project name="Macker example" default="macker" basedir=".">
+    &stdbuild;
 
-    <property name="src.dir"              location="${basedir}/src" />
-    <property name="lib.dir"              location="${basedir}/../../../lib" />
-    <property name="macker.jar.file"      location="${basedir}/../../../build/macker.jar" />
+    <target name="explain">
+        <echo>
+________________________________________________________________________________
 
-    <property name="build.dir"            location="${basedir}/build" />
-    <property name="build.classes.dir"    location="${build.dir}/classes" />
-    
-    <target name="prepare">
-        <mkdir dir="${build.dir}" />
-        <mkdir dir="${build.classes.dir}" />
+This stupidly simple example disallows references from classes whose names
+contain "Print" to any Java APIs.  As with most of these examples, the source
+code contains a few violations of the rules, so you can see what such violations
+will look like.  Note that Macker picks up several references in this example
+that aren't immediately obvious.
 
-        <path id="build.classpath">
-            <fileset dir="${lib.dir}" />
-            <pathelement location="${macker.jar.file}" />
-        </path>
-        <property name="build.classpath" refid="build.classpath" />
+With all of these examples, you can:
+  * Type "ant" to see macker apply the rules
+  * Type "ant -Dmacker.verbose=true" to see some details of what's going on
+  * Edit "src/macker.xml" to fool with different rules
+  
+Enjoy!
+________________________________________________________________________________
+        </echo>
     </target>
-
-    <target name="compile" depends="prepare">
-        <javac 
-            srcdir="${src.dir}"
-            destdir="${build.classes.dir}">
-            <classpath refid="build.classpath" />
-        </javac>        
-    </target>
-
-    <target name="macker" depends="compile">
-    
-        <!-- Defines the macker ant task.  You need this once per build file. -->
-        <!-- The classpath here tells Ant where to look for Macker classes. -->
-        <taskdef name="macker"
-            classname="net.innig.macker.ant.MackerAntTask"
-            classpath="${build.classpath}"/>  
-        
-        <macker
-            fork="yes"
-            verbose="no">
-            <!-- This classpath tells Macker where to look for classes. -->
-            <classpath refid="build.classpath" />
-
-            <!-- Rules come from this file: -->
-            <rules dir="${src.dir}" includes="macker.xml" />
-
-            <!-- Macker will apply those rules to these classes: -->
-            <classes dir="${build.classes.dir}">
-                <include name="**/*.class" />
-            </classes>
-        </macker>
-        
-    </target>
-
-    <target name="clean" description="Removes all build files">
-        <delete dir="${build.classes.dir}" />
-        <delete dir="${build.dir}" />
-    </target>
-    
 </project>
