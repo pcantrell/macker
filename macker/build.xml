@@ -52,6 +52,8 @@
             <fileset dir="${build.lib.dir}" />
             <pathelement location="${j2ee.home}/lib/j2ee.jar" />
         </path>
+        <property name="build.classpath" refid="build.classpath" />
+        
         <path id="run.classpath">
             <pathelement location="${build.classes.dir}" />
             <pathelement location="${conf.dir}" />
@@ -72,15 +74,29 @@
     <!-- Compiles the source code                                          -->
     <!-- ================================================================= -->
 
-    <target name="compile" 
+    <target name="compile"
         depends="prepare"
         description="Compiles the source code">
 
+        <!-- http://www.experimentalstuff.com/Technologies/JavaMake -->
+        <taskdef name="javamake"
+            classname="com.sun.tools.javamake.ant.JavaMake"
+            classpath="${build.classpath}" />
+
+        <javamake
+            srcdir="${src.dir}"
+            destdir="${build.classes.dir}"
+            pdbFilename="${build.dir}/${name}.pdb">
+            <classpath refid="build.classpath" />
+        </javamake>
+
+<!--
         <javac 
             srcdir="${src.dir}"
             destdir="${build.classes.dir}">
             <classpath refid="build.classpath" />
         </javac>
+-->
         
     </target>
 

@@ -32,13 +32,13 @@ public class RulesDocumentException
     {
     public RulesDocumentException(JDOMException jdome)
         {
-        super("Error opening rules document: " + jdome);
+        super("Error in rules document XML: " + jdome.getMessage());
         element = null;
         }
-
+    
     public RulesDocumentException(Element element, String message)
         {
-        super("Error in rules document: " + message + " (Offending element: " + element + ')');
+        super("Error in rules document XML: " + message + " (Offending element: " + element + ')');
         this.element = element;
         }
     

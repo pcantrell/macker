@@ -1,6 +1,5 @@
 version 0.4 (future):
   remaning:
-    - solidify filter syntax
     - complete basic filters
     - add reference type filters for access rules
   done:
@@ -10,6 +9,7 @@ version 0.4 (future):
     - ForEach now checks more than just the primary classes
     - severity levels allow some rules to generate only warning instead of errors
     - Macker now uses BCEL for class parsing
+    - Macker now forces validation against its internal DTD
     - verbose output shows classes in sorted order
 
 version 0.3.1:
