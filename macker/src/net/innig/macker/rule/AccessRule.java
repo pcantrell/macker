@@ -37,8 +37,9 @@ public class AccessRule
     // Constructors
     //--------------------------------------------------------------------------
 
-    public AccessRule()
+    public AccessRule(RuleSet parent)
         {
+        super(parent);
         type = AccessRuleType.DENY;
         from = to = Pattern.ALL;
         }

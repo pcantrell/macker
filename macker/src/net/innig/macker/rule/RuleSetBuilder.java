@@ -25,6 +25,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.*;
 
+import net.innig.util.EnumeratedType;
+import net.innig.util.OrderedType;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -84,6 +87,8 @@ public class RuleSetBuilder
         String name = ruleSetElem.getAttributeValue("name");
         if(name != null)
             ruleSet.setName(name);
+        
+        buildSeverity(ruleSet, ruleSetElem);
         
         for(Iterator patIter = ruleSetElem.getChildren().iterator(); patIter.hasNext(); )
             {
@@ -209,7 +214,7 @@ public class RuleSetBuilder
                 forEachElem,
                 "<var> is missing the \"value\" attribute");
         
-        return new Variable(varName, value);
+        return new Variable(parent, varName, value);
         }
     
     public ForEach buildForEach(Element forEachElem, RuleSet parent)
@@ -227,7 +232,7 @@ public class RuleSetBuilder
                 forEachElem,
                 "<foreach> is missing the \"regex\" attribute");
         
-        ForEach forEach = new ForEach();
+        ForEach forEach = new ForEach(parent);
         forEach.setVariableName(varName);
         forEach.setRegex(regex);
         forEach.setRuleSet(buildRuleSet(forEachElem, parent));
@@ -241,7 +246,7 @@ public class RuleSetBuilder
         for(Iterator childIter = ruleElem.getChildren().iterator(); childIter.hasNext(); )
             {
             Element subElem = (Element) childIter.next();
-            AccessRule accRule = new AccessRule();
+            AccessRule accRule = new AccessRule(ruleSet);
             
             if(subElem.getName().equals("allow"))
                 accRule.setType(AccessRuleType.ALLOW);
@@ -275,8 +280,28 @@ public class RuleSetBuilder
             prevRule = accRule;
             }
         if(topRule != null)
+            {
             topRule.setMessage(ruleElem.getChildText("message"));
+            buildSeverity(topRule, ruleElem);
+            }
         return topRule;
+        }
+
+    public void buildSeverity(Rule rule, Element elem)
+        throws RulesDocumentException
+        {
+        String severityS = elem.getAttributeValue("severity");
+        if(severityS != null && !"".equals(severityS))
+            {
+            RuleSeverity severity = (RuleSeverity) EnumeratedType.resolveFromName(
+                RuleSeverity.class, severityS);
+            if(severity == null)
+                throw new RulesDocumentException(
+                    elem,
+                    "Unknown severity level \"" + severityS + "\" (expected one of "
+                    + OrderedType.allTypeNamesSorted(RuleSeverity.class) + ")");
+            rule.setSeverity(severity);
+            }
         }
     
     private SAXBuilder saxBuilder;

@@ -29,22 +29,19 @@ import java.util.*;
 public class RuleSet
     extends Rule
     {
-    public RuleSet()
-        {
-        patterns = new HashMap();
-        rules = new ArrayList();
-        }
-
     public RuleSet(RuleSet parent)
         {
-        this();
-        setParent(parent);
+        super(parent);
+        patterns = new HashMap();
+        rules = new ArrayList();
         }
     
     public String getName()
         {
         if(name == null)
-            return (parent != null) ? getParent().getName() : "<anonymous ruleset>";
+            return (getParent() != null)
+                ? getParent().getName()
+                : "<anonymous ruleset>";
         return name;
         }
     
@@ -62,8 +59,8 @@ public class RuleSet
         Pattern pat = (Pattern) patterns.get(name);
         if(pat != null)
             return pat;
-        if(parent != null)
-            return parent.getPattern(name);
+        if(getParent() != null)
+            return getParent().getPattern(name);
         return null;
         }
     
@@ -88,12 +85,6 @@ public class RuleSet
     public void addRule(Rule rule)
         { rules.add(rule); }
     
-    public RuleSet getParent()
-        { return parent; }
-    
-    public void setParent(RuleSet parent)
-        { this.parent = parent; }
-
     public Pattern getSubsetPattern()
         { return subsetPat; }
     
@@ -141,7 +132,6 @@ public class RuleSet
     private String name;
     private Map/*<String,Pattern>*/ patterns;
     private Collection rules;
-    private RuleSet parent;
     private Pattern subsetPat;
     }
 

@@ -29,6 +29,9 @@ import java.util.*;
 public class ForEach
     extends Rule
     {
+    public ForEach(RuleSet parent)
+        { super(parent); }
+        
     public String getVariableName()
         { return variableName; }
     

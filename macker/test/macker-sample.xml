@@ -53,7 +53,6 @@
             <access-rule>
                 <deny>
                     <from regex="${type-class}" />
-                    <to regex="**" />
                     
                     <allow><to regex="java.**" /></allow>
                     <allow><to regex="javax.**" /></allow>
@@ -64,7 +63,7 @@
 
     </ruleset>
     
-    <ruleset name="Stupid test ruleset">
+    <ruleset name="Stupid test ruleset" severity="info">
         <subset regex="**Class*" />
             <access-rule>
                 <deny>
@@ -75,7 +74,7 @@
         
         <ruleset name="Inner stupid test ruleset">
             <subset regex="**.structure.*" />
-            <access-rule>
+            <access-rule severity="warning">
                 <deny>
                     <from regex="net.innig.macker.**" />
                     <to regex="java.lang.Object" />

@@ -29,8 +29,9 @@ import java.util.*;
 public class Variable
     extends Rule
     {
-    public Variable(String name, String value)
+    public Variable(RuleSet parent, String name, String value)
         {
+        super(parent);
         setVariableName(name);
         setValue(value);
         }

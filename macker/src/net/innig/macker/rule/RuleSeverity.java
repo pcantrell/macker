@@ -20,35 +20,24 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.ClassManager;
-import net.innig.macker.event.MackerIsMadException;
+import net.innig.util.OrderedType;
 
-public abstract class Rule
+public final class RuleSeverity
+    extends OrderedType
     {
-    public Rule(RuleSet parent)
-        { this.parent = parent; }
+    public static final RuleSeverity
+        ERROR   = new RuleSeverity("error",   "errors",    0),
+        WARNING = new RuleSeverity("warning", "warnings", -1),
+        INFO    = new RuleSeverity("info",    "info",     -2);
     
-    public RuleSet getParent()
-        { return parent; }
-
-    public RuleSeverity getSeverity()
+    public String getNamePlural()
+        { return plural; }
+    
+    private RuleSeverity(String name, String plural, int order)
         {
-        if(severity != null)
-            return severity;
-        else if(parent != null)
-            return parent.getSeverity();
-        else
-            return RuleSeverity.ERROR;
+        super(name, order);
+        this.plural = plural;
         }
-
-    public void setSeverity(RuleSeverity severity)
-        { this.severity = severity; }
-
-    public abstract void check(
-            EvaluationContext context,
-            ClassManager classes)
-        throws RulesException, MackerIsMadException;
-
-    private RuleSet parent;
-    private RuleSeverity severity;
+    
+    private transient final String plural;
     }

@@ -21,13 +21,17 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.Rule;
+import net.innig.macker.rule.RuleSeverity;
 
 import java.util.*;
 
 public class MackerIsMadEvent
     extends EventObject
     {
-    public MackerIsMadEvent(Rule rule, String description, List messages /*,severity?*/ )
+    public MackerIsMadEvent(
+            Rule rule,
+            String description,
+            List messages)
         {
         super(rule);
         this.rule = rule;
@@ -51,6 +55,11 @@ public class MackerIsMadEvent
         {
         final String CR = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
+        if(rule.getSeverity() != RuleSeverity.ERROR)
+            {
+            s.append(rule.getSeverity().getName().toUpperCase());
+            s.append(": ");
+            }
         for(Iterator i = messages.iterator(); i.hasNext(); )
             {
             s.append(i.next().toString());
@@ -65,3 +74,4 @@ public class MackerIsMadEvent
     private final String description;
     private final List messages;
     }
+

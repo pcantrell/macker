@@ -21,7 +21,8 @@
 <!ELEMENT macker (ruleset)+>
 
 <!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset|subset)*>
-<!ATTLIST ruleset name  CDATA #IMPLIED> 
+<!ATTLIST ruleset name     CDATA #IMPLIED> 
+<!ATTLIST ruleset severity CDATA #IMPLIED> 
 
 <!ELEMENT subset (include|exclude)*>
 <!ATTLIST subset pattern CDATA #IMPLIED> 
@@ -32,8 +33,9 @@
 <!ATTLIST var value CDATA #REQUIRED>
 
 <!ELEMENT foreach (pattern|foreach|access-rule)*>
-<!ATTLIST foreach var     CDATA #REQUIRED> 
-<!ATTLIST foreach regex   CDATA #REQUIRED> 
+<!ATTLIST foreach var      CDATA #REQUIRED> 
+<!ATTLIST foreach regex    CDATA #REQUIRED> 
+<!ATTLIST foreach severity CDATA #IMPLIED> 
 
 <!ELEMENT pattern (include|exclude)*>
 <!ATTLIST pattern name    CDATA #REQUIRED> 
@@ -49,6 +51,7 @@
 <!ATTLIST exclude regex   CDATA #IMPLIED> 
 
 <!ELEMENT access-rule (message?,(allow|deny)*)>
+<!ATTLIST access-rule severity CDATA #IMPLIED> 
 <!ELEMENT allow ((from?,to?|to?,from?),(allow|deny)*)>
 <!ELEMENT deny  ((from?,to?|to?,from?),(allow|deny)*)>
 <!ELEMENT from  ((include|exclude)*)>

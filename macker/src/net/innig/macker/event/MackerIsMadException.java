@@ -28,23 +28,21 @@ public class MackerIsMadException
     extends Exception
     {
     public MackerIsMadException(MackerIsMadEvent event)
-        {
-        super(BASE_MESSAGE);
-        this.events = Collections.singletonList(event);
-        }
+        { this(Collections.singletonList(event)); }
 
     public MackerIsMadException(List/*<MackerIsMadEvent>*/ events)
         {
-        super(BASE_MESSAGE + " (" + events.size() + " error" + (events.size() == 1 ? "" : "s") + ")");
+        super(BASE_MESSAGE);
         if(events.isEmpty())
             throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
         this.events = Collections.unmodifiableList(new ArrayList(events));
         }
     
     public List getEvents()
-         { return events; }
+        { return events; }
     
     private final List events;
     
     private static final String BASE_MESSAGE = "Macker rules checking failed";
     }
+

@@ -21,16 +21,22 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RuleSeverity;
 
 import java.util.*;
 
 public class ThrowingListener
     implements MackerEventListener
     {
-    public ThrowingListener(boolean throwOnFirst, boolean throwOnFinish)
+    public ThrowingListener()
+        { this(null, null); }
+    
+    public ThrowingListener(
+            RuleSeverity throwOnFirstThreshold,
+            RuleSeverity throwOnFinishThreshold)
         {
-        this.throwOnFirst = throwOnFirst;
-        this.throwOnFinish = throwOnFinish;
+        this.throwOnFirstThreshold = throwOnFirstThreshold;
+        this.throwOnFinishThreshold = throwOnFinishThreshold;
         clear();
         }
     
@@ -50,8 +56,7 @@ public class ThrowingListener
         if(ruleSet.getParent() == null)
             {
             inUse = false;
-            if(throwOnFinish)
-                timeToGetMad();
+            timeToGetMad(throwOnFinishThreshold);
             }
         }
 
@@ -61,9 +66,20 @@ public class ThrowingListener
     public void handleMackerIsMadEvent(RuleSet ruleSet, MackerIsMadEvent event)
         throws MackerIsMadException
         {
-        if(throwOnFirst)
-            throw new MackerIsMadException(event);
         events.add(event);
+
+        RuleSeverity severity = event.getRule().getSeverity();
+        if(maxSeverity == null || severity.compareTo(maxSeverity) >= 0)
+            maxSeverity = severity;
+
+        timeToGetMad(throwOnFirstThreshold);
+        }
+    
+    public void timeToGetMad(RuleSeverity threshold)
+        throws MackerIsMadException
+        {
+        if(threshold != null && maxSeverity != null && maxSeverity.compareTo(threshold) >= 0)
+            timeToGetMad();
         }
 
     public void timeToGetMad()
@@ -76,7 +92,8 @@ public class ThrowingListener
     public void clear()
         { events = new LinkedList(); }
     
-    private boolean throwOnFirst, throwOnFinish;
+    private final RuleSeverity throwOnFirstThreshold, throwOnFinishThreshold;
+    private RuleSeverity maxSeverity;
     private List events;
     private boolean inUse;
     }

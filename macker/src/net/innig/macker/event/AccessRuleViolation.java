@@ -28,11 +28,17 @@ import java.util.List;
 public class AccessRuleViolation
     extends MackerIsMadEvent
     {
-    public AccessRuleViolation(AccessRule accessRule, ClassInfo from, ClassInfo to, List messages)
+    public AccessRuleViolation(
+            AccessRule accessRule,
+            ClassInfo from,
+            ClassInfo to,
+            List messages)
         {
-        super(accessRule, "Illegal reference" + CR
+        super(accessRule,
+            "Illegal reference" + CR // hokey!!
             + "  from " + from + CR
-            + "    to " + to, messages);
+            + "    to " + to,
+            messages);
         this.accessRule = accessRule;
         this.from = from;
         this.to = to;

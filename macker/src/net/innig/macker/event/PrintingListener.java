@@ -21,10 +21,14 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RuleSeverity;
 
 import java.io.Writer;
 import java.io.PrintWriter;
 import java.io.OutputStream;
+import java.util.*;
+import net.innig.collect.MultiMap;
+import net.innig.collect.CompositeMultiMap;
 
 public class PrintingListener
     implements MackerEventListener
@@ -38,6 +42,9 @@ public class PrintingListener
     public PrintingListener(OutputStream out)
         { this.out = new PrintWriter(out, true); }
     
+    public void setThreshold(RuleSeverity threshold)
+        { this.threshold = threshold; }
+        
     public void mackerStarted(RuleSet ruleSet)
         {
         if(ruleSet.getParent() == null || ruleSet.hasName())
@@ -58,14 +65,48 @@ public class PrintingListener
     public void handleMackerIsMadEvent(RuleSet ruleSet, MackerIsMadEvent event)
         throws MackerIsMadException
         {
-        if(first)
+        eventsBySeverity.put(event.getRule().getSeverity(), event);
+        if(event.getRule().getSeverity().compareTo(threshold) >= 0)
             {
-            out.println();
-            first = false;
+            if(first)
+                {
+                out.println();
+                first = false;
+                }
+            out.println(event.toStringVerbose());
             }
-        out.println(event.toStringVerbose());
         }
     
+    public void printSummary()
+        {
+        boolean firstSeverity = true;
+        List severities = new ArrayList(eventsBySeverity.keySet());
+        Collections.reverse(severities);
+        for(Iterator i = severities.iterator(); i.hasNext(); )
+            {
+            RuleSeverity severity = (RuleSeverity) i.next();
+            Collection eventsForSev = eventsBySeverity.get(severity);
+            if(eventsForSev.size() > 0)
+                {
+                if(firstSeverity)
+                    out.print("(");
+                else
+                    out.print(", ");
+                firstSeverity = false;
+                out.print(eventsForSev.size());
+                out.print(' ');
+                out.print((eventsForSev.size() == 1)
+                    ? severity.getName()
+                    : severity.getNamePlural());
+                }
+            }
+        if(!firstSeverity)
+            out.println(')');
+        }
+        
     private boolean first;
     private PrintWriter out;
+    private RuleSeverity threshold = RuleSeverity.WARNING;
+    private final MultiMap eventsBySeverity = new CompositeMultiMap(TreeMap.class, HashSet.class);
     }
+

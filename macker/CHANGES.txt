@@ -1,4 +1,5 @@
-    - parsing support several new class attributes
+    - parsing for superclass, interfaces, access modifiers
+    - severity levels
     - verbose output shows classes in sorted order
 
 version 0.3.1:
