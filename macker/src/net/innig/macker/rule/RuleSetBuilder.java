@@ -36,20 +36,36 @@ public class RuleSetBuilder
         { saxBuilder = new SAXBuilder(false); }
         
     public Collection/*<RuleSet>*/ build(InputStream is)
-        throws JDOMException, RulesException
-        { return build(saxBuilder.build(is)); }
+        throws RulesException
+        {
+        try { return build(saxBuilder.build(is)); }
+        catch(JDOMException jdome)
+            { throw new RulesDocumentException(jdome); }
+        }
 
     public Collection/*<RuleSet>*/ build(Reader reader)
-        throws JDOMException, RulesException
-        { return build(saxBuilder.build(reader)); }
+        throws RulesException
+        {
+        try { return build(saxBuilder.build(reader)); }
+        catch(JDOMException jdome)
+            { throw new RulesDocumentException(jdome); }
+        }
 
     public Collection/*<RuleSet>*/ build(File file)
-        throws JDOMException, RulesException
-        { return build(saxBuilder.build(file)); }
+        throws RulesException
+        {
+        try { return build(saxBuilder.build(file)); }
+        catch(JDOMException jdome)
+            { throw new RulesDocumentException(jdome); }
+        }
 
     public Collection/*<RuleSet>*/ build(String fileName)
-        throws JDOMException, RulesException
-        { return build(saxBuilder.build(fileName)); }
+        throws RulesException
+        {
+        try { return build(saxBuilder.build(fileName)); }
+        catch(JDOMException jdome)
+            { throw new RulesDocumentException(jdome); }
+        }
 
     public Collection/*<RuleSet>*/ build(Document doc)
         throws RulesException

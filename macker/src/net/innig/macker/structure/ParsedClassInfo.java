@@ -37,27 +37,39 @@ public class ParsedClassInfo
     extends ClassInfo
     {
     public ParsedClassInfo(File classFile)
-        throws IOException, InvalidByteCodeException
-        { this(ClassFileReader.readFromFile(classFile)); }
+        throws IOException, ClassParseException
+        {
+        try { init(ClassFileReader.readFromFile(classFile)); }
+        catch(InvalidByteCodeException ibce)
+            { throw new ClassParseException (ibce); }
+        }
     
     public ParsedClassInfo(InputStream classFileStream)
-        throws IOException, InvalidByteCodeException
-        { this(ClassFileReader.readFromInputStream(classFileStream)); }
-    
-    private ParsedClassInfo(ClassFile classFile)
-        throws InvalidByteCodeException
+        throws IOException, ClassParseException
         {
-        CPInfo[] constantPool = classFile.getConstantPool();
-        className =
-            ClassNameTranslator.typeConstantToClassName(
-                ((ConstantClassInfo) constantPool[classFile.getThisClass()]).getName());
-        references = new TreeSet();
-        for(int n = 1; n < constantPool.length; n++)
-            if(constantPool[n] instanceof ConstantClassInfo)
-                references.add(
-                    ClassNameTranslator.typeConstantToClassName(
-                        ((ConstantClassInfo) constantPool[n]).getName()));
-        references = Collections.unmodifiableSet(references);
+        try { init(ClassFileReader.readFromInputStream(classFileStream)); }
+        catch(InvalidByteCodeException ibce)
+            { throw new ClassParseException (ibce); }
+        }
+    
+    private void init(ClassFile classFile)
+        throws ClassParseException
+        {
+        try {
+            CPInfo[] constantPool = classFile.getConstantPool();
+            className =
+                ClassNameTranslator.typeConstantToClassName(
+                    ((ConstantClassInfo) constantPool[classFile.getThisClass()]).getName());
+            references = new TreeSet();
+            for(int n = 1; n < constantPool.length; n++)
+                if(constantPool[n] instanceof ConstantClassInfo)
+                    references.add(
+                        ClassNameTranslator.typeConstantToClassName(
+                            ((ConstantClassInfo) constantPool[n]).getName()));
+            references = Collections.unmodifiableSet(references);
+            }
+        catch(InvalidByteCodeException ibce)
+            { throw new ClassParseException(ibce); }
         }
     
     public String getClassName()
@@ -72,6 +84,4 @@ public class ParsedClassInfo
     public String className;
     private Set/*<String>*/ references;
     }
-
-
 

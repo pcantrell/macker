@@ -27,6 +27,8 @@ import net.innig.macker.event.*;
 import net.innig.collect.*;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.*;
 
 import org.jdom.input.SAXBuilder;
@@ -36,6 +38,10 @@ import org.jdom.input.SAXBuilder;
 */
 public class Macker
     {
+    //------------------------------------------------------------------------
+    // Static
+    //------------------------------------------------------------------------
+    
     public static void main(String[] args)
         throws Exception
         {
@@ -43,10 +49,7 @@ public class Macker
             {
             // Parse args
             
-            ClassManager cm = new ClassManager();
-            List rulesFiles = new ArrayList();
-            Map vars = new HashMap();
-            boolean verbose = false;
+           	Macker macker = new Macker();
             
             boolean nextIsRule = false;
             for(int arg = 0; arg < args.length; arg++)
@@ -55,7 +58,7 @@ public class Macker
                 || args[arg].equals("-help")
                 || args[arg].equals("--help"))
                     {
-                    usage();
+                    commandLineUsage();
                     return;
                     }
                 else if(args[arg].equals("-V") || args[arg].equals("--version"))
@@ -68,7 +71,7 @@ public class Macker
                     return;
                     }
                 else if(args[arg].equals("-v") || args[arg].equals("--verbose"))
-                    verbose = true;
+                    macker.setVerbose(true);
                 else if(args[arg].startsWith("-D"))
                     {
                     int initialPos = 0, equalPos;
@@ -81,96 +84,47 @@ public class Macker
                     if(equalPos == -1)
                         {
                         System.out.println("-D argument doesn't have name=value form: " + args[arg]);
-                        usage();
+                        commandLineUsage();
                         return;
                         }
                     String varName = args[arg].substring(initialPos, equalPos);
                     String value   = args[arg].substring(equalPos + 1);
-                    vars.put(varName, value);
+                    macker.setVariable(varName, value);
                     }
                 else if(args[arg].equals("-r"))
                     nextIsRule = true;
                 else if(args[arg].endsWith(".xml") || nextIsRule)
                     {
-                    rulesFiles.add(new File(args[arg]));
+                    macker.addRulesFile(new File(args[arg]));
                     nextIsRule = false;
                     }
                 else if(args[arg].endsWith(".class"))
-                    cm.addClass(new ParsedClassInfo(new File(args[arg])), true);
+                    macker.addClass(new File(args[arg]));
                 else
                     {
                     System.out.println();
                     System.out.println("macker: Unknown file type: " + args[arg]);
                     System.out.println("(expected .class or .xml)");
-                    usage();
+                    commandLineUsage();
                     return;
                     }
                 }
             
-            if(rulesFiles.isEmpty())
+            if(!macker.hasRules())
                 {
                 System.out.println("WARNING: No rules files specified");
-                usage();
+                commandLineUsage();
                 return;
                 }
             
-            if(cm.getPrimaryClasses().isEmpty())
+            if(!macker.hasClasses())
                 {
                 System.out.println("WARNING: No class files specified");
-                usage();
+                commandLineUsage();
                 return;
                 }
             
-            // Parsing class file
-            
-            if(verbose)
-                {
-                System.out.println(cm.getPrimaryClasses().size() + " primary classes");
-                System.out.println(cm.getAllClassNames().size() + " total classes");
-                System.out.println(cm.getReferences().size() + " references");
-                
-                for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
-                    {
-                    ClassInfo classInfo = (ClassInfo) i.next();
-                    System.out.println("Classes used by " + classInfo + ":");
-                    for(Iterator usedIter = classInfo.getReferences().iterator(); usedIter.hasNext(); )
-                        System.out.println("    " + usedIter.next());
-                    System.out.println();
-                    }
-                }
-            
-            for(Iterator rfIter = rulesFiles.iterator(); rfIter.hasNext(); )
-                {
-                File rulesFile = (File) rfIter.next();
-                if(verbose)
-                    System.out.println("Reading " + rulesFile + " ...");
-                Collection ruleSets = new RuleSetBuilder().build(rulesFile);
-                for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
-                    {
-                    RuleSet rs = (RuleSet) rsIter.next();
-                    
-                    if(verbose)
-                        for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
-                            {
-                            final Pattern pat = (Pattern) patIter.next();
-                            final EvaluationContext ctx = new EvaluationContext(rs);
-                            System.out.println("matching " + pat);
-                            for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
-                                {
-                                ClassInfo classInfo = (ClassInfo) i.next();
-                                if(pat.matches(ctx, classInfo))
-                                    System.out.println("    " + classInfo);
-                                }
-                            System.out.println();
-                            }
-                    
-                    EvaluationContext context = new EvaluationContext(rs);
-                    context.setVariables(vars);
-                    context.addListener(new PrintingListener(System.out));
-                    context.addListener(new ThrowingListener(false));
-                    rs.check(context, cm);
-                    }
-                }
+            macker.check();
             }
         catch(MackerIsMadException mime)
             { System.exit(2); }
@@ -180,13 +134,108 @@ public class Macker
             throw e;
             }
         }
-        
-    public static void usage()
+    
+    public static void commandLineUsage()
         {
         System.out.println("arguments:");
         System.out.println("    macker [-V|--version] [-v|--verbose] [-D var=value]* [-r rulesfile]* classes");
 //      System.out.println("    macker [javalib.jar]+");
         }
+    
+    //------------------------------------------------------------------------
+    // Instance
+    //------------------------------------------------------------------------
+    
+    public Macker()
+        {
+    	cm = new ClassManager();
+    	ruleSets = new ArrayList();
+    	vars = new HashMap();
+    	verbose = false;
+        }
+    
+    public void addClass(File classFile)
+        throws IOException, ClassParseException
+        { cm.addClass(new ParsedClassInfo(classFile), true); }
+    
+    public void addClass(InputStream classFile)
+        throws IOException, ClassParseException
+        { cm.addClass(new ParsedClassInfo(classFile), true); }
+    
+    public boolean hasClasses()
+        { return !cm.getPrimaryClasses().isEmpty(); }
+    
+    public void addRulesFile(File rulesFile)
+        throws IOException, RulesException
+        { ruleSets.addAll(new RuleSetBuilder().build(rulesFile)); }
+    
+    public void addRulesFile(InputStream rulesFile)
+        throws IOException, RulesException
+        { ruleSets.addAll(new RuleSetBuilder().build(rulesFile)); }
+
+    public void addRuleSet(RuleSet ruleSet)
+        throws IOException, RulesException
+        { ruleSets.add(ruleSet); }
+    
+    public boolean hasRules()
+        { return !ruleSets.isEmpty(); }
+    
+    public void setVariable(String name, String value)
+        { vars.put(name, value); }
+    
+    public void setVerbose(boolean verbose)
+        { this.verbose = verbose; }
+    
+    public void check()
+        throws MackerIsMadException, RulesException
+        {
+        if(verbose)
+            {
+            System.out.println(cm.getPrimaryClasses().size() + " primary classes");
+            System.out.println(cm.getAllClassNames().size() + " total classes");
+            System.out.println(cm.getReferences().size() + " references");
+            
+            for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
+                {
+                ClassInfo classInfo = (ClassInfo) i.next();
+                System.out.println("Classes used by " + classInfo + ":");
+                for(Iterator usedIter = classInfo.getReferences().iterator(); usedIter.hasNext(); )
+                    System.out.println("    " + usedIter.next());
+                System.out.println();
+                }
+            }
+
+        for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
+            {
+            RuleSet rs = (RuleSet) rsIter.next();
+            
+            if(verbose)
+                for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
+                    {
+                    final Pattern pat = (Pattern) patIter.next();
+                    final EvaluationContext ctx = new EvaluationContext(rs);
+                    System.out.println("matching " + pat);
+                    for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
+                        {
+                        ClassInfo classInfo = (ClassInfo) i.next();
+                        if(pat.matches(ctx, classInfo))
+                            System.out.println("    " + classInfo);
+                        }
+                    System.out.println();
+                    }
+            
+            EvaluationContext context = new EvaluationContext(rs);
+            context.setVariables(vars);
+            context.addListener(new PrintingListener(System.out));
+            context.addListener(new ThrowingListener(false));
+            rs.check(context, cm);
+            }
+        }
+
+    private ClassManager cm;
+    private Collection/*<RuleSet>*/ ruleSets;
+    private Map/*<String,String>*/ vars;
+    private boolean verbose;
     }
 
 
