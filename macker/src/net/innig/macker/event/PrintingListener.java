@@ -23,7 +23,7 @@ public class PrintingListener
         if(ruleSet.getParent() == null)
             {
             out.println();
-            out.println("Checking Macker ruleset: " + ruleSet.getName() + " ...");
+            out.println("Checking ruleset: " + ruleSet.getName() + " ...");
             first = true;
             }
         }

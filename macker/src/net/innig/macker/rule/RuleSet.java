@@ -71,7 +71,7 @@ public class RuleSet
         { this.parent = parent; }
     
     public String toString()
-        { return getClass().getName() + '[' + name + ']'; }
+        { return getClass().getName() + '[' + name + ", parent=" + getParent() + ']'; }
 
     public void check(EvaluationContext context, ClassManager classes)
         throws RulesException, MackerIsMadException

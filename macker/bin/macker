@@ -1,0 +1,21 @@
+#!/bin/sh
+
+macker_home=$(dirname "$0")/..
+build_classes="$macker_home/build/classes"
+jar="$macker_home/build/macker.jar"
+
+if [ -d "$build_classes" ]; then
+    cp=$build_classes
+else if [ -f "$jar" ]; then
+    cp=$jar
+else
+    echo "Cannot resolve macker's classpath" >&2
+    echo "(looking for $build_classes or $jar)" >&2
+    exit 1
+fi;fi
+
+for lib in "$macker_home/lib/"*; do
+    cp="$cp:$lib"
+done
+
+java -cp "$cp:$CLASSPATH" net.innig.macker.Macker "$@"

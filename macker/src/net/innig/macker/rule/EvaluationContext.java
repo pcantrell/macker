@@ -51,37 +51,51 @@ public class EvaluationContext
         { listeners.remove(listener); }
     
     public void broadcastStarted()
+        { broadcastStarted(getRuleSet()); }
+        
+    protected void broadcastStarted(RuleSet targetRuleSet)
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerStarted(ruleSet);
+            ((MackerEventListener) i.next()).mackerStarted(targetRuleSet);
         if(getParent() != null)
-            getParent().broadcastStarted();
+            getParent().broadcastStarted(targetRuleSet);
         }
     
     public void broadcastFinished()
         throws MackerIsMadException
+        { broadcastFinished(getRuleSet()); }
+        
+    protected void broadcastFinished(RuleSet targetRuleSet)
+        throws MackerIsMadException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerFinished(ruleSet);
+            ((MackerEventListener) i.next()).mackerFinished(targetRuleSet);
         if(getParent() != null)
-            getParent().broadcastFinished();
+            getParent().broadcastFinished(targetRuleSet);
         }
     
     public void broadcastAborted()
+        { broadcastAborted(getRuleSet()); }
+        
+    protected void broadcastAborted(RuleSet targetRuleSet)
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerAborted(ruleSet);
+            ((MackerEventListener) i.next()).mackerAborted(targetRuleSet);
         if(getParent() != null)
-            getParent().broadcastAborted();
+            getParent().broadcastAborted(targetRuleSet);
         }
     
     public void broadcastEvent(MackerIsMadEvent event)
         throws MackerIsMadException
+        { broadcastEvent(event, getRuleSet()); }
+        
+    protected void broadcastEvent(MackerIsMadEvent event, RuleSet targetRuleSet)
+        throws MackerIsMadException
         {
         for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).handleMackerIsMadEvent(ruleSet, event);
+            ((MackerEventListener) i.next()).handleMackerIsMadEvent(targetRuleSet, event);
         if(getParent() != null)
-            getParent().broadcastEvent(event);
+            getParent().broadcastEvent(event, targetRuleSet);
         }
         
     private RuleSet ruleSet;

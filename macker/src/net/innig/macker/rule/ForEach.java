@@ -37,17 +37,24 @@ public class ForEach
         throws RulesException, MackerIsMadException
         {
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
-
+        
+        Set varValues = new TreeSet();
         for(Iterator i = classes.getPrimaryClasses().iterator(); i.hasNext(); )
             {
             ClassInfo classInfo = (ClassInfo) i.next();
             String varValue = regexPat.getParen(parentContext, classInfo);
-            if(varValue != null)	
-                {
-                System.out.println("Checking " + getVariableName() + " = \"" + varValue + "\" ...");
-                context.setVariableValue(getVariableName(), varValue);
-                ruleSet.check(context, classes);
-                }
+            if(varValue != null)
+                varValues.add(varValue);
+            }
+            
+        for(Iterator i = varValues.iterator(); i.hasNext(); )
+            {
+            String varValue = (String) i.next();
+            for(RuleSet rs = ruleSet.getParent(); rs != null; rs = rs.getParent())
+                System.out.print("  ");
+            System.out.println(getVariableName() + " = \"" + varValue + "\"");
+            context.setVariableValue(getVariableName(), varValue);
+            ruleSet.check(context, classes);
             }
         }
     

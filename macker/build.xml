@@ -142,6 +142,51 @@
     </target>
 
     <!-- ================================================================= -->
+    <!-- test:                                                             -->
+    <!-- Runs JUnit test suites                                            -->
+    <!-- ================================================================= -->
+
+    <target name="compile-tests"
+        depends="build">
+        
+        <javac 
+            srcdir="${test.dir}"
+            destdir="${build.test.dir}"
+            debug="yes">
+            <classpath refid="run.classpath" />
+        </javac>
+        
+    </target>
+    
+    <target name="test"
+        depends="compile-tests"
+        description="Runs JUnit test suites">
+        
+        <taskdef name="junit"
+            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+            classpath="${test.junit.lib}"/>
+        
+        <junit
+            printsummary="${test.printsummary}"
+            timeout="${test.timeout}"
+            haltonerror="yes"
+            haltonfailure="yes"
+            fork="yes">
+            
+            <formatter type="plain" usefile="no" />
+            <classpath refid="test.classpath" />
+
+            <batchtest>
+                <fileset dir="${test.dir}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+
+        </junit>
+
+    </target>
+
+    <!-- ================================================================= -->
     <!-- javadoc:                                                          -->
     <!-- Generates javadoc                                                 -->
     <!-- ================================================================= -->
