@@ -20,8 +20,12 @@
 
 <!ELEMENT macker (ruleset)+>
 
-<!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset)*>
+<!ELEMENT ruleset (pattern|access-rule|var|foreach|ruleset|subset)*>
 <!ATTLIST ruleset name  CDATA #IMPLIED> 
+
+<!ELEMENT subset (include|exclude)*>
+<!ATTLIST subset pattern CDATA #IMPLIED> 
+<!ATTLIST subset regex   CDATA #IMPLIED> 
 
 <!ELEMENT var EMPTY>
 <!ATTLIST var name  CDATA #REQUIRED>

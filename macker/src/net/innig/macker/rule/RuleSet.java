@@ -22,6 +22,7 @@ package net.innig.macker.rule;
 
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassManager;
+import net.innig.macker.structure.ClassInfo;
 
 import java.util.*;
 
@@ -49,6 +50,9 @@ public class RuleSet
     
     public void setName(String name)
         { this.name = name; }
+    
+    public boolean hasName()
+        { return name != null; }
     
     public boolean declaresPattern(String name)
         { return patterns.keySet().contains(name); }
@@ -89,9 +93,22 @@ public class RuleSet
     
     public void setParent(RuleSet parent)
         { this.parent = parent; }
+
+    public Pattern getSubsetPattern()
+        { return subsetPat; }
     
-    public String toString()
-        { return getClass().getName() + '[' + name + ", parent=" + getParent() + ']'; }
+    public void setSubsetPattern(Pattern subsetPat)
+        { this.subsetPat = subsetPat; }
+    
+    public boolean isInSubset(EvaluationContext context, ClassInfo classInfo)
+        throws RulesException
+        {
+        if(subsetPat != null && !subsetPat.matches(context, classInfo))
+            return false;
+        if(getParent() != null)
+            return getParent().isInSubset(context, classInfo);
+        return true;
+        }
 
     public void check(
             EvaluationContext parentContext,
@@ -118,10 +135,14 @@ public class RuleSet
             }
         }
     
+    public String toString()
+        { return getClass().getName() + '[' + name + ", parent=" + getParent() + ']'; }
+    
     private String name;
     private Map/*<String,Pattern>*/ patterns;
     private Collection rules;
     private RuleSet parent;
+    private Pattern subsetPat;
     }
 
 

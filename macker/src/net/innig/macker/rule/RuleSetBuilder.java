@@ -99,6 +99,14 @@ public class RuleSetBuilder
 
                 ruleSet.setPattern(patternName, buildPattern(subElem, ruleSet, true));
                 }
+            else if(subElemName.equals("subset"))
+                {
+                if(ruleSet.getSubsetPattern() != null)
+                    throw new RulesDocumentException(
+                        subElem,
+                        "<ruleset> may only contain a single <subset> element");
+                ruleSet.setSubsetPattern(buildPattern(subElem, ruleSet, true));
+                }
             else if(subElemName.equals("access-rule"))
                 ruleSet.addRule(buildAccessRule(subElem, ruleSet));
             else if(subElemName.equals("var"))

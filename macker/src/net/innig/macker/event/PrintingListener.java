@@ -40,7 +40,7 @@ public class PrintingListener
     
     public void mackerStarted(RuleSet ruleSet)
         {
-        if(ruleSet.getParent() == null)
+        if(ruleSet.getParent() == null || ruleSet.hasName())
             {
             out.println();
             out.println("Checking ruleset: " + ruleSet.getName() + " ...");

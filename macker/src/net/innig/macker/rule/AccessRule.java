@@ -113,6 +113,8 @@ public class AccessRule
             ClassInfo to   = classes.getClassInfo((String) entry.getValue());
             if(from == to)
                 continue;
+            if(!context.getRuleSet().isInSubset(context, from))
+                continue;
 
             if(!checkAccess(context, from, to))
                 context.broadcastEvent(

@@ -65,12 +65,23 @@
     </ruleset>
     
     <ruleset name="Stupid test ruleset">
-        <access-rule>
-            <deny>
-                <from regex="net.innig.macker.Macker" />
-                <to regex="java.net.Socket" />
-            </deny>
-        </access-rule>
+        <subset regex="**Class*" />
+            <access-rule>
+                <deny>
+                    <from regex="net.innig.macker.**" />
+                    <to regex="java.lang.Object" />
+                </deny>
+            </access-rule>
+        
+        <ruleset name="Inner stupid test ruleset">
+            <subset regex="**.structure.*" />
+            <access-rule>
+                <deny>
+                    <from regex="net.innig.macker.**" />
+                    <to regex="java.lang.Object" />
+                </deny>
+            </access-rule>
+        </ruleset>
     </ruleset>
         
 </macker>

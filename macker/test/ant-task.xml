@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
-<project name="Macker Ant Task Test" default="test-ant-task" basedir="..">
+<project name="Macker Ant Task Test" default="go" basedir="..">
 
-    <target name="prepare">
+    <target name="go">
 
         <path id="run.classpath">
             <pathelement location="build/classes" />
