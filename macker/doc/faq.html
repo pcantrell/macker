@@ -30,10 +30,12 @@
 <li> <a href="#capabilities">What sorts of rules can Macker check?</a>
 <li> <a href="#similar">How is Macker like / unlike similar products?</a>
 <li> <a href="#license">How is Macker licensed?</a>
+<li> <a href="#status">What is its status?  Is it ready for real-world use?</a>
 <li> <a href="#download">Where do I get it?</a>
 <li> <a href="#instructions">How do I use it?</a>
-<li> <a href="#status">What is its status?  Is it ready for real-world use?</a>
 <li> <a href="#example">Are there examples?</a>
+<li> <a href="#help">Where can I get help using Macker?</a>
+<li> <a href="#contribute">Can I contribute to the project?</a>
 <li> <a href="#name">What does the name "Macker" mean?</a>
 <li> <a href="#who">Who wrote Macker?</a>
 </ul>
@@ -82,12 +84,20 @@ Future versions will support more sophisticated matching class matching, existen
 
 <h3><a name="similar">How is Macker like / unlike similar products?</a></h3>
 <p>
-There are several lint checkers and style checkers available for Java, such as <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>, <a href="http://jcsc.sourceforge.net/">JCSC</a>, which verify that code adheres to formatting, naming, and style conventions.  (The nascent project <a href="http://sourceforge.net/projects/testpattern/">TestPattern</a> also seems to belong in this category.)  These projects also sometimes flag potential errors (such as empty catch blocks), a task which <a href="http://pmd.sourceforge.net/">PMD</a> is specially designed for.
+There are several lint checkers and style checkers available for Java, such as <a href="http://checkstyle.sourceforge.net/">Checkstyle</a> and <a href="http://jcsc.sourceforge.net/">JCSC</a>, which verify that code adheres to formatting, naming, and style conventions.  (The nascent project <a href="http://sourceforge.net/projects/testpattern/">TestPattern</a> also seems to belong in this category.)  These projects also sometimes flag potential errors (such as empty catch blocks), a task which <a href="http://pmd.sourceforge.net/">PMD</a> is specially designed for.
 <p>
 Macker is, for the most part, complementary to these tools: they operate on source code, mostly one file at a time, and deal with line-by-line implementation details; Macker operates on compiled classes, taken all at once, and focuses on large-scale structure.  Macker can't catch misnamed local variables, misplaced braces, or empty catch blocks; conversely, these other tools aren't very good for expressing and checking architecture-level code structure.
 Putting it differently, these other tools live in the realm of the <a href="http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html">Java coding conventions</a>, and Macker lives in the realm of the <a href="http://java.sun.com/blueprints/">Java Blueprints</a>. This is why Macker's rules files must be entirely project-specific -- there is no single "Java architecture".
 <p>
 At the time of this writing (August 2003), the only other project we're aware of that fits the same niche as Macker is <a href="http://patterntesting.sourceforge.net/">PatternTesting</a>.  The project's online documentation is a bit thin -- it appears to be built on top of AspectJ, and use aspects to declare rules.  Intriguing!
+
+<h3><a name="status">What is its status?  Is it ready for real-world use?</a></h3>
+<p>
+Macker is quite stable, and reasonably bug-free.  It's certainly suitable for real-world use.
+<p>
+The reason for the pre-1.0 version number is that there are still some fairly serious feature gaps.  For example, you can only currently apply access rules to classes, and not methods.
+<p>
+So basically, you'll find that Macker doesn't do everything you want -- but what it does do, it does well.
 
 <h3><a name="license">How is Macker licensed?</a></h3>
 <p>
@@ -104,25 +114,27 @@ You can download binaries, source code, and this documentation from the <a href=
 Very briefly:
 <ul>
 <li> Download Macker.
-<li> Write a rules file.
+<li> Write a rules file (like <a href="example/layering/src/macker.xml">this one</a>, for example).
 <li> Add macker to your Ant build.xml, your makefile, or your IDE's list of external tasks -- or just run it from the command line.
 </ul>
 <p>
 See the <a href="guide/index.html">guide</a> for the juicy details.
-
-<h3><a name="status">What is its status?  Is it ready for real-world use?</a></h3>
-<p>
-Macker is quite stable, and reasonably bug-free.  It's certainly suitable for real-world use.
-<p>
-The reason for the pre-1.0 version number is that there are still some fairly serious feature gaps.  For example, you can only currently apply access rules to classes, and not methods.
-<p>
-So basically, you'll find that Macker doesn't do everything you want -- but what it does do, it does well.
 
 <h3><a name="example">Are there examples?</a></h3>
 <p>
 <a href="example/index.html">Here's a few</a> to get you started.  You'll also find some sprinkled throughout the <a href="guide/index.html">user's guide</a>.
 <p>
 If you have other examples you'd like share with the world, <a href="contact.html">send them along</a>!
+
+<h3><a name="help">Where can I get help using Macker?</a></h3>
+<p>
+Subscribe to the <a href="http://lists.sourceforge.net/lists/listinfo/macker-user">user mailing list</a>.  It's not terribly high-traffic, and questions generally get answered quickly.
+
+<h3><a name="contribute">Can I contribute to the project?</a></h3>
+<p>
+Yes please! There are <i>always</i> open tasks in need of <b>developers</b>.  It's also important not to underestimate the importance of bug reports and feature suggestions from <b>users</b> -- if you don't tell us, we won't know.  Finally, Macker needs <b>evangelists</b> -- so mention it to your programmer friends, work it into your own projects, write an article on it, spread the word!
+<p>
+<a href="contact.html">Contact us</a>.
 
 <h3><a name="name">What does the name "Macker" mean?</a></h3>
 <p>
