@@ -21,8 +21,7 @@
 package net.innig.macker.structure;
 
 import java.util.Set;
-import net.innig.collect.InnigCollections;
-import net.innig.collect.MultiMap;
+import net.innig.collect.*;
 
 public abstract class ClassInfo
     implements Comparable
@@ -31,6 +30,30 @@ public abstract class ClassInfo
         {
         String className = getClassName();
         return className.substring(className.lastIndexOf('.') + 1);
+        }
+    
+    public Set/*<String>*/ getDirectSupertypes()
+        {
+        if(allDirectSuper == null)
+            {
+            Set newAllDirectSuper = new HashSet(getImplements());
+            newAllDirectSuper.add(getExtends());
+            allDirectSuper = newAllDirectSuper; // failure atomicity
+            }
+        return allDirectSuper;
+        }
+    
+    public Set/*<String>*/ getSupertypes()
+        {
+        if(allSuper == null)
+            allSuper = Graphs.reachableNodes(
+                this,
+                new GraphWalker()
+                    {
+                    public Set reachableNodes(Object node)
+                        { return ((ClassInfo) node).getAllDirectSuper(); }
+                    } );
+        return allSuper;
         }
     
     /** Compares fully qualified class names;
@@ -60,5 +83,7 @@ public abstract class ClassInfo
     public abstract String getExtends();
     public abstract Set/*<String>*/ getImplements();
     public abstract MultiMap/*<String,Reference>*/ getReferences();
+    
+    private Set allSuper, allDirectSuper;
     }
 

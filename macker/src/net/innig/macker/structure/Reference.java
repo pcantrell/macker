@@ -67,9 +67,9 @@ public final class Reference
             return false;
         if(this.memberAccess == null && thatRef.memberAccess != null)
             return false;
-        return this.from         .equals(thatRef.from)
-            && this.to           .equals(thatRef.to)
-            && this.type         .equals(thatRef.type);
+        return this.from.equals(thatRef.from)
+            && this.to  .equals(thatRef.to)
+            && this.type.equals(thatRef.type);
         }
     
     public int hashCode()
@@ -93,3 +93,4 @@ public final class Reference
     private final String memberName;
     private final AccessModifier memberAccess;
     }
+
