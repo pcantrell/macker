@@ -37,6 +37,7 @@ public class AccessFilter
         {
         if(params.size() != 0)
             throw new FilterSyntaxException(
+                this,
                 options.get("filter") + " expects no parameters, but has " + params.size());
 
         String
@@ -48,13 +49,15 @@ public class AccessFilter
             
         if(maxS == null && minS == null)
             throw new FilterSyntaxException(
-                options.get("filter") + " requires a \"max\" or \"min\" option (or both)");
+                this, options.get("filter") + " requires a \"max\" or \"min\" option (or both)");
         if(max == null && maxS != null)
             throw new FilterSyntaxException(
+                this, 
                 '"' + maxS + "\" is not a valid access level; expected one of: "
                 + AccessModifier.allTypesSorted(AccessModifier.class));
         if(min == null && minS != null)
             throw new FilterSyntaxException(
+                this, 
                 '"' + minS + "\" is not a valid access level; expected one of: "
                 + AccessModifier.allTypesSorted(AccessModifier.class));
         

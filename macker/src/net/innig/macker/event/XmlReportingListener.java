@@ -1,6 +1,7 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.RuleSet;
+import net.innig.macker.structure.ClassInfo;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -109,11 +110,10 @@ public class XmlReportingListener
             handleEventBasics(violationElem, violation);
             
             Element fromElem = new Element("from");
-            fromElem.setText(violation.getFrom().getClassName());
+            Element   toElem = new Element("to");
+            describeClass(fromElem, violation.getFrom());
+            describeClass(  toElem, violation.getTo());
             violationElem.addContent(fromElem);
-            
-            Element toElem = new Element("to");
-            toElem.setText(violation.getTo().getClassName());
             violationElem.addContent(toElem);
             
             curElem.addContent(violationElem);
@@ -130,6 +130,19 @@ public class XmlReportingListener
             messageElem.setText(message);
             elem.addContent(messageElem);
             }
+        }
+    
+    private void describeClass(Element classInfoElem, ClassInfo classInfo)
+        {
+        Element fullElem = new Element("full-name");
+        Element classElem = new Element("class");
+        Element packElem = new Element("package");
+        fullElem.setText(classInfo.getClassName());
+        classElem.setText(classInfo.getClassNameShort());
+        packElem.setText(classInfo.getPackageName());
+        classInfoElem.addContent(fullElem);
+        classInfoElem.addContent(classElem);
+        classInfoElem.addContent(packElem);
         }
     
     public String toString()

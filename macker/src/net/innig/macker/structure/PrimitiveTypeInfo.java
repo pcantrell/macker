@@ -60,6 +60,7 @@ public final class PrimitiveTypeInfo
     
     public String getClassName()      { return getName(); }
     public String getClassNameShort() { return getName(); }
+    public String getPackageName()    { return null; }
     
     public boolean isInterface() { return false; }
     public boolean isAbstract()  { return false; }

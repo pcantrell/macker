@@ -25,6 +25,14 @@ import net.innig.macker.rule.RulesException;
 public class FilterSyntaxException
     extends RulesException
     {
-    public FilterSyntaxException(String message)
-        { super(message); }
+    public FilterSyntaxException(Filter filter, String message)
+        {
+        super(message);
+        this.filter = filter;
+        }
+    
+    public Filter getFilter()
+        { return filter; }
+    
+    private final Filter filter;
     }

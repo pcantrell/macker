@@ -34,6 +34,7 @@ public interface ClassInfo
 
     public String getClassName();
     public String getClassNameShort();
+    public String getPackageName();
 
     public boolean isInterface();
     public boolean isAbstract();

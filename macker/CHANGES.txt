@@ -3,6 +3,7 @@ VERSION HISTORY
 version 0.4 (in development):
   remaning:
     - complete basic filters
+    - finalize filter syntax (multiple pattern params?)
     - add reference type filters for access rules?
     - document new features
     - regression tests?

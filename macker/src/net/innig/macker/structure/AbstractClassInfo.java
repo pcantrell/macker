@@ -34,6 +34,12 @@ public abstract class AbstractClassInfo
         String className = getClassName();
         return className.substring(className.lastIndexOf('.') + 1);
         }
+        
+    public String getPackageName()
+        {
+        String className = getClassName();
+        return className.substring(0, className.lastIndexOf('.'));
+        }
     
     public Set/*<ClassInfo>*/ getDirectSupertypes()
         {
