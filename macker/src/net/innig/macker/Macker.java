@@ -62,7 +62,9 @@ public class Macker
                     {
                     Properties p = new Properties();
                     p.load(Macker.class.getClassLoader().getResourceAsStream("net/innig/macker/version.properties"));
-                    System.out.println("Macker version " + p.get("macker.version"));
+                    System.out.println("Macker " + p.get("macker.version.long"));
+                    System.out.println("http://innig.net/macker/");
+                    System.out.println("Licensed under GPL v2.1; see LICENSE.html");
                     return;
                     }
                 else if(args[arg].equals("-v") || args[arg].equals("--verbose"))

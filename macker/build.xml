@@ -58,11 +58,11 @@
         <property name="run.classpath" refid="run.classpath" />
 
         <tstamp><format property="timestamp" pattern="yyyy/MM/dd HH:mm:ss z" locale="en"/></tstamp>
-        <condition property="dist.version.short" value="${dist.version}">
+        <condition property="dist.version.long" value="version ${dist.version}">
             <isset property="dist.version" />
         </condition>
-        <property name="dist.version.short" value="nonrelease" />
-        <property name="dist.version" value="non-release [${timestamp}]" />
+        <property name="dist.version" value="nonrelease" />
+        <property name="dist.version.long" value="non-release build [${timestamp}]" />
     </target>
 
     <!-- ================================================================= -->
@@ -104,7 +104,8 @@
         
         <copy todir="${build.classes.dir}" overwrite="yes">
             <filterset>
-                <filter token="dist.version" value="${dist.version}"/>
+                <filter token="dist.version"      value="${dist.version}"/>
+                <filter token="dist.version.long" value="${dist.version.long}"/>
             </filterset>
             <fileset dir="${src.dir}">
                 <include name="**/*.properties"/>
@@ -213,7 +214,7 @@
         description="Builds javadoc"
         depends="prepare">
         
-        <property name="javadoc.title" value="${Name} ${dist.version} API"/>
+        <property name="javadoc.title" value="${Name} API ${dist.version.long}"/>
         <mkdir dir="${javadoc.dir}" />
         <javadoc sourcepath="${src.dir}"
             destdir="${javadoc.dir}"
@@ -255,9 +256,9 @@
     <!-- ================================================================= -->
 
     <target name="dist" depends="clean,jar,javadoc">
-        <echo>Bundling dist version: ${dist.version.short} / ${dist.version}</echo>
-        <property name="dist.name" value="${name}-${dist.version.short}" />
-        <property name="dist.file" value="${dist.dir}/${dist.name}.tar.gz" />
+        <echo>Bundling dist: ${dist.version.long}</echo>
+        <property name="dist.name" value="${name}-${dist.version}" />
+        <property name="dist.file" value="${dist.dir}/${dist.name}" />
         
         <property name="dist.tmp.dir" value="${dist.dir}/tmp" />
         <property name="dist.staging.dir" value="${dist.tmp.dir}/${dist.name}" />
@@ -273,17 +274,21 @@
         <copy todir="${dist.staging.dir}">
             <fileset dir="${basedir}" includes="build/*.jar" />
         </copy>
-        <copy todir="${dist.staging.dir}" overwrite="true">
+        <copy todir="${dist.staging.dir}" overwrite="yes">
             <filterset>
-                <filter token="dist.version" value="${dist.version}"/>
+                <filter token="dist.version"      value="${dist.version}"/>
+                <filter token="dist.version.long" value="${dist.version.long}"/>
             </filterset>
             <fileset dir="${basedir}" includes="README.html" />
         </copy>
         <tar basedir="${dist.tmp.dir}"
-            destfile="${dist.file}"
-            compression="gzip"
-            longfile="fail" />
-        <!-- delete dir="${dist.tmp.dir}" /-->
+             destfile="${dist.file}.tar.gz"
+             compression="gzip"
+             longfile="gnu" />
+        <zip basedir="${dist.tmp.dir}"
+             destfile="${dist.file}.zip"
+             filesonly="no" />
+        <delete dir="${dist.tmp.dir}" />
 
     </target>
     
