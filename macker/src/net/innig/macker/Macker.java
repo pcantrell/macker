@@ -19,7 +19,7 @@ public class Macker
         // Parsing class file
         
         ClassManager cm = new ClassManager();
-        for(int arg = 0; arg < args.length; arg++)
+        for(int arg = 1; arg < args.length; arg++)
             cm.addClass(new ParsedClassInfo(new File(args[arg])), true);
         
         /*
@@ -38,7 +38,7 @@ public class Macker
         System.out.println(cm.getReferences().keySet().size() + " referencing classes");
         System.out.println(cm.getReferences().size() + " total references");
         
-        Collection ruleSets = new RuleSetBuilder().build("macker-sample.xml");
+        Collection ruleSets = new RuleSetBuilder().build(args[0]);
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
