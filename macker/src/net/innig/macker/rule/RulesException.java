@@ -29,4 +29,7 @@ public abstract class RulesException
     {
     public RulesException(String message)
         { super(message); }
+    
+    public RulesException(String message, Throwable cause)
+        { super(message, cause); }
     }

@@ -29,5 +29,5 @@ public class ClassParseException
         { super(message); }
         
     public ClassParseException(ClassFormatError cfe)
-        { super(cfe.toString()); }
+        { super(cfe); }
     }

@@ -283,6 +283,7 @@ public class Macker
                         }
                     System.out.println();
                     }
+                    
             EvaluationContext context = new EvaluationContext(cm, rs);
             context.setVariables(vars);
             context.addListener(throwing);

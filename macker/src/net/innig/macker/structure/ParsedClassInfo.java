@@ -201,7 +201,7 @@ public class ParsedClassInfo
                     this,
                     getClassManager().getClassInfo(
                         (String) types.get(0)),
-                    ReferenceType.FIELD_API,
+                    ReferenceType.FIELD_SIGNATURE,
                     field.getName(),
                     translateAccess(field)));
             }

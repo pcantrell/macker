@@ -34,23 +34,27 @@
 
 <!ELEMENT foreach (pattern|access-rule|var|foreach|ruleset|subset)*>
 <!ATTLIST foreach var      CDATA #REQUIRED> 
-<!ATTLIST foreach regex    CDATA #REQUIRED> 
+<!ATTLIST foreach class    CDATA #REQUIRED>
+<!ATTLIST foreach regex    CDATA #REQUIRED> <!-- deprecated -->
 <!ATTLIST foreach severity CDATA #IMPLIED> 
 
 <!ELEMENT pattern (include|exclude)*>
 <!ATTLIST pattern name    CDATA #REQUIRED> 
 <!ATTLIST pattern pattern CDATA #IMPLIED> 
-<!ATTLIST pattern regex   CDATA #IMPLIED> 
+<!ATTLIST pattern class   CDATA #IMPLIED>
+<!ATTLIST pattern regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST pattern filter  CDATA #IMPLIED> 
 
 <!ELEMENT include (include|exclude)*>
 <!ATTLIST include pattern CDATA #IMPLIED> 
-<!ATTLIST include regex   CDATA #IMPLIED> 
+<!ATTLIST include class   CDATA #IMPLIED>
+<!ATTLIST include regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST include filter  CDATA #IMPLIED> 
 
 <!ELEMENT exclude (include|exclude)*>
 <!ATTLIST exclude pattern CDATA #IMPLIED> 
-<!ATTLIST exclude regex   CDATA #IMPLIED> 
+<!ATTLIST exclude class   CDATA #IMPLIED>
+<!ATTLIST exclude regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST exclude filter  CDATA #IMPLIED> 
 
 <!ELEMENT access-rule (message?,(allow|deny)*)>
@@ -61,8 +65,10 @@
 <!ELEMENT to    ((include|exclude)*)>
 <!ATTLIST from pattern CDATA #IMPLIED> 
 <!ATTLIST to   pattern CDATA #IMPLIED> 
-<!ATTLIST from regex   CDATA #IMPLIED> 
-<!ATTLIST to   regex   CDATA #IMPLIED> 
+<!ATTLIST from class   CDATA #IMPLIED>
+<!ATTLIST to   class   CDATA #IMPLIED>
+<!ATTLIST from regex   CDATA #IMPLIED> <!-- deprecated -->
+<!ATTLIST to   regex   CDATA #IMPLIED> <!-- deprecated -->
 <!ATTLIST from filter  CDATA #IMPLIED> 
 <!ATTLIST to   filter  CDATA #IMPLIED> 
 <!ELEMENT message (#PCDATA)>

@@ -176,7 +176,7 @@ public class RuleSetBuilder
         // handle options
         
         String otherPatName = patternElem.getAttributeValue("pattern");
-        String regex = patternElem.getAttributeValue("regex");
+        String className = getClassNameAttributeValue(patternElem);
         String filterName = patternElem.getAttributeValue("filter");
 
         CompositePatternType patType;
@@ -194,16 +194,16 @@ public class RuleSetBuilder
                 "Invalid element <" + patternElem.getName() + "> --"
                 + " expected <include> or <exclude>");
         
-        if(otherPatName != null && regex != null)
+        if(otherPatName != null && className != null)
             throw new RulesDocumentException(
                 patternElem,
-                "patterns cannot have both a \"pattern\" and a \"regex\" attribute");
+                "patterns cannot have both a \"pattern\" and a \"class\" attribute");
         
         // do the head thing
         
         Pattern head = null;
-        if(regex != null)
-            head = new RegexPattern(regex);
+        if(className != null)
+            head = new RegexPattern(className);
         else if(otherPatName != null)
             {
             head = ruleSet.getPattern(otherPatName);
@@ -241,6 +241,7 @@ public class RuleSetBuilder
                 }
             options.remove("name");
             options.remove("pattern");
+            options.remove("class");
             options.remove("regex");
             
             Filter filter = FilterFinder.findFilter(filterName);
@@ -274,7 +275,7 @@ public class RuleSetBuilder
             throw new RulesDocumentException(
                 patternElem,
                 '<' + patternElem.getName() + "> element must have"
-                + " a \"regex\", \"pattern\", or \"filter\" attribute, or"
+                + " a \"class\", \"pattern\", or \"filter\" attribute, or"
                 + " contain at least one <include> or <exclude>");
         
         return result;
@@ -322,15 +323,15 @@ public class RuleSetBuilder
                 forEachElem,
                 "<foreach> is missing the \"var\" attribute");
         
-        String regex = forEachElem.getAttributeValue("regex");
-        if(regex == null)
+        String className = getClassNameAttributeValue(forEachElem);
+        if(className == null)
             throw new RulesDocumentException(
                 forEachElem,
-                "<foreach> is missing the \"regex\" attribute");
+                "<foreach> is missing the \"class\" attribute");
         
         ForEach forEach = new ForEach(parent);
         forEach.setVariableName(varName);
-        forEach.setRegex(regex);
+        forEach.setRegex(className);
         forEach.setRuleSet(buildRuleSet(forEachElem, parent));
         return forEach;
         }
@@ -395,6 +396,18 @@ public class RuleSetBuilder
                 { throw new RulesDocumentException(elem, iae.getMessage()); }
             rule.setSeverity(severity);
             }
+        }
+    
+    private String getClassNameAttributeValue(Element elem)
+        {
+        String value = elem.getAttributeValue("class");
+        if(value == null)
+            {
+            value = elem.getAttributeValue("regex");
+            if(value != null)
+                System.err.println("WARNING: The \"regex\" attribute is deprecated, and will be removed in v1.0.  Use \"class\" instead");
+            }
+        return value;
         }
     
     private SAXBuilder saxBuilder, saxBuilderVerify;

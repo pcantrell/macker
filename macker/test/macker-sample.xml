@@ -9,20 +9,23 @@
         
         <access-rule>
             <deny>
-<!--                <from filter="extends" regex="net.innig.macker.rule.Rule">-->
-                <from filter="abstract-class">
-                    <include regex="**Filter*" />
+<!--
+                <from filter="extends" class="........">
                 </from>
-                <to regex="java.lang.xObject" />
+-->
+                <from filter="abstract-class">
+                    <include class="**Filter*" />
+                </from>
+                <to class="java.lang.xObject" />
             </deny>
         </access-rule>
         
         <access-rule>
             <deny>
-                <from filter="subtype-of" regex="net.innig.macker.rule.Rule">
-                    <include regex="**Rule*" />
+                <from filter="subtype-of" class="net.innig.macker.rule.Rule">
+                    <include class="**Rule*" />
                 </from>
-                <to regex="void" />
+                <to class="void" />
             </deny>
         </access-rule>
         
@@ -33,34 +36,34 @@
     
         <var name="basepkg" value="net.innig.macker" /> 
         
-        <pattern name="macker" regex="${basepkg}.**" />
+        <pattern name="macker" class="${basepkg}.**" />
         
         <pattern name="structure">
             <include pattern="macker">
-                <include regex="*.structure.**" />
+                <include class="*.structure.**" />
             </include>
         </pattern>
 
         <pattern name="rule">
             <include pattern="macker">
-                <include regex="*.rule.**" />
+                <include class="*.rule.**" />
             </include>
         </pattern>
         
         <pattern name="event">
             <include pattern="macker">
-                <include regex="*.event.**" />
+                <include class="*.event.**" />
             </include>
         </pattern>
         
         <pattern name="main">
             <include pattern="macker">
-                <exclude regex="${basepkg}.*.**" />
+                <exclude class="${basepkg}.*.**" />
             </include>
         </pattern>
         
         <pattern name="exception">
-            <include regex="**Exception" />
+            <include class="**Exception" />
         </pattern>
         
         <access-rule>
@@ -75,19 +78,19 @@
             </deny>
         </access-rule>
 
-        <foreach var="type-class" regex="(**Type)">
+        <foreach var="type-class" class="(**Type)">
             <access-rule>
                 <deny>
-                    <from regex="${type-class}" />
+                    <from class="${type-class}" />
                     
-                    <allow><to regex="java.**" /></allow>
-                    <allow><to regex="javax.**" /></allow>
-                    <allow><to regex="net.innig.util.EnumeratedType" /></allow>
+                    <allow><to class="java.**" /></allow>
+                    <allow><to class="javax.**" /></allow>
+                    <allow><to class="net.innig.util.EnumeratedType" /></allow>
                 </deny>
             </access-rule>
         </foreach>
 
-        <foreach var="exception" regex="(**Exception)">
+        <foreach var="exception" class="(**Exception)">
             <message>Ahoy! ${exception}</message>
         </foreach>
 
@@ -95,20 +98,20 @@
 
 
     <ruleset name="Stupid test ruleset" severity="info">
-        <subset regex="**Class*" />
+        <subset class="**Class*" />
             <access-rule>
                 <deny>
-                    <from regex="net.innig.macker.**" />
-                    <to regex="java.lang.Object" />
+                    <from class="net.innig.macker.**" />
+                    <to class="java.lang.Object" />
                 </deny>
             </access-rule>
         
         <ruleset name="Inner stupid test ruleset">
-            <subset regex="**.structure.*" />
+            <subset class="**.structure.*" />
             <access-rule severity="warning">
                 <deny>
-                    <from regex="net.innig.macker.**" />
-                    <to regex="java.lang.Object" />
+                    <from class="net.innig.macker.**" />
+                    <to class="java.lang.Object" />
                 </deny>
             </access-rule>
         </ruleset>

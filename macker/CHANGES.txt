@@ -2,10 +2,10 @@ VERSION HISTORY
 
 version 0.4 (in development):
   remaning:
-    - complete basic filters (including has-method and has-field)
-    - add reference type filters for access rules
+    - complete basic filters
+    - add reference type filters for access rules?
     - document new features
-    - regression tests
+    - regression tests?
   done:
     - added filter patterns
     - parsing for superclass, interfaces, access modifiers

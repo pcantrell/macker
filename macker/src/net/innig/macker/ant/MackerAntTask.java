@@ -67,7 +67,8 @@ public class MackerAntTask extends Task
             catch(MackerIsMadException mime)
                 {
                 System.out.println(mime.getMessage());
-                throw new BuildException(MACKER_IS_MAD_MESSAGE);
+                if(failOnError)
+                    throw new BuildException(MACKER_IS_MAD_MESSAGE);
                 }
             catch(RulesException re)
                 {
@@ -99,7 +100,7 @@ public class MackerAntTask extends Task
         { this.fork = fork;  }
 
     public void setFailOnError(boolean failOnError)
-        { this.failOnError = true; }
+        { this.failOnError = failOnError; }
     
     public void setPrintThreshold(String threshold)
         {

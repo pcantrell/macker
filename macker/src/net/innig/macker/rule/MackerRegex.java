@@ -43,7 +43,6 @@ public final class MackerRegex
         buildStaticPatterns();
 
         this.regexStr = regexStr;
-        this.allowParts = allowParts;
         parts = null;
         regex = null;
         prevVarValues = new HashMap();
@@ -60,7 +59,6 @@ public final class MackerRegex
         { return regexStr; }
 
     private final String regexStr;
-    private final boolean allowParts;
 
     //--------------------------------------------------------------------------
     // Evaluation
@@ -200,7 +198,6 @@ public final class MackerRegex
     
     private RE regex;
     private List/*<Part>*/ parts;
-    private EvaluationContext prevContext;
     private Map prevVarValues, matchCache, matchResultCache;
     static private RE star, matchWithin, matchAcross,
         partBoundary, packageBoundary, innerClassBoundary, var,

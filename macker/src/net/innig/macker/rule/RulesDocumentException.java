@@ -32,7 +32,7 @@ public class RulesDocumentException
     {
     public RulesDocumentException(JDOMException jdome)
         {
-        super("Error in rules document XML: " + jdome.getMessage());
+        super("Error in rules document XML", jdome);
         element = null;
         }
     

@@ -28,22 +28,31 @@ public class MackerRegexSyntaxException
     extends RulesException
     {
     public MackerRegexSyntaxException(String regexp)
-        { this(regexp, ""); }
-    
-    public MackerRegexSyntaxException(String regexp, RESyntaxException root)
         {
-        this(regexp, root.toString());
-        root.printStackTrace(System.out);
+        super(getMessage(regexp) + "");
+        this.regexp = regexp;
+        }
+    
+    public MackerRegexSyntaxException(String regexp, RESyntaxException cause)
+        {
+        super(getMessage(regexp) + ": ", cause);
+        this.regexp = regexp;
         }
     
     public MackerRegexSyntaxException(String regexp, String message)
         {
-        super("\"" + regexp + "\" is not a valid Macker regexp pattern: " + message);
+        super(getMessage(regexp) + ": " + message);
         this.regexp = regexp;
         }
     
     public final String getRegexp()
         { return regexp; }
+        
+    private static String getMessage(String regexp)
+        { return "\"" + regexp + "\" is not a valid Macker regexp pattern"; }
     
     private final String regexp;
     }
+    
+    
+    
