@@ -32,9 +32,9 @@ public class XmlReportingListener
         try {
             if(outFile.exists())
                 outFile.delete();
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile));
+            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
             BufferedWriter bufferedOut = new BufferedWriter(out);
-            init(bufferedOut, out.getEncoding());
+            init(bufferedOut, "UTF-8");
             }
         catch(IOException ioe)
             { throw new ListenerException(this, "Unable to remove and re-create report file \"" + outFile + "\"", ioe); }
