@@ -62,7 +62,11 @@ public class ForEach
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
         
         Set varValues = new TreeSet();
-        Set pool = classes.getPrimaryClasses();
+        Set pool = new HashSet(classes.getPrimaryClasses());
+        for(Iterator p = classes.getPrimaryClasses().iterator(); p.hasNext(); )
+            for(Iterator r = ((ClassInfo) p.next()).getReferences().keySet().iterator(); r.hasNext(); )
+                pool.add(classes.getClassInfo((String) r.next()));
+        
         for(Iterator i = pool.iterator(); i.hasNext(); )
             {
             ClassInfo classInfo = (ClassInfo) i.next();
