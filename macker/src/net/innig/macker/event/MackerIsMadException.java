@@ -35,7 +35,7 @@ public class MackerIsMadException
 
     public MackerIsMadException(List/*<MackerIsMadEvent>*/ events)
         {
-        super(BASE_MESSAGE + " (" + events.size() + " errors)");
+        super(BASE_MESSAGE + " (" + events.size() + " error" + (events.size() == 1 ? "" : "s") + ")");
         if(events.isEmpty())
             throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
         this.events = Collections.unmodifiableList(new ArrayList(events));
