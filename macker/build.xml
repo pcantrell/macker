@@ -273,7 +273,7 @@
     <!-- Package distribution version                                      -->
     <!-- ================================================================= -->
 
-    <target name="dist" depends="clean,jar,javadoc">
+    <target name="dist" depends="clean,test,javadoc">
         <echo>Bundling dist: ${dist.version.long}</echo>
         <property name="dist.name" value="${name}-${dist.version}" />
         <property name="dist.file" value="${dist.dir}/${dist.name}" />
