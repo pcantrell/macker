@@ -2,9 +2,10 @@ version 0.3:
     - Macker now detects API-only accesses of other classes
     - rulesets now support input class subsetting
     - access rules now support custom error messages
+    - Ant task supports custom classpath without forking
     - vast performance improvements through better regex caching
     - much-improved API for calling Macker from Java
-    - addReachableClasses supports checking from classpath (good for JUnit)
+    - addReachableClasses supports dynamic primary class detection
     - Macker now won't stop after the first ruleset that fails
     - bug fix for vars containing other vars
     - added void to primitive types (now necessary b/c of API parsing)
