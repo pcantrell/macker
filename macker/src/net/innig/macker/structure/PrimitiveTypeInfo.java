@@ -23,30 +23,31 @@ package net.innig.macker.structure;
 import java.util.*;
 import net.innig.collect.InnigCollections;
 import net.innig.collect.MultiMap;
+import net.innig.util.EnumeratedType;
 
 public final class PrimitiveTypeInfo
+    extends EnumeratedType
     implements ClassInfo
     {
-    static public PrimitiveTypeInfo getPrimitiveTypeInfo(String typeName)
-        { return (PrimitiveTypeInfo) nameToTypeMap.get(typeName); }
-
-    static private Map nameToTypeMap;
-    static
-        {
-        nameToTypeMap = new HashMap();
-        nameToTypeMap.put("byte",    new PrimitiveTypeInfo("byte"));
-        nameToTypeMap.put("short",   new PrimitiveTypeInfo("short"));
-        nameToTypeMap.put("int",     new PrimitiveTypeInfo("int"));
-        nameToTypeMap.put("long",    new PrimitiveTypeInfo("long"));
-        nameToTypeMap.put("char",    new PrimitiveTypeInfo("char"));
-        nameToTypeMap.put("boolean", new PrimitiveTypeInfo("boolean"));
-        nameToTypeMap.put("float",   new PrimitiveTypeInfo("float"));
-        nameToTypeMap.put("double",  new PrimitiveTypeInfo("double"));
-        nameToTypeMap.put("void",    new PrimitiveTypeInfo("void"));
-        }
+    public static PrimitiveTypeInfo getPrimitiveTypeInfo(String typeName)
+        { return (PrimitiveTypeInfo) EnumeratedType.resolveFromName(PrimitiveTypeInfo.class, typeName); }
     
+    public static final PrimitiveTypeInfo
+        BYTE    = new PrimitiveTypeInfo("byte"),
+        SHORT   = new PrimitiveTypeInfo("short"),
+        INT     = new PrimitiveTypeInfo("int"),
+        LONG    = new PrimitiveTypeInfo("long"),
+        CHAR    = new PrimitiveTypeInfo("char"),
+        BOOLEAN = new PrimitiveTypeInfo("boolean"),
+        FLOAT   = new PrimitiveTypeInfo("float"),
+        DOUBLE  = new PrimitiveTypeInfo("double"),
+        VOID    = new PrimitiveTypeInfo("void");
+    
+    public static final Set/*<PrimitiveTypeInfo>*/ ALL =
+        EnumeratedType.allTypes(PrimitiveTypeInfo.class);
+
     private PrimitiveTypeInfo(String className)
-        { this.className = className; }
+        { super(className); }
     
     public ClassManager getClassManager()
         { return null; }
@@ -54,27 +55,23 @@ public final class PrimitiveTypeInfo
     public boolean isComplete()
         { return true; }
     
-    public String getClassName()      { return className; }
-    public String getClassNameShort() { return className; }
+    public String getClassName()      { return getName(); }
+    public String getClassNameShort() { return getName(); }
     
     public boolean isInterface() { return false; }
     public boolean isAbstract()  { return false; }
     public boolean isFinal()     { return true; }
+    public AccessModifier getAccessModifier() { return AccessModifier.PUBLIC; }
     
-    public AccessModifier getAccessModifier()    { return AccessModifier.PUBLIC; }
-    public String getExtends()                   { return null; }
-    public Set/*<String>*/ getImplements()       { return Collections.EMPTY_SET; }
-    public Set/*<String>*/ getDirectSupertypes() { return Collections.EMPTY_SET; }
-    public Set/*<String>*/ getSupertypes()       { return Collections.EMPTY_SET; }
-    public MultiMap/*<String,Reference>*/ getReferences()
+    public ClassInfo getExtends()                   { return null; }
+    public Set/*<ClassInfo>*/ getImplements()       { return Collections.EMPTY_SET; }
+    public Set/*<ClassInfo>*/ getDirectSupertypes() { return Collections.EMPTY_SET; }
+    public Set/*<ClassInfo>*/ getSupertypes()       { return Collections.EMPTY_SET; }
+    public MultiMap/*<ClassInfo,Reference>*/ getReferences()
         { return InnigCollections.EMPTY_MULTIMAP; }
     
     public int compareTo(Object that)
         { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
-
-    public String toString() { return getClassName(); }
-    
-    private final String className;
     }
 
 

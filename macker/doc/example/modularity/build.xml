@@ -19,7 +19,7 @@ game; the two modules communicate through APIs, and hide their implementations
 in "impl" packages.
 
 The macker rules file (src/macker.xml) looks for modules using a &lt;foreach&gt;, and
-the checks that other classes are using each module through its API.  The class
+checks that external classes are using each module through its API.  The class
 BrokenMain breaks this rule by instantiating impl classes directly, so it will
 give some errors.
 ________________________________________________________________________________

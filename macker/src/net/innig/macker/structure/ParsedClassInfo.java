@@ -33,7 +33,7 @@ import org.apache.bcel.classfile.*;
 public class ParsedClassInfo
     extends AbstractClassInfo
     {
-    public ParsedClassInfo(ClassManager classManager, File classFile)
+    ParsedClassInfo(ClassManager classManager, File classFile)
         throws IOException, ClassParseException
         {
         super(classManager);
@@ -42,7 +42,7 @@ public class ParsedClassInfo
             { throw new ClassParseException(cfe); }
         }
     
-    public ParsedClassInfo(ClassManager classManager, InputStream classFileStream)
+    ParsedClassInfo(ClassManager classManager, InputStream classFileStream)
         throws IOException, ClassParseException
         {
         super(classManager);
@@ -88,22 +88,23 @@ public class ParsedClassInfo
 
     private void parseExtends(JavaClass classFile)
         throws ClassParseException
-        { extendsName = classFile.getSuperclassName(); }
+        { extendsClass = getClassManager().getClassInfo(classFile.getSuperclassName()); }
     
-    public String getExtends()
-        { return extendsName; }
+    public ClassInfo getExtends()
+        { return extendsClass; }
     
     private void parseImplements(JavaClass classFile)
         throws ClassParseException
         {
-        implementsNames = Collections.unmodifiableSet(
-            new TreeSet(
-                Arrays.asList(
-                    classFile.getInterfaceNames())));
+        implementsClasses = new TreeSet();
+        String[] names = classFile.getInterfaceNames();
+        for(int n = 0; n < names.length; n++)
+            implementsClasses.add(getClassManager().getClassInfo(names[n]));
+        implementsClasses = Collections.unmodifiableSet(implementsClasses);
         }
     
-    public Set/*<String>*/ getImplements()
-        { return implementsNames; }
+    public Set/*<ClassInfo>*/ getImplements()
+        { return implementsClasses; }
     
     private void parseReferences(JavaClass classFile)
         throws ClassParseException
@@ -125,8 +126,9 @@ public class ParsedClassInfo
             if(constants[a] instanceof ConstantClass)
                 addReference(
                     new Reference(
-                        getClassName(),
-                        constantPool.constantToString(constants[a]),
+                        this,
+                        getClassManager().getClassInfo(
+                            constantPool.constantToString(constants[a])),
                         ReferenceType.CONSTANT_POOL,
                         null,
                         null));
@@ -154,8 +156,9 @@ public class ParsedClassInfo
                 String refTo = (String) i.next();
                 addReference(
                     new Reference(
-                        getClassName(),
-                        (String) paramsAndReturn.get(paramsAndReturn.size()-1),
+                        this,
+                        getClassManager().getClassInfo(
+                            (String) paramsAndReturn.get(paramsAndReturn.size()-1)),
                         i.hasNext() ? ReferenceType.METHOD_PARAM
                                     : ReferenceType.METHOD_RETURNS,
                         method.getName(),
@@ -168,8 +171,9 @@ public class ParsedClassInfo
                 for(int e = 0; e < exceptionNames.length; e++)
                     addReference(
                         new Reference(
-                            getClassName(),
-                            exceptionNames[e],
+                            this,
+                            getClassManager().getClassInfo(
+                                exceptionNames[e]),
                             ReferenceType.METHOD_THROWS,
                             method.getName(),
                             methodAccess));
@@ -194,8 +198,9 @@ public class ParsedClassInfo
 
             addReference(
                 new Reference(
-                    getClassName(),
-                    (String) types.get(0),
+                    this,
+                    getClassManager().getClassInfo(
+                        (String) types.get(0)),
                     ReferenceType.FIELD_API,
                     field.getName(),
                     translateAccess(field)));
@@ -218,16 +223,14 @@ public class ParsedClassInfo
     private void addReference(Reference ref)
         { references.put(ref.getTo(), ref); }
     
-    public MultiMap/*<String,Reference>*/ getReferences()
+    public MultiMap/*<ClassInfo,Reference>*/ getReferences()
         { return references; }
     
-    public String toString()
-        { return getClassName(); }
-    
-    private String className, extendsName;
+    private String className;
     private boolean isInterface, isAbstract, isFinal;
     private AccessModifier accessModifier;
-    private Set/*<String>*/ implementsNames;
-    private MultiMap/*<String,Reference>*/ references;
+    private ClassInfo extendsClass;
+    private Set/*<ClassInfo>*/ implementsClasses;
+    private MultiMap/*<ClassInfo,Reference>*/ references;
     }
 

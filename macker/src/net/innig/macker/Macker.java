@@ -148,30 +148,28 @@ public class Macker
     
     public void addClass(File classFile)
         throws IOException, ClassParseException
-        { cm.addClass(new ParsedClassInfo(cm, classFile), true); }
+        {
+        cm.makePrimary(
+            cm.readClass(classFile));
+        }
     
     public void addClass(InputStream classFile)
         throws IOException, ClassParseException
-        { cm.addClass(new ParsedClassInfo(cm, classFile), true); }
-    
+        {
+        cm.makePrimary(
+            cm.readClass(classFile));
+        }
+
     public void addClass(String className)
         throws ClassNotFoundException
         {
-        if(!cm.getClassInfo(className).isComplete())
-            throw new ClassNotFoundException(className);
-        cm.makePrimary(className);
+        cm.makePrimary(
+            cm.getClassInfo(className));
         }
-    
+
     public void addReachableClasses(Class initialClass, final String primaryPrefix)
-        {
-        try { addReachableClasses(initialClass.getName(), primaryPrefix); }
-        catch(ClassNotFoundException cnfe)
-            {
-            throw new IllegalArgumentException(
-                "Macker can't find the bytecode for \"" + initialClass.getName()
-                + "\".  Perhaps it wasn't loaded by the thread's context classloader?");
-            }
-        }
+        throws IncompleteClassInfoException
+        { addReachableClasses(initialClass.getName(), primaryPrefix); }
     
     /**
      * For determining the primary classes when you don't have a hard-coded class
@@ -180,23 +178,26 @@ public class Macker
      * the initial class name, and marking all classes which start with primaryPrefix.
      */
     public void addReachableClasses(String initialClassName, final String primaryPrefix)
-        throws ClassNotFoundException
+        throws IncompleteClassInfoException
         {
-        addClass(initialClassName);
         Graphs.reachableNodes(
-            initialClassName,
+            cm.getClassInfo(initialClassName),
             new GraphWalker()
                 {
                 public Collection getEdgesFrom(Object node)
                     {
-                    String className = (String) node;
-                    cm.makePrimary(className);
+                    ClassInfo classInfo = (ClassInfo) node;
+                    cm.makePrimary(classInfo);
                     return InnigCollections.select(
-                        cm.getClassInfo(className).getReferences().keySet(),
+                        classInfo.getReferences().keySet(),
                         new Selector()
                             {
-                            public boolean select(Object className)
-                                { return ((String) className).startsWith(primaryPrefix); }
+                            public boolean select(Object classInfo)
+                                {
+                                return ((ClassInfo) classInfo)
+                                    .getClassName()
+                                    .startsWith(primaryPrefix);
+                                }
                             });
                     }
                 });
@@ -248,7 +249,7 @@ public class Macker
         if(verbose)
             {
             System.out.println(cm.getPrimaryClasses().size() + " primary classes");
-            System.out.println(cm.getAllClassNames().size() + " total classes");
+            System.out.println(cm.getAllClasses().size() + " total classes");
             System.out.println(cm.getReferences().size() + " references");
             
             for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )

@@ -37,11 +37,11 @@ public interface ClassInfo
     public boolean isFinal();
     public AccessModifier getAccessModifier();
     
-    public String getExtends();
-    public Set/*<String>*/ getImplements();
-    public Set/*<String>*/ getDirectSupertypes();
-    public Set/*<String>*/ getSupertypes();
+    public ClassInfo getExtends();
+    public Set/*<ClassInfo>*/ getImplements();
+    public Set/*<ClassInfo>*/ getDirectSupertypes();
+    public Set/*<ClassInfo>*/ getSupertypes();
 
-    public MultiMap/*<String,Reference>*/ getReferences();
+    public MultiMap/*<ClassInfo,Reference>*/ getReferences();
     }
 

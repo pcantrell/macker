@@ -44,8 +44,7 @@ public class SubtypeFilter
                 {
                 for(Iterator superI = classInfo.getSupertypes().iterator(); superI.hasNext(); )
                     {
-                    ClassInfo supertype = context.getClassManager()
-                                                 .getClassInfo((String) superI.next());
+                    ClassInfo supertype = (ClassInfo) superI.next();
                     if(supertypePat.matches(context, supertype))
                         return true;
                     }

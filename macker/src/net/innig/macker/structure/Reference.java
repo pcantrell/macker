@@ -23,8 +23,8 @@ package net.innig.macker.structure;
 public final class Reference
     {
     public Reference(
-            String from,
-            String to,
+            ClassInfo from,
+            ClassInfo to,
             ReferenceType type,
             String memberName,
             AccessModifier memberAccess)
@@ -44,8 +44,8 @@ public final class Reference
         this.memberAccess = memberAccess;
         }
     
-    public String getFrom() { return from; }
-    public String getTo() { return to; }
+    public ClassInfo getFrom() { return from; }
+    public ClassInfo getTo() { return to; }
     public ReferenceType getType() { return type; }
     
     public String getMemberName() { return memberName; }
@@ -87,8 +87,7 @@ public final class Reference
             + (memberAccess == null ? "" : ": " + memberAccess + " " + memberName) + ')';
         }
     
-    private final String from;
-    private final String to;
+    private final ClassInfo from, to;
     private final ReferenceType type;
     private final String memberName;
     private final AccessModifier memberAccess;

@@ -7,7 +7,7 @@
         <path id="run.classpath">
             <pathelement location="build/classes" />
             <pathelement location="conf" />
-            <fileset dir="lib" />
+            <fileset dir="lib" includes="**/*.jar" />
         </path>
         <property name="run.classpath" refid="run.classpath" />
         <taskdef name="macker"

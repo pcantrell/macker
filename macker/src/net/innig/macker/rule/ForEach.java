@@ -65,7 +65,7 @@ public class ForEach
         Set pool = new HashSet(classes.getPrimaryClasses());
         for(Iterator p = classes.getPrimaryClasses().iterator(); p.hasNext(); )
             for(Iterator r = ((ClassInfo) p.next()).getReferences().keySet().iterator(); r.hasNext(); )
-                pool.add(classes.getClassInfo((String) r.next()));
+                pool.add(r.next());
         
         for(Iterator i = pool.iterator(); i.hasNext(); )
             {

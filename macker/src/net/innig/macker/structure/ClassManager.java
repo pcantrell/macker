@@ -21,7 +21,9 @@
 package net.innig.macker.structure;
 
 import net.innig.macker.util.ClassNameTranslator;
+import net.innig.macker.structure.ClassParseException;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.*;
@@ -33,11 +35,14 @@ public class ClassManager
     public ClassManager()
         {
         // Trees make nice sorted output
-        allClassNames = new TreeSet();
+        allClasses = new TreeSet();
         primaryClasses = new TreeSet();
         classNameToInfo = new TreeMap();
         references = new TreeMultiMap();
         classLoader = Thread.currentThread().getContextClassLoader();
+        
+        for(Iterator i = PrimitiveTypeInfo.ALL.iterator(); i.hasNext(); )
+            replaceClass((ClassInfo) i.next());
         }
     
     public ClassLoader getClassLoader()
@@ -46,75 +51,123 @@ public class ClassManager
     public void setClassLoader(ClassLoader classLoader)
         { this.classLoader = classLoader; }
     
-    public void addClass(ClassInfo classInfo, boolean primary)
+    public ClassInfo readClass(File classFile)
+        throws ClassParseException, IOException
         {
-        if(primary && !classInfo.isComplete())
-            throw new IncompleteClassInfoException(
-                classInfo.getClassName() + " cannot be a primary class, because the class"
-                + " file isn't on Macker's classpath");
-        allClassNames.add   (classInfo.getClassName());
-        classNameToInfo.put (classInfo.getClassName(), classInfo);
-        if(primary)
-            {
-            primaryClasses.add  (classInfo);
-            references.putAll   (classInfo.getClassName(), classInfo.getReferences().keySet());
-            allClassNames.addAll(classInfo.getReferences().keySet());
-            }
+        ClassInfo classInfo = new ParsedClassInfo(this, classFile);
+        addClass(classInfo);
+        return classInfo;
         }
     
-    public void makePrimary(String className)
-        { addClass(getClassInfo(className), true); }
+    public ClassInfo readClass(InputStream classFile)
+        throws ClassParseException, IOException
+        {
+        ClassInfo classInfo = new ParsedClassInfo(this, classFile);
+        addClass(classInfo);
+        return classInfo;
+        }
     
-    public Set/*<String>*/ getAllClassNames()
-        { return Collections.unmodifiableSet(allClassNames); }
+    private void addClass(ClassInfo classInfo)
+        {
+        ClassInfo existing = findClassInfo(classInfo.getClassName());
+        if(existing != null && !(existing instanceof HollowClassInfo))
+            throw new IllegalStateException(
+                "ClassManager already contains a class named " + classInfo);
+        replaceClass(classInfo);
+        }
+    
+    private void replaceClass(ClassInfo classInfo)
+        {
+        allClasses.add(classInfo);
+        classNameToInfo.put(classInfo.getClassName(), classInfo);
+        }
+    
+    public void makePrimary(ClassInfo classInfo)
+        {
+        if(!classInfo.isComplete())
+            throw new IncompleteClassInfoException(
+                classInfo + " cannot be a primary class, because the"
+                + " class file isn't on Macker's classpath");
+        if(classInfo instanceof PrimitiveTypeInfo)
+            throw new IllegalArgumentException(
+                classInfo + " cannot be a primary class, because it is a primitive type");
+        checkOwner(classInfo);
+        classInfo = findClassInfo(classInfo.getClassName()); // in case of hollow
+        primaryClasses.add(classInfo);
+        references.putAll(classInfo, classInfo.getReferences().keySet());
+        allClasses.addAll(classInfo.getReferences().keySet());
+        }
+    
+    public Set/*<ClassInfo>*/ getAllClasses()
+        { return Collections.unmodifiableSet(allClasses); }
     
     public Set/*<ClassInfo>*/ getPrimaryClasses()
         { return Collections.unmodifiableSet(primaryClasses); }
     
-    public MultiMap/*<String,String>*/ getReferences()
+    public MultiMap/*<ClassInfo,ClassInfo>*/ getReferences()
         { return InnigCollections.unmodifiableMultiMap(references); }
 
     public ClassInfo getClassInfo(String className)
         {
-        ClassInfo classInfo = (ClassInfo) classNameToInfo.get(className);
-        if(classInfo == null)
+        ClassInfo classInfo = findClassInfo(className);
+        if(classInfo != null)
+            return classInfo;
+        else
             {
-            classInfo = PrimitiveTypeInfo.getPrimitiveTypeInfo(className);
-            if(classInfo == null)
-                {
-                String resourceName = ClassNameTranslator.classToResourceName(className);
-                InputStream classStream = classLoader.getResourceAsStream(resourceName);
-                
-                if(classStream == null)
-                    {
-                    showIncompleteWarning();
-                    System.out.println("WARNING: Unable to find class " + className + " in the classpath");
-                    }
-                else
-                    try {
-                        classInfo = new ParsedClassInfo(this, classStream);
-                        }
-                    catch(Exception e)
-                        {
-                        if(e instanceof RuntimeException)
-                            throw (RuntimeException) e;
-                        showIncompleteWarning();
-                        System.out.println("WARNING: Unable to load class " + className + ": " + e);
-                        }
-                    finally
-                        {
-                        try { classStream.close(); }
-                        catch(IOException ioe) { } // nothing we can do
-                        }
-                    
-                if(classInfo == null)
-                    classInfo = new IncompleteClassInfo(this, className);
-                }
+            classInfo = new HollowClassInfo(this, className);
+            replaceClass(classInfo);
+            return classInfo;
+            }
+        }
+    
+    ClassInfo loadClassInfo(String className)
+        {
+        ClassInfo classInfo = findClassInfo(className);
+        if(classInfo == null || classInfo instanceof HollowClassInfo)
+            {
+            String resourceName = ClassNameTranslator.classToResourceName(className);
+            InputStream classStream = classLoader.getResourceAsStream(resourceName);
             
-            addClass(classInfo, false);
+            if(classStream == null)
+                {
+                showIncompleteWarning();
+                System.out.println("WARNING: Unable to find class " + className + " in the classpath");
+                }
+            else
+                try {
+                    classInfo = new ParsedClassInfo(this, classStream);
+                    }
+                catch(Exception e)
+                    {
+                    if(e instanceof RuntimeException)
+                        throw (RuntimeException) e;
+                    showIncompleteWarning();
+                    System.out.println("WARNING: Unable to load class " + className + ": " + e);
+                    }
+                finally
+                    {
+                    try { classStream.close(); }
+                    catch(IOException ioe) { } // nothing we can do
+                    }
+                
+            if(classInfo == null)
+                classInfo = new IncompleteClassInfo(this, className);
+            
+            replaceClass(classInfo);
             }
         
         return classInfo;
+        }
+    
+    private ClassInfo findClassInfo(String className)
+        { return (ClassInfo) classNameToInfo.get(className); }
+    
+    private void checkOwner(ClassInfo classInfo)
+        throws IllegalStateException
+        {
+        if(classInfo.getClassManager() != this)
+            throw new IllegalStateException(
+                "classInfo argument (" + classInfo + ") is not managed by this ClassManager");
         }
     
     private void showIncompleteWarning()
@@ -132,9 +185,9 @@ public class ClassManager
     
     private boolean incompleteClassWarning;
     private ClassLoader classLoader;
-    private Set/*<String>*/ allClassNames, primaryClasses;
+    private Set allClasses, primaryClasses;
     private Map/*<String,ClassInfo>*/ classNameToInfo;
-    private MultiMap/*<String,String>*/ references;
+    private MultiMap/*<ClassInfo,ClassInfo>*/ references;
     }
 
 

@@ -104,8 +104,8 @@ public class AccessRule
         for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
             {
             MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
-            ClassInfo from = classes.getClassInfo((String) entry.getKey());
-            ClassInfo to   = classes.getClassInfo((String) entry.getValue());
+            ClassInfo from = (ClassInfo) entry.getKey();
+            ClassInfo to   = (ClassInfo) entry.getValue();
             if(from == to)
                 continue;
             if(!context.getRuleSet().isInSubset(context, from))

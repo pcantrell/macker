@@ -23,10 +23,10 @@ package net.innig.macker.structure;
 import java.util.Set;
 import net.innig.collect.MultiMap;
 
-public class IncompleteClassInfo
+public class HollowClassInfo
     extends AbstractClassInfo
     {
-    IncompleteClassInfo(ClassManager classManager, String className)
+    public HollowClassInfo(ClassManager classManager, String className)
         {
         super(classManager);
         this.className = className;
@@ -35,26 +35,26 @@ public class IncompleteClassInfo
     public String getClassName()
         { return className; }
 
-    public boolean isComplete()
-        { return false; }
-    
-    public boolean isInterface()               { throw newIncompleteException("get attributes of"); }
-    public boolean isAbstract()                { throw newIncompleteException("get attributes of"); }
-    public boolean isFinal()                   { throw newIncompleteException("get attributes of"); }
-    public AccessModifier getAccessModifier()  { throw newIncompleteException("determine accessibility of"); }
-    public ClassInfo getExtends()              { throw newIncompleteException("determine superclass of"); }
-    public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces implemented by"); }
-    public MultiMap getReferences()            { throw newIncompleteException("resolve references from"); }
-    
-    private IncompleteClassInfoException newIncompleteException(String action)
+    public boolean isComplete()                { return getActual().isComplete(); }
+    public boolean isInterface()               { return getActual().isInterface(); }
+    public boolean isAbstract()                { return getActual().isAbstract(); }
+    public boolean isFinal()                   { return getActual().isFinal(); }
+    public AccessModifier getAccessModifier()  { return getActual().getAccessModifier(); }
+    public ClassInfo getExtends()              { return getActual().getExtends(); }
+    public Set getImplements()                 { return getActual().getImplements(); }
+    public Set getDirectSupertypes()           { return getActual().getDirectSupertypes(); }
+    public Set getSupertypes()                 { return getActual().getSupertypes(); }
+    public MultiMap getReferences()            { return getActual().getReferences(); }
+
+    private ClassInfo getActual()
         {
-        return new IncompleteClassInfoException(
-            "Unable to " + action + " class " + className
-            + ", because the class file could not be loaded."
-            + " Make sure it is in Macker's classpath.");
+        if(actual == null)
+            actual = getClassManager().loadClassInfo(className);
+        return actual;
         }
     
     private String className;
+    private ClassInfo actual;
     }
 
 

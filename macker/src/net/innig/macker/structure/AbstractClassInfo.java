@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public abstract class AbstractClassInfo
         return className.substring(className.lastIndexOf('.') + 1);
         }
     
-    public Set/*<String>*/ getDirectSupertypes()
+    public Set/*<ClassInfo>*/ getDirectSupertypes()
         {
         if(cachedAllDirectSuper == null)
             {
@@ -46,25 +46,32 @@ public abstract class AbstractClassInfo
         return cachedAllDirectSuper;
         }
     
-    public Set/*<String>*/ getSupertypes()
+    public Set/*<ClassInfo>*/ getSupertypes()
         {
         if(cachedAllSuper == null)
             cachedAllSuper = Graphs.reachableNodes(
-                this.getClassName(),
+                this,
                 new GraphWalker()
                     {
                     public Collection getEdgesFrom(Object node)
-                        {
-                        return getClassManager()
-                              .getClassInfo((String) node)
-                              .getDirectSupertypes();
-                        }
+                        { return ((ClassInfo) node).getDirectSupertypes(); }
                     } );
         return cachedAllSuper;
         }
     
-    /** Compares fully qualified class names
-     */
+    public final ClassManager getClassManager()
+        { return classManager; }
+    
+    public abstract boolean isComplete();
+    public abstract String getClassName();
+    public abstract boolean isInterface();
+    public abstract boolean isAbstract();
+    public abstract boolean isFinal();
+    public abstract AccessModifier getAccessModifier();
+    public abstract ClassInfo getExtends();
+    public abstract Set/*<ClassInfo>*/ getImplements();
+    public abstract MultiMap/*<ClassInfo,Reference>*/ getReferences();
+    
     public int compareTo(Object that)
         { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
     
@@ -82,18 +89,8 @@ public abstract class AbstractClassInfo
     public int hashCode()
         { return getClassName().hashCode(); }
     
-    public final ClassManager getClassManager()
-        { return classManager; }
-    
-    public abstract boolean isComplete();
-    public abstract String getClassName();
-    public abstract boolean isInterface();
-    public abstract boolean isAbstract();
-    public abstract boolean isFinal();
-    public abstract AccessModifier getAccessModifier();
-    public abstract String getExtends();
-    public abstract Set/*<String>*/ getImplements();
-    public abstract MultiMap/*<String,Reference>*/ getReferences();
+    public String toString()
+        { return getClassName(); }
     
     private ClassManager classManager;
     private Set cachedAllSuper, cachedAllDirectSuper;
