@@ -245,7 +245,6 @@ public class MackerAntTask extends Task
     private boolean fork = false;
     private boolean failOnError = true;
     private boolean verbose = false;
-    private List/*<File>*/ rulesFileList, classFileList;
     private List/*<String>*/ jvmArgs;
     private Macker macker;  // for non-forked
     private Java jvm;       // for forked

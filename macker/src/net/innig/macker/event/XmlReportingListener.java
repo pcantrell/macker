@@ -16,6 +16,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
 
+import org.apache.commons.lang.StringUtils;
+
 public class XmlReportingListener
     implements MackerEventListener
     {
@@ -51,8 +53,13 @@ public class XmlReportingListener
         this.encoding = encoding;
         
         elemStack = new LinkedList();
-        pushElem(new Element("macker-report"));
-        document = new Document(curElem);
+        Element topElem = new Element("macker-report");
+        Element timestampElem = new Element("timestamp");
+        timestampElem.setText(new java.util.Date().toString()); // to heck with sophisticated localization!
+        topElem.addContent(timestampElem);
+
+        pushElem(topElem);
+        document = new Document(topElem);
         }
     
     public void flush()
@@ -167,7 +174,7 @@ public class XmlReportingListener
         packElem.setText(classInfo.getPackageName());
         classInfoElem.addContent(fullElem);
         classInfoElem.addContent(classElem);
-        if(classInfo.getPackageName() != null)
+        if(!StringUtils.isEmpty(classInfo.getPackageName()))
             classInfoElem.addContent(packElem);
         }
     

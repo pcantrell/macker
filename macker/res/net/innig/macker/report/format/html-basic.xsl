@@ -20,18 +20,23 @@
                 <xsl:otherwise>ok</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <table cellpadding="0" cellspacing="0" border="0" align="right">
+        <div>
             <xsl:attribute name="class">event-severity-<xsl:value-of select="$maxseverity"/></xsl:attribute>
-            <tr><td><xsl:value-of select="translate($maxseverity, $lowercase, $uppercase)"/></td></tr>
-        </table>
-
+            <xsl:value-of select="translate($maxseverity, $lowercase, $uppercase)"/>
+        </div>
         Macker Report
     </div>
+    
     <xsl:apply-templates/>
-    <br/><br/>
+    
+    <div class="bottom">
+        <a href="http://innig.net/macker/">Macker</a> report generated <xsl:value-of select="timestamp"/>
+    </div>
     </body>
     </html>
     </xsl:template>
+
+    <xsl:template match="timestamp" />
     
     <xsl:template match="ruleset">
     <xsl:choose>
@@ -39,10 +44,7 @@
             <div class="ruleset">
                 <div class="ruleset-header">
                     <xsl:if test="count(descendant::*[@severity='error']) = 0 and count(descendant::*[@severity='warning']) = 0">
-                        <table cellpadding="0" cellspacing="0" border="0" align="right">
-                        <xsl:attribute name="class">event-severity-ok</xsl:attribute>
-                        <tr><td>OK</td></tr>
-                        </table>
+                        <div><xsl:attribute name="class">event-severity-ok</xsl:attribute> OK </div>
                     </xsl:if>
     
                     <xsl:value-of select="@name"/>
@@ -61,21 +63,34 @@
     <xsl:template match="access-rule-violation">
     <xsl:if test="@severity != 'debug'">
         <div class="event">
-            <table cellpadding="0" cellspacing="0" border="0" align="right">
+            <div>
                 <xsl:attribute name="class">event-severity-<xsl:value-of select="@severity" /></xsl:attribute>
-                <tr><td><xsl:value-of select="translate(@severity, $lowercase, $uppercase)"/></td></tr>
-            </table>
+                <xsl:value-of select="translate(@severity, $lowercase, $uppercase)"/>
+            </div>
             <div class="event-header">
-            <xsl:value-of select="message"/>
+                <xsl:choose>
+                    <xsl:when test="message"> <xsl:value-of select="message"/> </xsl:when>
+                    <xsl:otherwise> Illegal reference </xsl:otherwise>
+                </xsl:choose>
             </div>
             <div class="event-body">
             <table>
                 <tr><th>From:</th>
-                    <td><span class="package-name"><xsl:value-of select="from/package"/>.</span>
-                        <span class=  "class-name"><xsl:value-of select="from/class"/></span></td></tr>
-                <tr><th>  To:</th>
-                    <td><span class="package-name"><xsl:value-of select=  "to/package"/>.</span>
-                        <span class=  "class-name"><xsl:value-of select=  "to/class"/></span></td></tr>
+                    <td>
+                        <xsl:if test="from/package">
+                            <span class="package-name"><xsl:value-of select="from/package"/>.</span>
+                        </xsl:if>
+                        <span class="class-name"><xsl:value-of select="from/class"/></span>
+                    </td>
+                </tr>
+                <tr><th>To:</th>
+                    <td>
+                        <xsl:if test="to/package">
+                            <span class="package-name"><xsl:value-of select="to/package"/>.</span>
+                        </xsl:if>
+                        <span class="class-name"><xsl:value-of select="to/class"/></span>
+                    </td>
+                </tr>
             </table>
             </div>
         </div>

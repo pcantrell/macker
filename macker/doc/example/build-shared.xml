@@ -4,6 +4,10 @@
 
     <property name="build.dir"            location="${basedir}/build/example/${ant.project.name}" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
+
+    <property name="macker.report.dir"    location="${build.dir}/report" />
+    <property name="macker.report.xml"    location="${macker.report.dir}/macker-report.xml" />
+    <property name="macker.report.html"   location="${macker.report.dir}/macker-report.html" />
     
     <target name="prepare">
         <mkdir dir="${build.dir}" />
@@ -31,10 +35,17 @@
             inheritAll="false" />
     </target>
 
-    <!-- You can use this Ant target as an example for your own build files: -->
+    <target name="macker-report-init">
+        <property name="macker.failOnError" value="false" />
+    </target>
+
+    <!-- You can use these two Ant targets as examples for your own build files: -->
     <target name="macker" depends="build-macker-jar,compile,explain">
 
         <property name="macker.verbose" value="false" />
+        <property name="macker.failOnError" value="true" />
+        
+        <mkdir dir="${macker.report.dir}" />
         
         <!-- Defines the macker ant task.  You need this once per build file. -->
         <!-- The classpath here tells Ant where to look for Macker classes. -->
@@ -42,7 +53,7 @@
             classname="net.innig.macker.ant.MackerAntTask"
             classpathref="build.classpath"/>  
         
-        <macker verbose="${macker.verbose}" xmlReportFile="${build.dir}/macker-report.xml">
+        <macker verbose="${macker.verbose}" xmlReportFile="${macker.report.xml}" failOnError="${macker.failOnError}">
             <!-- Rules come from this file: -->
             <rules dir="${src.dir}" includes="macker.xml" />
 
@@ -55,6 +66,21 @@
             <classpath refid="build.classpath" />
         </macker>
         
+    </target>
+
+    <target name="macker-report" depends="macker-report-init,macker">
+
+        <!-- Defines the macker-report ant task.  You need this once per build file. -->
+        <!-- The classpath here tells Ant where to look for Macker classes. -->
+        <taskdef name="macker-report"
+            classname="net.innig.macker.ant.MackerReportAntTask"
+            classpathref="build.classpath"/>  
+        
+        <macker-report
+            xmlReportfile="${macker.report.xml}"
+            outputFile="${macker.report.html}" />
+        
+        <echo>Macker report: ${macker.report.html}</echo>
     </target>
     <!--====================================================================-->
 
