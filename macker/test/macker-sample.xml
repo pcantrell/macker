@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- <!DOCTYPE macker PUBLIC "-//innig//DTD Macker 0.2//EN" "http://innig.net/macker/src/macker.dtd"> -->
 
 <macker>
@@ -25,6 +25,7 @@
         </access-rule>
         
         <access-rule>
+            <message>${from} and ${to} and stuff</message>
             <deny>
                 <from filter="subtype-of" class="net.innig.macker.rule.Rule">
                     <include class="**Rule*" />
@@ -33,8 +34,8 @@
             </deny>
         </access-rule>
         
-        <foreach var="grug" class="(**).*Rule*">
-            <message>Rule package: ${grug}</message>
+        <foreach var="rule-package" class="(**).*Rule*">
+            <message>Rülé package: ${rule-package}</message>
         </foreach>
         
     </ruleset>

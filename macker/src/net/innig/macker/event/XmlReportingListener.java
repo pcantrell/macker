@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.io.Writer;
 import java.io.IOException;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Iterator;
 
 import org.jdom.Document;
@@ -23,9 +23,9 @@ public class XmlReportingListener
     private String encoding;
     
     private Document document;
-    private Element reportElem;
     private Element curElem;
-
+    private LinkedList elemStack;
+    
     public XmlReportingListener(File outFile)
         throws ListenerException
         {
@@ -39,7 +39,7 @@ public class XmlReportingListener
         catch(IOException ioe)
             { throw new ListenerException(this, "Unable to remove and re-create report file \"" + outFile + "\"", ioe); }
         }
-        
+    
     public XmlReportingListener(Writer out, String encoding)
         throws ListenerException
         { init(out, encoding); }
@@ -50,10 +50,11 @@ public class XmlReportingListener
         this.out = out;
         this.encoding = encoding;
         
-        curElem = reportElem = new Element("macker-report");
-        document = new Document(reportElem);
+        elemStack = new LinkedList();
+        pushElem(new Element("macker-report"));
+        document = new Document(curElem);
         }
-        
+    
     public void flush()
         throws ListenerException
         {
@@ -74,20 +75,23 @@ public class XmlReportingListener
         catch(IOException ioe)
             { throw new ListenerException(this, "Unable to close XML report", ioe); }
         }
-
+    
 	public void mackerStarted(RuleSet ruleSet)
         {
-        Element ruleSetElem = new Element("ruleset");
         if(ruleSet.hasName())
+            {
+            Element ruleSetElem = new Element("ruleset");
             ruleSetElem.setAttribute("name", ruleSet.getName());
-        
-        curElem.addContent(ruleSetElem);
-        curElem = ruleSetElem;
+            curElem.addContent(ruleSetElem);
+            pushElem(ruleSetElem);
+            }
+        else
+            pushElem(curElem); // push again so finish can pop
         }
 
 	public void mackerFinished(RuleSet ruleSet)
         throws MackerIsMadException, ListenerException
-        { curElem = curElem.getParent(); }
+        { popElem(); }
 
 	public void mackerAborted(RuleSet ruleSet)
         { curElem = null; }
@@ -118,6 +122,27 @@ public class XmlReportingListener
             
             curElem.addContent(violationElem);
             }
+        
+        if(event instanceof ForEachStarted)
+            {
+            ForEachStarted forEachStarted = (ForEachStarted) event;
+            Element forEachElem = new Element("foreach");
+            forEachElem.setAttribute("var", forEachStarted.getForEach().getVariableName());
+            curElem.addContent(forEachElem);
+            pushElem(forEachElem);
+            }
+        
+        if(event instanceof ForEachIterationStarted)
+            {
+            ForEachIterationStarted forEachIter = (ForEachIterationStarted) event;
+            Element iterElem = new Element("iteration");
+            iterElem.setAttribute("value", forEachIter.getVariableValue());
+            curElem.addContent(iterElem);
+            pushElem(iterElem);
+            }
+
+        if(event instanceof ForEachIterationFinished || event instanceof ForEachFinished)
+            popElem();
         }
 
     private void handleEventBasics(Element elem, MackerEvent event)
@@ -145,6 +170,15 @@ public class XmlReportingListener
         if(classInfo.getPackageName() != null)
             classInfoElem.addContent(packElem);
         }
+    
+    private void pushElem(Element elem)
+        {
+        elemStack.addLast(curElem);
+        curElem = elem;
+        }
+    
+    private void popElem()
+        { curElem = (Element) elemStack.removeLast(); }
     
     public String toString()
         { return "XmlReportingListener"; }

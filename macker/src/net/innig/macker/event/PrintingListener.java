@@ -65,15 +65,31 @@ public class PrintingListener
     public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
         throws MackerIsMadException
         {
-        eventsBySeverity.put(event.getRule().getSeverity(), event);
-        if(event.getRule().getSeverity().compareTo(threshold) >= 0)
+        if(event instanceof ForEachEvent)
             {
-            if(first)
+            if(event instanceof ForEachIterationStarted)
                 {
-                out.println();
-                first = false;
+                ForEachIterationStarted iterStart = (ForEachIterationStarted) event;
+                out.print('(');
+                out.print(iterStart.getForEach().getVariableName());
+                out.print(": ");
+                out.print(iterStart.getVariableValue());
+                out.println(")");
                 }
-            out.println(event.toStringVerbose());
+            // ignore other ForEachEvents
+            }
+        else
+            {
+            eventsBySeverity.put(event.getRule().getSeverity(), event);
+            if(event.getRule().getSeverity().compareTo(threshold) >= 0)
+                {
+                if(first)
+                    {
+                    out.println();
+                    first = false;
+                    }
+                out.println(event.toStringVerbose());
+                }
             }
         }
     

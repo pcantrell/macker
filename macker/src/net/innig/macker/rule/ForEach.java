@@ -22,8 +22,7 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassManager;
 import net.innig.macker.structure.ClassInfo;
-import net.innig.macker.event.MackerIsMadException;
-import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.*;
 
 import java.util.*;
 
@@ -75,14 +74,20 @@ public class ForEach
             if(varValue != null)
                 varValues.add(varValue);
             }
-            
+        
+        context.broadcastEvent(new ForEachStarted(this));
         for(Iterator i = varValues.iterator(); i.hasNext(); )
             {
             String varValue = (String) i.next();
-            System.out.println('(' + getVariableName() + ": " + varValue + ')');
+            context.broadcastEvent(new ForEachIterationStarted(this, varValue));
+            
+//            System.out.println('(' + getVariableName() + ": " + varValue + ')');
             context.setVariableValue(getVariableName(), varValue);
             ruleSet.check(context, classes);
+
+            context.broadcastEvent(new ForEachIterationFinished(this, varValue));
             }
+        context.broadcastEvent(new ForEachFinished(this));
         }
     
     private RuleSet ruleSet;
