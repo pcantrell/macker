@@ -11,6 +11,9 @@ import java.util.*;
 
 import org.jdom.input.SAXBuilder;
 
+/**
+    The main class for the command line interface.
+*/
 public class Macker
     {
     public static void main(String[] args)
@@ -128,12 +131,12 @@ public class Macker
             }
         }
         
-        public static void usage()
-            {
-            System.out.println("usage:");
-            System.out.println("    macker [-v] [rulesfile.xml | -r rulesfile | javaclass.class]+");
+    public static void usage()
+        {
+        System.out.println("usage:");
+        System.out.println("    macker [-v] [rulesfile.xml | -r rulesfile | javaclass.class]+");
 //            System.out.println("    macker [javalib.jar]+");
-            }
+        }
     }
 
 

@@ -1,0 +1,104 @@
+body {
+    background-color:#3C0000;
+    color:#FFF;
+    font-family: Palatino,Times;
+}
+A:link    { color:#FF6; }
+A:visited { color:#DD8; }
+A:active  { color:#FF0; }
+
+.pagecontents {
+    color : #B88;
+}
+.pagecontents {
+    margin : 0em 1em .8em 1.8cm;
+    padding-left : 0cm;
+}
+.pagecontents li {
+    margin : 0em 1em .3em 0cm;
+    padding : 0cm 0cm 0cm 0cm;
+    font-family : Verdana,Geneva,Helvetica;
+    font-weight : bold;
+    font-size : .9em;
+}
+.pagecontents A, .pagecontents A:link, .pagecontents A:visited {
+    color : #FFF;
+    text-decoration : none;
+}
+
+
+h1 {
+    background-color:#C00;
+    color:#FFF;
+    margin  : 0cm 0cm 0cm 0cm;
+    padding : .14cm .14cm .14cm .4cm;
+    border-style : solid;
+    border-color : #000;
+    border-width : 2px 2px 0px 2px;
+    font-family : Baskerville,Georgia,Palatino,Times,Times New Roman;
+    font-size:2.4em;
+    font-weigth:bold;
+}
+h2 {
+    background-color:#A00;
+    color:#FFF;
+    padding : .14cm .14cm .14cm .7cm;
+    border-style : solid;
+    border-color : #000;
+    border-width : 1px;
+    font-family : Verdana,Geneva,Helvetica;
+    font-size:1.6em;
+    font-weigth:bold;
+}
+h3 {
+    background-color : #800;
+    color : #FFF;
+    padding : .14cm .14cm .14cm 0.9cm;
+    border-style : solid;
+    border-color : #000;
+    border-width : 1px;
+    font-family : Verdana,Geneva,Helvetica;
+    font-size   : 1.2em;
+    font-weigth : bold;
+}
+h4 {
+    background-color : #700;
+    color : #FFF;
+    padding : .14cm .14cm .14cm 1.1cm;
+    border : 2px 1px;
+    border-style : solid;
+    border-color : #000;
+    border-width : 1px;
+    font-family : Verdana,Geneva,Helvetica;
+    font-size   : 1.2em;
+    font-weigth : bold;
+}
+
+p {
+    margin : 0em .6cm .6em 1.2cm;
+}
+ul {
+    margin : 0em 0cm .8em 2cm;
+    padding-left : 0cm;
+}
+li {
+    margin : 0em .4cm .3em 0cm;
+}
+
+.navbar {
+    color : #866;
+    background : #000;
+    margin : 0px 0px 4px 0px;
+    padding : 4px 4px 4px .4cm;
+    font-family : Verdana,Geneva,Helvetica;
+    font-weight : bold;
+    font-size : 10px;
+}
+.navbar A, .navbar A:link, .navbar A:visited {
+    color : #FFF;
+    text-decoration : none;
+}
+.footer {
+    margin-top : .6cm;
+    margin-bottom : .4cm;
+}

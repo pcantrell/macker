@@ -11,8 +11,10 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.taskdefs.Java;
 
 /** 
-  * @see <a href="http://jakarta.apache.org/ant/manual/develop.html">The Ant manual</a>
-  */
+    A task which allows access to Macker from Ant build files.
+    
+    @see <a href="http://jakarta.apache.org/ant/manual/develop.html">The Ant manual</a>
+*/
 public class MackerAntTask extends Task
     {
     public MackerAntTask()
@@ -24,9 +26,7 @@ public class MackerAntTask extends Task
         throws BuildException
         {
         if(verbose)
-            {
             System.out.println("Macker:");
-            }
         jvm.setTaskName("macker");
         jvm.setClassname("net.innig.macker.Macker");
         jvm.setFork(fork);
@@ -96,7 +96,7 @@ public class MackerAntTask extends Task
         return jvm;
         }
 
-    private boolean fork = false;
+    private boolean fork = true;
     private boolean failOnError = true;
     private boolean verbose = false;
     private List/*<File>*/ rulesFiles;
