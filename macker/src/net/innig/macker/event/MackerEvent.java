@@ -53,6 +53,7 @@ public class MackerEvent
     
     public String toStringVerbose()
         {
+        //! This is completely crappy -- the PrintingListener probably should be the one to deal with this
         final String CR = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
         if(rule.getSeverity() != RuleSeverity.ERROR)

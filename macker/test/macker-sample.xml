@@ -4,6 +4,10 @@
 <macker>
 
     <ruleset name="filter test">
+
+        <ruleset>
+            <ruleset name="nested2"/>
+        </ruleset>
         
         <pattern name="foo" filter="interface" />
         

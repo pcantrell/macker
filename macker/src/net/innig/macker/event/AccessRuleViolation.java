@@ -35,7 +35,7 @@ public class AccessRuleViolation
             List messages)
         {
         super(accessRule,
-            "Illegal reference" + CR // hokey!!
+            "Illegal reference" + CR //! hokey, hokey, hokey!
             + "  from " + from + CR
             + "    to " + to,
             messages);

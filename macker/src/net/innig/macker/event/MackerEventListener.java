@@ -27,9 +27,7 @@ import java.util.*;
 public interface MackerEventListener
     extends EventListener
     {
-    /** Called before rule checking begins for the given top-level ruleset.
-     *  This method is not called for child rulesets (e.g. ForEach); ruleSet.parent()
-     *  will always be null.
+    /** Called before rule checking begins for the given ruleset.
      */
     public void mackerStarted(RuleSet ruleSet);
     
@@ -40,7 +38,7 @@ public interface MackerEventListener
     
     /** Called after an exception has aborted rule checking for the given ruleset.
      *  <b>??</b>: Is mackerAborted called if mackerFinished() was already called, but
-     *	another subsequently aborted?
+     *	another listener subsequently aborted?
      */
     public void mackerAborted(RuleSet ruleSet);
     
