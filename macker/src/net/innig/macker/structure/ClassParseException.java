@@ -22,11 +22,13 @@ package net.innig.macker.structure;
 
 import org.apache.bcel.classfile.*;
 
+import org.apache.commons.lang.exception.NestableException;
+
 /**
     A class file was found, but was unparsable.
 */
 public class ClassParseException
-    extends Exception
+    extends NestableException
     {
     public ClassParseException(String message)
         { super(message); }

@@ -20,12 +20,14 @@
  
 package net.innig.macker.rule;
 
+import org.apache.commons.lang.exception.NestableException;
+
 /**
     Indicates an illegal or ill-formed rule.
 */
 
 public abstract class RulesException
-    extends Exception
+    extends NestableException
     {
     public RulesException(String message)
         { super(message); }

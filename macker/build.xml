@@ -87,22 +87,20 @@
         <taskdef name="javamake"
             classname="com.sun.tools.javamake.ant.JavaMake"
             classpath="${build.classpath}" />
-
         <javamake
             srcdir="${src.dir}"
             destdir="${build.classes.dir}"
             pdbFilename="${build.dir}/${name}.pdb">
             <classpath refid="build.classpath" />
         </javamake>
-
 <!--
         <javac 
             srcdir="${src.dir}"
-            destdir="${build.classes.dir}">
+            destdir="${build.classes.dir}"
+            target="1.3">
             <classpath refid="build.classpath" />
         </javac>
--->
-        
+-->        
     </target>
 
     <!-- ================================================================= -->
@@ -186,13 +184,13 @@
         depends="build">
         
         <mkdir dir="${build.test.dir}" />
+
         <javamake
             srcdir="${test.dir}"
             destdir="${build.test.dir}"
             pdbFilename="${build.dir}/${name}-test.pdb">
             <classpath refid="test.classpath" />
         </javamake>
-
 <!--
         <javac 
             srcdir="${test.dir}"
@@ -200,8 +198,7 @@
             debug="yes">
             <classpath refid="test.classpath" />
         </javac>
--->        
-
+-->
     </target>
     
     <target name="test"
