@@ -1,5 +1,11 @@
 VERSION HISTORY
 
+version 0.4.x:
+    - (planned) HTML report formatting with supporting Ant task
+
+version 0.4.1:
+    - bug fix for 794536
+
 version 0.4:
     - filters allow patterns to match on supertypes and basic class attributes
     - severity levels allow rules to generate warnings instead of errors
@@ -51,9 +57,9 @@ LIKELY FUTURE FEATURES
 
 0.4 filtering on attributes other than name
 0.5 forall / exists rules
-0.5 parsing of references inside methods
 0.6 method patterns
 0.7 standard for rules export in META-INF
+?   parsing of references inside methods
 ?   more flexible foreach scoping
 ?   line numbers in output
 ?   add reference type filters for access rules?
