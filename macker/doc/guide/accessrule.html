@@ -59,7 +59,7 @@ The <code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> tags are secretly anon
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
-Nesting allow/deny tags works just as nesting include/exclude does.  One common idiom is to specicfy that only a specific set of classes are allowed to use a certain API or layer by first ruling out everything, then adding back in the privileged classes.  Here, for example, is a rule that says only the DB layer is allowed to access Java's database APIs:
+Nesting allow/deny tags works just as nesting include/exclude does: the inner rules apply only if the outer one did.  One common idiom is to specicfy that only a specific set of classes are allowed to use a certain API or layer by first ruling out everything, then adding back in the privileged classes.  Here, for example, is a rule that says only the DB layer is allowed to access Java's database APIs:
 </p>
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
