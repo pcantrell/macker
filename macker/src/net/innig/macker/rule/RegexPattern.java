@@ -45,15 +45,18 @@ public class RegexPattern
     public String getMatchString()
         { return regexStr; }
 
-    public void setMatchString(String regexStr)
+    private void setMatchString(String regexStr)
         throws RegexPatternSyntaxException
         {
+        if(regexStr == null)
+            throw new NullPointerException("regexStr == null");
         buildStaticPatterns();
         if(!allowable.match(regexStr))
             throw new RegexPatternSyntaxException(regexStr);
         this.regexStr = regexStr;
         parts = null;
         regex = null;
+        prevVarValues = new HashMap();
         }
     
     private String regexStr;
@@ -66,7 +69,14 @@ public class RegexPattern
         throws RulesException
         {
         parseExpr(context);
-        return regex.match('.' + classInfo.getClassName());
+        String className = classInfo.getClassName();
+        Boolean match = (Boolean) matchCache.get(className);
+        if(match == null)
+            {
+            match = regex.match('.' + className) ? Boolean.TRUE : Boolean.FALSE;
+            matchCache.put(className, match);
+            }
+        return match.booleanValue();
         }
     
     public String getParen(EvaluationContext context, ClassInfo classInfo)
@@ -99,18 +109,34 @@ public class RegexPattern
                 pos = hasAnotherVar ? var.getParenEnd(0) : -1;
                 }
             }
-
-        if(regex == null || prevContext != context)
+        
+        // Building the regexp is expensive; there's no point in doing it if we
+        // already have one cached, and the relevant variables haven't changed
+        
+        boolean changed = (regex == null);
+        for(Iterator i = prevVarValues.entrySet().iterator(); !changed && i.hasNext(); )
+            {
+            Map.Entry entry = (Map.Entry) i.next();
+            String name  = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            if(!context.getVariableValue(name).equals(value))
+                changed = true;
+            }
+            
+        if(changed)
             {
             StringBuffer builtRegexStr = new StringBuffer("^\\.?");
             for(Iterator i = parts.iterator(); i.hasNext(); )
                 {
                 Part part = (Part) i.next();
                 if(part instanceof VarPart)
+                    {
+                    String varName = ((VarPart) part).varName;
+                    String varValue = context.getVariableValue(varName);
+                    prevVarValues.put(varName, varValue);
                     builtRegexStr.append(
-                        parseSubexpr(
-                            context.getVariableValue(
-                                ((VarPart) part).varName)));
+                        parseSubexpr(varValue));
+                    }
                 else if(part instanceof ExpPart)
                     builtRegexStr.append(
                         ((ExpPart) part).exp);
@@ -126,6 +152,7 @@ public class RegexPattern
                 
             if(regex.getParenCount() > 1)
                 throw new RegexPatternSyntaxException(regexStr, "Too many parenthesized expressions");
+            matchCache = new HashMap();
             }
         }
     
@@ -167,6 +194,7 @@ public class RegexPattern
     private RE regex;
     private List/*<Part>*/ parts;
     private EvaluationContext prevContext;
+    private Map prevVarValues, matchCache;
     static private RE star, matchWithin, matchAcross, partBoundary, innerClassBoundary, var, allowable;
     
     private class Part { }
