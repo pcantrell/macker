@@ -95,14 +95,18 @@ public class XmlReportingListener
 		throws MackerIsMadException
         {
         if(event instanceof MessageEvent)
-            addMessageElements(curElem, event.getMessages());
+            {
+            Element messageRuleElem = new Element("message-rule");
+            handleEventBasics(messageRuleElem, event);
+            curElem.addContent(messageRuleElem);
+            }
         
         if(event instanceof AccessRuleViolation)
             {
             AccessRuleViolation violation = (AccessRuleViolation) event;
             Element violationElem = new Element("access-rule-violation");
             
-            addMessageElements(violationElem, violation.getMessages());
+            handleEventBasics(violationElem, violation);
             
             Element fromElem = new Element("from");
             fromElem.setText(violation.getFrom().getClassName());
@@ -116,9 +120,10 @@ public class XmlReportingListener
             }
         }
 
-    private void addMessageElements(Element elem, List/*<String>*/ messages)
+    private void handleEventBasics(Element elem, MackerEvent event)
         {
-        for(Iterator msgIter = messages.iterator(); msgIter.hasNext(); )
+        elem.setAttribute("severity", event.getRule().getSeverity().getName());
+        for(Iterator msgIter = event.getMessages().iterator(); msgIter.hasNext(); )
             {
             String message = (String) msgIter.next();
             Element messageElem = new Element("message");
