@@ -17,7 +17,8 @@
     </rules-file>
     
     <expected-events>
-        <eventset type="AccessRuleViolation" severity="error" to="void">
+        <rule type="AccessRuleViolation" severity="error" to="void">
+            <!-- Every class references void, so this test is sort of useless until we can limit ref type -->
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
@@ -25,79 +26,79 @@
             <event from="XArrayField" />
             <event from="NewArrayOfX" />
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="byte">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="byte">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="short">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="short">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="int">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="int">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="long">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="long">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="char">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="char">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="boolean">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="boolean">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="float">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="float">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="double">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="double">
             <event from="MethodTakesX" />
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
-            <!-- <event from="NewArrayOfX" /> -->
+            <!-- <event from="NewArrayOfX" /> --> <!-- bug 791721 -->
             <event from="NewDoubleArrayOfX" />
-        </eventset>
+        </rule>
     </expected-events>
 
     <test-classes>

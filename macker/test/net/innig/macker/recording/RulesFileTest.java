@@ -18,15 +18,18 @@
  *______________________________________________________________________________
  */
  
-package net.innig.macker.rule;
+package net.innig.macker.recording;
 
 import net.innig.macker.Macker;
+import net.innig.macker.rule.*;
 import net.innig.macker.event.*;
 import net.innig.macker.structure.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -39,7 +42,6 @@ import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
-import net.innig.collect.CollectionDiff;
 
 public final class RulesFileTest
     implements Test
@@ -110,8 +112,8 @@ public final class RulesFileTest
         {
         Macker macker = new Macker();
 
-        RecordingListener recording = new RecordingListener();
-        macker.addListener(recording);
+        RecordingListener recordingListener = new RecordingListener();
+        macker.addListener(recordingListener);
         
         for(Iterator rsIter = rulesFile.iterator(); rsIter.hasNext();)
             macker.addRuleSet((RuleSet) rsIter.next());
@@ -120,38 +122,22 @@ public final class RulesFileTest
         
         macker.checkRaw();
         
-        List actualEvents = recording.getRecordedEvents();
+        EventRecording actual = recordingListener.getRecording();
         
-        if(expectedEvents.size() != actualEvents.size())
-            throw new AssertionFailedError(
-                "expected " + expectedEvents.size()
-                + " rules generating events, but got " + actualEvents.size()
-                + ": " + actualEvents);
-        
-        boolean match = true;
-        Iterator
-            expectedIter = expectedEvents.iterator(),
-            actualIter = actualEvents.iterator();
-        while(expectedIter.hasNext())
+        StringWriter mismatches = new StringWriter();
+        PrintWriter out = new PrintWriter(mismatches);
+        out.println("Mismatched events:");
+        if(!expected.compare(actual, out))
             {
-            Set expectedSet = (Set) expectedIter.next();
-            Set actualSet = (Set) actualIter.next();
-            CollectionDiff diff = new CollectionDiff(expectedSet, actualSet);
-            if(!diff.getRemoved().isEmpty())
-                {
-                System.out.println("Missing events: ");
-                dump(diff.getRemoved());
-                match = false;
-                }
-            if(!diff.getAdded().isEmpty())
-                {
-                System.out.println("Unexpected events: ");
-                dump(diff.getAdded());
-                match = false;
-                }
+            out.println();
+            out.println("Excepted:");
+            expected.dump(out, 4);
+            out.println();
+            out.println("Actual:");
+            actual.dump(out, 4);
+            out.flush();
+            throw new AssertionFailedError(mismatches.toString());
             }
-        if(!match)
-            throw new AssertionFailedError("Mismatched events");
         }
     
     private void dump(Collection c)
@@ -200,9 +186,13 @@ public final class RulesFileTest
             
             String sourceCode = sourceElem.getText();
             
+            char pathSeparatorChar =
+                System.getProperty("os.name").toLowerCase().equals("mac os x")
+                    ? '/'    // erroneously comes out as ':' on OS X -- shame on Apple!
+                    : File.pathSeparatorChar;
             File sourceFile = new File(
                 srcDir,
-                packName.replace('.', File.pathSeparatorChar) + className + ".java");
+                packName.replace('.', pathSeparatorChar) + className + ".java");
             sourceFile.getParentFile().mkdirs();
 
             BufferedWriter out = new BufferedWriter(new FileWriter(sourceFile));
@@ -247,34 +237,8 @@ public final class RulesFileTest
     
     private void buildExpectedEvents(Element expectedEventsElem)
         {
-        expectedEvents = new ArrayList();
-        for(Iterator esetIter = expectedEventsElem.getChildren("eventset").iterator(); esetIter.hasNext(); )
-            {
-            Element eventSetElem = (Element) esetIter.next();
-            
-            Set eventSet = new HashSet();
-            Map baseAtt = getAttributeValueMap(eventSetElem);
-            for(Iterator evtIter = eventSetElem.getChildren("event").iterator(); evtIter.hasNext(); )
-                {
-                Element eventElem = (Element) evtIter.next();
-                Map eventAtt = new TreeMap(baseAtt);
-                eventAtt.putAll(getAttributeValueMap(eventElem));
-                
-                eventSet.add(eventAtt);
-                }
-            expectedEvents.add(eventSet);
-            }
-        }
-    
-    private Map getAttributeValueMap(Element elem)
-        {
-        Map attValues = new TreeMap();
-        for(Iterator i = elem.getAttributes().iterator(); i.hasNext(); )
-            {
-            Attribute attr = (Attribute) i.next();
-            attValues.put(attr.getName(), attr.getValue());
-            }
-        return attValues;
+        expected = new RuleSetRecording(null);
+        expected.read(expectedEventsElem);
         }
     
     // -----------------------------------------------------------------
@@ -286,11 +250,8 @@ public final class RulesFileTest
     private Collection/*<RuleSet>*/ rulesFile;
     private Collection/*<File>*/ classFiles;
 
-    /**
-     * List of rules
-     *   Set of events for each rule
-     *     Map of attributes for each event
-     **/
-    private List/*<Set<Map<String,String>>>*/ expectedEvents;
+    private EventRecording expected;
     }
+
+
 

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <!-- Test that var gets set -->
+            <foreach var="foo" class="fruz.**">
+                <message>foo=${foo}</message>
+            </foreach>
+
+            <!-- Test that pool extends one ref out -->
+            <foreach var="bar" class="**.(*)Stream" />
+
+            <!-- Test match folding -->
+            <foreach var="zab" class="(**).*Stream" />
+        </ruleset>
+    </rules-file>
+    
+    <expected-events>
+        <foreach var="foo">
+            <iteration value=".fruz.nog.TestX">
+                <rule type="MessageEvent" severity="info">
+                    <event message0="foo=.fruz.nog.TestX" />
+                </rule>
+            </iteration>
+            <iteration value=".fruz.TestY">
+                <rule type="MessageEvent" severity="info">
+                    <event message0="foo=.fruz.TestY" />
+                </rule>
+            </iteration>
+        </foreach>
+        <foreach var="bar">
+            <iteration value="Output" />
+            <iteration value="Input" />
+            <iteration value="FileInput" />
+            <iteration value="JarInput" />
+        </foreach>
+        <foreach var="zab">
+            <iteration value="java.io" />
+            <iteration value="java.util.jar" />
+        </foreach>
+    </expected-events>
+
+    <test-classes>
+        <source package="fruz.nog" class="TestX">
+            package fruz.nog;
+            import java.io.*;
+            public class TestX
+                {
+                OutputStream os;
+                InputStream is;
+                FileInputStream fs;
+                }
+        </source>
+        <source package="fruz" class="TestY">
+            package fruz;
+            import java.util.jar.*;
+            public class TestY
+                {
+                JarInputStream jis;
+                }
+        </source>
+    </test-classes>
+
+</macker-ruleset-test>

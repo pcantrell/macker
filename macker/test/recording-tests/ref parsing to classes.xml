@@ -18,7 +18,7 @@
     </rules-file>
     
     <expected-events>
-        <eventset type="AccessRuleViolation" severity="error" to="X">
+        <rule type="AccessRuleViolation" severity="error" to="X">
             <event from="ExtendsX" />
             <event from="MethodTakesXOnly" />
             <event from="MethodTakesXFirst" />
@@ -33,10 +33,10 @@
             <event from="XArrayField" />
             <event from="NewX" />
             <event from="NewArrayOfX" />
-        </eventset>
-        <eventset type="AccessRuleViolation" severity="error" to="Y">
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="Y">
             <event from="X" />
-        </eventset>
+        </rule>
     </expected-events>
 
     <test-classes>
