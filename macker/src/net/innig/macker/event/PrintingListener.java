@@ -106,7 +106,7 @@ public class PrintingListener
         
     private boolean first;
     private PrintWriter out;
-    private RuleSeverity threshold = RuleSeverity.WARNING;
+    private RuleSeverity threshold = RuleSeverity.INFO;
     private final MultiMap eventsBySeverity = new CompositeMultiMap(TreeMap.class, HashSet.class);
     }
 

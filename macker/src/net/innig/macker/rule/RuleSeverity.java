@@ -20,6 +20,7 @@
  
 package net.innig.macker.rule;
 
+import net.innig.util.EnumeratedType;
 import net.innig.util.OrderedType;
 
 public final class RuleSeverity
@@ -28,7 +29,19 @@ public final class RuleSeverity
     public static final RuleSeverity
         ERROR   = new RuleSeverity("error",   "errors",    0),
         WARNING = new RuleSeverity("warning", "warnings", -1),
-        INFO    = new RuleSeverity("info",    "info",     -2);
+        INFO    = new RuleSeverity("info",    "info",     -2),
+        DEBUG   = new RuleSeverity("debug",   "debug",    -3);
+    
+    public static RuleSeverity fromName(String name)
+        throws IllegalArgumentException
+        {
+        RuleSeverity severity = (RuleSeverity) EnumeratedType.resolveFromName(RuleSeverity.class, name);
+        if(severity == null)
+            throw new IllegalArgumentException(
+                "Unknown severity level \"" + name + "\" (expected one of "
+                + OrderedType.allTypeNamesSorted(RuleSeverity.class) + ")");
+        return severity;
+        }
     
     public String getNamePlural()
         { return plural; }

@@ -20,7 +20,7 @@
  
 package net.innig.macker.structure;
 
-import java.util.Set;
+import java.util.*;
 import net.innig.collect.*;
 
 public abstract class ClassInfo
@@ -50,8 +50,8 @@ public abstract class ClassInfo
                 this,
                 new GraphWalker()
                     {
-                    public Set reachableNodes(Object node)
-                        { return ((ClassInfo) node).getAllDirectSuper(); }
+                    public Collection getEdgesFrom(Object node)
+                        { return ((ClassInfo) node).getDirectSupertypes(); }
                     } );
         return allSuper;
         }

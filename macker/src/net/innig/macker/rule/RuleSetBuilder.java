@@ -217,6 +217,14 @@ public class RuleSetBuilder
         return new Variable(parent, varName, value);
         }
     
+    public Echo buildEcho(Element echoElem, RuleSet parent)
+        throws RulesException
+        {
+        Echo echo = new Echo(parent, echoElem.getText());
+        buildSeverity(echo, echoElem);
+        return echo;
+        }
+    
     public ForEach buildForEach(Element forEachElem, RuleSet parent)
         throws RulesException
         {
@@ -293,13 +301,10 @@ public class RuleSetBuilder
         String severityS = elem.getAttributeValue("severity");
         if(severityS != null && !"".equals(severityS))
             {
-            RuleSeverity severity = (RuleSeverity) EnumeratedType.resolveFromName(
-                RuleSeverity.class, severityS);
-            if(severity == null)
-                throw new RulesDocumentException(
-                    elem,
-                    "Unknown severity level \"" + severityS + "\" (expected one of "
-                    + OrderedType.allTypeNamesSorted(RuleSeverity.class) + ")");
+            RuleSeverity severity;
+            try { severity = RuleSeverity.fromName(severityS); }
+            catch(IllegalArgumentException iae)
+                { throw new RulesDocumentException(elem, iae.getMessage()); }
             rule.setSeverity(severity);
             }
         }

@@ -231,6 +231,12 @@ public class Macker
     public void setClassLoader(ClassLoader classLoader)
         { cm.setClassLoader(classLoader); }
     
+    public void setPrintThreshold(RuleSeverity printThreshold)
+        { this.printThreshold = printThreshold; }
+    
+    public void setFailThreshold(RuleSeverity failThreshold)
+        { this.failThreshold = failThreshold; }
+    
     public void check()
         throws MackerIsMadException, RulesException
         {
@@ -257,6 +263,7 @@ public class Macker
 
         PrintingListener printing = new PrintingListener(System.out);
         ThrowingListener throwing = new ThrowingListener();
+        printing.setThreshold(printThreshold);
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
@@ -282,13 +289,12 @@ public class Macker
             rs.check(context, cm);
             }
         printing.printSummary();
-        throwing.timeToGetMad(RuleSeverity.ERROR);
+        throwing.timeToGetMad(failThreshold);
         }
 
     private ClassManager cm;
     private Collection/*<RuleSet>*/ ruleSets;
     private Map/*<String,String>*/ vars;
     private boolean verbose;
+    private RuleSeverity printThreshold = RuleSeverity.INFO, failThreshold = RuleSeverity.ERROR;
     }
-
-

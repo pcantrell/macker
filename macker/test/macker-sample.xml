@@ -48,7 +48,7 @@
                 </to>
             </deny>
         </access-rule>
-
+<!--
         <foreach var="type-class" regex="(**Type)">
             <access-rule>
                 <deny>
@@ -59,6 +59,10 @@
                     <allow><to regex="net.innig.util.EnumeratedType" /></allow>
                 </deny>
             </access-rule>
+        </foreach>
+-->
+        <foreach var="exception" regex="(**Exception)">
+            <echo>${exception}</echo>
         </foreach>
 
     </ruleset>

@@ -62,7 +62,8 @@ public class ForEach
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
         
         Set varValues = new TreeSet();
-        for(Iterator i = classes.getPrimaryClasses().iterator(); i.hasNext(); )
+        Set pool = classes.getPrimaryClasses();
+        for(Iterator i = pool.iterator(); i.hasNext(); )
             {
             ClassInfo classInfo = (ClassInfo) i.next();
             String varValue = regexPat.getParen(parentContext, classInfo);

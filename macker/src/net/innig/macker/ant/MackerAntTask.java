@@ -28,6 +28,7 @@ import net.innig.macker.Macker;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassParseException;
 import net.innig.macker.rule.RulesException;
+import net.innig.macker.rule.RuleSeverity;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
@@ -99,6 +100,18 @@ public class MackerAntTask extends Task
 
     public void setFailOnError(boolean failOnError)
         { this.failOnError = true; }
+    
+    public void setPrintThreshold(String threshold)
+        {
+        macker.setPrintThreshold(RuleSeverity.fromName(threshold));
+        // no forked equiv!
+        }
+
+    public void setFailThreshold(String threshold)
+        {
+        macker.setFailThreshold(RuleSeverity.fromName(threshold));
+        // no forked equiv!
+        }
 
     public void setVerbose(boolean verbose)
         {
