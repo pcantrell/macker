@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<title>Macker</title>
+<style type="text/css">@import "macker.css";</style>
+<meta name="keywords" content="java,architecture,architectural,modularity,modules,layering,layers,tier,tiers,tiering,build,junit,ant,rules,build,utility">
+<meta name="description" content="A build-time architectural rule checker.  Helps maintain consistent layering and modularity by checking references between classes against a user-specified rules file. Runs from Ant, JUnit, or a shell script. [GPL]">
+<meta name="generator" content="Paul">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<h1>Macker</h1>
+
+<div class="navbar">
+<a href="index.html">Home</a> | 
+<a href="faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="guide/index.html">Guide&nbsp;&amp;&nbsp;Examples</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge</a> |
+<a href="contact.html">Contact</a>
+</div>
+
+<h2>What's New in Macker 0.4</h2>
+
+<h4>New features</h4>
+<p>
+<ul>
+    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="guide/filter.html">more</a>)
+    <li> Rules now have severity levels -- you can generate warnings without failing the build, or include debug messages which are hidden during a normal build. (<a href="guide/accessrule.html#severity">more</a>)
+    <li> Macker can now generate XML reports.  (<a href="guide/ant.html#xmlReport">more</a>)
+    <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="guide/var-foreach.html#message">more</a>)
+	<li> The special from/to variables are now available to patterns in an access rule, in addition to the message.  Two new variables give just the from/to package name.  (<a href="guide/var-foreach.html#var">more</a>)  Two new patterns match the from/to classes.  (<a href="guide/accessrule.html#fromtopats">more</a>)
+	<li> The Ant task can now set a property when rule checking fails.  (<a href="guide/ant.html">more</a>)
+</ul>
+
+<h4>Changes to existing features</h4>
+<p>
+<ul>
+    <li> The <code>regex</code> attribute is now deprecated in favor of <code>class</code>, which will make future features more readable.  (Only the name has changed; both do the same thing.)
+    <li> For each now also matches against classes one reference out from the primary classes, instead of just the primary classes themselves.  This lets you check against modules which are not part of the primary classes, but, for example, in a jar from a different project.
+    <li> Verbose output shows classes in sorted order.
+</ul>
+
+<h4>Implementation changes</h4>
+<p>
+<ul>
+    <li> Macker now uses <a href="http://jakarta.apache.org/bcel/">Jakarta BCEL</a> for class file parsing.  This speeds things up a hair, and eliminates the warning messages <a href="http://www.ej-technologies.com/jclasslib/">JClasslib</a> used to generate.
+    <li> Class analysis now is vastly more detailed: it includes superclass, interfaces, and access modifiers, and internally distinguishes different types of signature-level references.  This richer analysis will manifest itself in richer patterns and rules in future versions of Macker.  (Right now, it probably just cancels out the speed benefits of BCEL.)
+    <li> The internal event callback mechanism is better structured (inching closer to IDE integration).
+    <li> Macker now forces validation against its internal DTD.
+</ul>
+
+<h4>Bug fixes</h4>
+<p>
+<ul>
+    <li> Running under Java 1.4 no longer generates "major version" warning messages.
+    <li> The Ant task now always honors the <code>failonerror</code> attribute.
+    <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern.
+    <li> Fixed a bug in which a certain lazy loading sequence would incorrectly cause access rules to match the reference from a class to itself.
+</ul>
+
+<div class="footer">
+<div class="navbar">
+<a href="index.html">Home</a> | 
+<a href="faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="guide/index.html">Guide&nbsp;&amp;&nbsp;Examples</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge</a> |
+<a href="contact.html">Contact</a>
+</div>
+</div>
+
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img border=0 src="http://innig.net/images/innig_3C0000.gif" alt="innig"></a>
+
+</body>
+</html>
+

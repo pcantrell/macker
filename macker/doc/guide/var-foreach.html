@@ -23,6 +23,7 @@
 <h2>Variables and For Each</h2>
 <ul class="pagecontents">
 <li> <a href="#var">Variables</a>
+<li> <a href="#message">Messages</a>
 <li> <a href="#foreach">For Each</a>
 </ul>
 
@@ -72,6 +73,25 @@ An access rule defines six special variables, which you can use in patterns in t
 </table>
 </p>
 <p>
+
+
+<h3><a name="message">Messages</a></h3>
+<p>
+You can print arbitrary messages during the execution of a rules file.
+</p>
+<pre>&lt;message&gt;<span class="comment">message text</span>&lt;/message&gt;</pre>
+<p>
+Messages may contain variables.
+</p>
+<pre>&lt;message&gt;Commencing error checking for ${base.package}...&lt;/message&gt;</pre>
+<p>
+Messages are actually a kind of rule, and like access rules, they have severities.  The severity of a message is <code>info</code> by default.  You can use the <code>debug</code> severity to hide a message during normal execution, which makes messages useful for tracing variable values:
+</p>
+<pre>&lt;message severity="debug"&gt;var1=${var1} var2=${var2}&lt;/message&gt;</pre>
+<p>
+You can even make a message cause rule checking to fail by using the <code>error</code> severity, if that really seems useful to you.
+</p>
+
 
 <h3><a name="foreach">For Each</a></h3>
 <p>
