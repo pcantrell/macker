@@ -106,8 +106,7 @@ public final class RecordingTest
         {
         result.startTest(this);
 
-        System.out.print(this + ":");
-        System.out.flush();
+        System.out.println(this + " ...");
         
         try {
             build();
@@ -125,9 +124,6 @@ public final class RecordingTest
         throws MackerIsMadException, ListenerException, RulesException,
                IOException, ClassParseException, AssertionFailedError
         {
-        System.out.print(" (run)");
-        System.out.flush();
-
         Macker macker = new Macker();
 
         RecordingListener recordingListener = new RecordingListener();
@@ -140,9 +136,6 @@ public final class RecordingTest
         
         macker.checkRaw();
         
-        System.out.print(" (check)");
-        System.out.flush();
-
         EventRecording actual = recordingListener.getRecording();
         
         StringWriter mismatches = new StringWriter();
@@ -158,8 +151,6 @@ public final class RecordingTest
             actual.dump(System.out, 4);
             throw new AssertionFailedError(mismatches.toString());
             }
-
-        System.out.println(" ... PASS");
         }
     
     private void dump(Collection c)
@@ -179,9 +170,6 @@ public final class RecordingTest
     private void build()
         throws Exception
         {
-        System.out.print(" (parse)");
-        System.out.flush();
-
         SAXBuilder saxBuilder = new SAXBuilder(false);
         Element rootElem = saxBuilder.build(testFile).getRootElement();
         
@@ -202,8 +190,6 @@ public final class RecordingTest
         javacArgs.add(classesDir.getPath());
         classesDir.mkdirs();
         
-        System.out.print(" (source)");
-        System.out.flush();
         for(Iterator sourceIter = testClassesElem.getChildren("source").iterator(); sourceIter.hasNext(); )
             {
             Element sourceElem = (Element) sourceIter.next();
@@ -234,9 +220,6 @@ public final class RecordingTest
                 }
             javacArgs.add(sourceFile.getPath());
             }
-
-        System.out.print(" (compile)");
-        System.out.flush();
 
         int compilerResult = com.sun.tools.javac.Main.compile(
             (String[]) javacArgs.toArray(new String[0]));
