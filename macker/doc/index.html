@@ -32,6 +32,44 @@ It's free (GPL).  You can  <a href="http://sourceforge.net/project/showfiles.php
 <p>
 Questions or suggestions?  Feel free to <a href="contact.html">contact Paul</a>.
 
+<h2>Macker Approaches 0.4 Beta!</h2>
+<p>
+Macker is preparing for 0.4 beta.  Please download it and try it out!
+
+<h3>New features</h3>
+<p>
+<ul>
+    <li> Filters, a new construct, open the door to customizable pattern behavior. The first set of filters match on supertypes and basic class attributes. The next version of Macker will include more sophisticated filters. (<a href="filter.html">more</a>)
+    <li> Rules now have severity levels -- you can generate warnings without failing the build, or hide debug messages.  (<a href="???.html">???</a>)
+    <li> Macker can now generate XML reports.  (<a href="???.html">???</a>)
+    <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="???.html">???</a>)
+</ul>
+
+<h3>Functional changes</h3>
+<p>
+<ul>
+    <li> The <code>regex</code> attribute is now deprecated in favor of <code>class</code>, which will make future features more readable.  (Only the name has changed; both do the same thing.)
+    <li> For each now also matches against classes one reference out from the primary classes, instead of just the primary classes themselves.  This lets you check against modules which are not part of the primary classes, but, for example, in a jar from a different project.
+    <li> Verbose output shows classes in sorted order.
+</ul>
+
+<h3>Implementation changes</h3>
+<p>
+<ul>
+    <li> Macker now uses <a href="http://jakarta.apache.org/bcel/">Jakarta BCEL</a> for class file parsing.  This speeds things up a hair, and eliminates the warning messages <a href="http://www.ej-technologies.com/jclasslib/">JClasslib</a> used to generate.
+    <li> Class analysis now is vastly more detailed: it includes superclass, interfaces, and access modifiers, and internally distinguishes different types of signature-level references.  This richer analysis will manifest itself in richer patterns and rules in future versions of Macker.  (Right now, it probably just cancels out the speed benefits of BCEL.)
+    <li> The internal event callback mechanism is better structured (inching closer to IDE integration).
+    <li> Macker now forces validation against its internal DTD.
+</ul>
+
+<h3>Bug fixes</h3>
+<p>
+<ul>
+    <li> Running under Java 1.4 no longer generates "major version" warning messages.
+    <li> The Ant task now always honors the <code>failonerror</code> attribute.
+    <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern. 
+</ul>
+
 <div class="footer">
 <div class="navbar">
 <a href="index.html">Home</a> | 

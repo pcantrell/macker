@@ -7,6 +7,33 @@
 
         <ruleset>
             <ruleset name="nested2"/>
+
+            <pattern name="pat1" class="nothing" />
+            <pattern name="pat2" class="**Macker" />
+            
+            <access-rule>
+                <deny>
+                    <from pattern="pat1" />
+                </deny>
+            </access-rule>
+
+            <message severity="warning">Here it goes...</message>
+            <access-rule>
+                <deny>
+                    <from class="nothing" />
+                    <to>
+                        <include pattern="pat1" />
+                        <include pattern="pat2" />
+                    </to>
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <deny>
+                    <from pattern="pat1" />
+                </deny>
+            </access-rule>
+ 
         </ruleset>
         
         <pattern name="foo" filter="interface" />

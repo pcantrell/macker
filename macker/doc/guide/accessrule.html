@@ -45,7 +45,7 @@ The allow/deny construct is very similar to the include/exclude construct, excep
 If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any primary class from using <code>ThreadGroup</code>:
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
-        &lt;to regex="java.lang.ThreadGroup" /&gt;
+        &lt;to class="java.lang.ThreadGroup" /&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
@@ -56,10 +56,10 @@ The <code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> tags are secretly anon
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
         &lt;to&gt;
-            &lt;include regex="java.lang.ThreadGroup" /&gt;
-            &lt;include regex="java.util.Vector" /&gt;
-            &lt;include regex="java.util.Hashtable" /&gt;
-            &lt;include regex="java.util.Enumeration" /&gt;
+            &lt;include class="java.lang.ThreadGroup" /&gt;
+            &lt;include class="java.util.Vector" /&gt;
+            &lt;include class="java.util.Hashtable" /&gt;
+            &lt;include class="java.util.Enumeration" /&gt;
         &lt;/to&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
@@ -70,9 +70,9 @@ Nesting allow/deny tags works just as nesting include/exclude does: the inner ru
     &lt;message&gt;Only the DB layer may access database APIs&lt;/message&gt;
     &lt;deny&gt;
         &lt;to&gt;
-            &lt;include regex="java.sql.**" /&gt;
-            &lt;include regex="javax.sql.**" /&gt;
-            &lt;include regex="javax.jdo.**" /&gt;
+            &lt;include class="java.sql.**" /&gt;
+            &lt;include class="javax.sql.**" /&gt;
+            &lt;include class="javax.jdo.**" /&gt;
         &lt;/to&gt;
         &lt;allow&gt;
             &lt;from pattern="db-layer" /&gt;
@@ -91,7 +91,7 @@ Here, for example, is a ruleset which ignores test classes:
 </p>
 <pre>&lt;ruleset&gt;
     &lt;pattern name="not-test"&gt;
-        &lt;exclude regex="**Test**" /&gt;
+        &lt;exclude class="**Test**" /&gt;
     &lt;/pattern&gt;
     
     &lt;ruleset name="App rules (excludes tests)"&gt;
@@ -114,7 +114,9 @@ Ideally, Macker's notion of "access" would cover all the kinds of relationships 
 <p>
 (A future release of Macker will allow access rules to distinguish these different types of references.)
 <p>
-There are, however, also some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.  Unfortunately, as long as Macker operates on compiled classes, there's nothing we can do about any of this.
+There are, however, also some cases which Macker simply cannot check, because the information just isn't there in the bytecode.  Unused imports won't show up.  The type of a local variable will not show up if it is unused or only assigned to, and nobody invokes any methods on it.  Usage of primitive types is generally difficult to detect (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class.
+<p>
+As long as Macker operates on compiled classes, there's nothing we can do about any of this.  Now it's questionable whether you'd <i>want</i> some of these cases to show up -- in most cases, working on class files gives a much more accurate picture of runtime dependencies than source -- but it's a moot question.  Macker doesn't look at your source.
 
 
 <div class="next">

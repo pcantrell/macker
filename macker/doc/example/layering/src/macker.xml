@@ -3,9 +3,9 @@
 <macker>    
     <ruleset name="Layering rules">
         <var name="base" value="net.innig.macker.example.layering" />
-        <pattern name="gui"     regex="${base}.gui.**" />
-        <pattern name="model"   regex="${base}.model.**" />
-        <pattern name="persist" regex="${base}.persistence.**" />
+        <pattern name="gui"     class="${base}.gui.**" />
+        <pattern name="model"   class="${base}.model.**" />
+        <pattern name="persist" class="${base}.persistence.**" />
         
         <access-rule>
             <message>Only the model can talk to the persistence layer</message>
@@ -39,9 +39,9 @@
             <message>Persistence belongs in the persistence layer</message>
             <deny>
                 <to>
-                    <include regex="java.sql.**" />
-                    <include regex="javax.sql.**" />
-                    <include regex="javax.jdo.**" />
+                    <include class="java.sql.**" />
+                    <include class="javax.sql.**" />
+                    <include class="javax.jdo.**" />
                 </to>
             </deny>
             <allow> <from pattern="persist" /> </allow>
@@ -51,8 +51,8 @@
             <message>Swing and AWT calls belong in the GUI layer</message>
             <deny>
                 <to>
-                    <include regex="java.awt.**" />
-                    <include regex="javax.swing.**" />
+                    <include class="java.awt.**" />
+                    <include class="javax.swing.**" />
                 </to>
             </deny>
             <allow> <from pattern="gui" /> </allow>

@@ -2,20 +2,20 @@ VERSION HISTORY
 
 version 0.4 (in development):
   remaning:
-    - complete basic filters
-    - finalize filter syntax (multiple pattern params?)
     - add reference type filters for access rules?
     - document new features
     - regression tests?
   done:
-    - added filter patterns
+    - filters allows patterns to match on supertypes and basic class attributes
     - severity levels allow rules to generate warnings instead of errors
     - XML reporting
-    - parsing for superclass, interfaces, access modifiers
-    - parsing distinguishes different types of signature-level reference
+    - message rules
+    - "regex" deprecated in favor of "class" (will make future features more readable)
     - ForEach now checks more than just the primary classes
     - better-structured event callbacks (inching closer to IDE integration)
     - Macker now uses BCEL for class parsing
+    - parsing for superclass, interfaces, access modifiers
+    - parsing distinguishes different types of signature-level reference
     - Macker now forces validation against its internal DTD
     - verbose output shows classes in sorted order
     - running under Java 1.4 no longer generates "major version" warning messages

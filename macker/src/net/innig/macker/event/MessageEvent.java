@@ -27,5 +27,5 @@ public class MessageEvent
     extends MackerEvent
     {
     public MessageEvent(Message messageRule, String message)
-        { super(messageRule, message, Collections.singletonList(message)); }
+        { super(messageRule, null, Collections.singletonList(message)); }
     }

@@ -66,7 +66,8 @@ public class MackerEvent
             s.append(i.next().toString());
             s.append(CR);
             }
-        s.append(getDescription());
+        if(getDescription() != null)
+            s.append(getDescription());
         s.append(CR);
         return s.toString();
         }

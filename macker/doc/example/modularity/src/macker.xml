@@ -4,10 +4,10 @@
     <ruleset name="Modularity rules">
         <var name="module-base" value="net.innig.macker.example.modularity" />
         
-        <foreach var="module" regex="${module-base}.(**).impl.**">
+        <foreach var="module" class="${module-base}.(**).impl.**">
 
-            <pattern name="inside" regex="${module-base}.${module}.impl.**" />
-            <pattern name="factory" regex="${module-base}.${module}.*Factory" />
+            <pattern name="inside" class="${module-base}.${module}.impl.**" />
+            <pattern name="factory" class="${module-base}.${module}.*Factory" />
             
             <access-rule>
                 <message>${from} must access the ${module} module through its API</message>

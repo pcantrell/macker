@@ -31,29 +31,29 @@
 <p>
 To eliminate redundancy, or simply for the sake of conceptual clarity and readability, you can give patterns names using the <code>&lt;pattern&gt;</code> tag.  Access rules (see next section) and other patterns can then refer to the pattern by name.
 </p>
-<pre>&lt;pattern name="<span class="comment">pattern-name</span>" regex="<span class="comment">macker-regex</span>" /&gt;</pre>
+<pre>&lt;pattern name="<span class="comment">pattern-name</span>" class="<span class="comment">macker-class</span>" /&gt;</pre>
 <p>
 Here are a few patterns one might define:
 </p>
-<pre>&lt;pattern name="java-api" regex="java*.**" /&gt;
-&lt;pattern name="exception" regex="**Exception" /&gt;
-&lt;pattern name="ui-layer" regex="com.vaporcorp.whatsitproject.ui.**" /&gt;</pre>
+<pre>&lt;pattern name="java-api" class="java*.**" /&gt;
+&lt;pattern name="exception" class="**Exception" /&gt;
+&lt;pattern name="ui-layer" class="com.vaporcorp.whatsitproject.ui.**" /&gt;</pre>
 <p>
 A pattern definition sits inside a &lt;ruleset&gt; or &lt;foreach&gt; (explained in a later section) tag.  The definition is valid until the end of that tag, and applies to child rulesets.  This means that you can combine different rulesets in the same rules file without worrying about name conflicts.
 </p>
 <pre>&lt;macker&gt;
     &lt;ruleset&gt;
         <span class="comment">&lt;!-- This pattern definition applies to both rulesets below --&gt;</span>
-        &lt;pattern name="java-sql" regex="java*.sql.**" /&gt;
+        &lt;pattern name="java-sql" class="java*.sql.**" /&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="ui" regex="com.vaporcorp.whatsitproject.ui.**" /&gt;
-                &lt;pattern name="db" regex="com.vaporcorp.whatsitproject.db.**" /&gt;
+                &lt;pattern name="ui" class="com.vaporcorp.whatsitproject.ui.**" /&gt;
+                &lt;pattern name="db" class="com.vaporcorp.whatsitproject.db.**" /&gt;
                 <span class="comment">&lt;!-- Whatsitproject rules go here --&gt;</span>
         &lt;/rulset&gt;
 
         &lt;ruleset&gt;
-                &lt;pattern name="db" regex="com.vaporcorp.util.db.**" /&gt;
+                &lt;pattern name="db" class="com.vaporcorp.util.db.**" /&gt;
                 <span class="comment">&lt;!-- Vaporcorp DB util rules go here --&gt;</span>
         &lt;/rulset&gt;
     &lt;/rulset&gt;
@@ -67,22 +67,22 @@ Occasionally, you'll want to make one pattern simply an alias for another.  Use 
 <p>
 Macker's regular expressions are rather limited; the real power of its pattern matching comes from its ability to combine patterns with the <code>&lt;include&gt;</code> and <code>&lt;exclude&gt;</code> tags.  These tags successively add and remove patterns to build up a set of matching classes.  A single include/exclude tag can specify either a regular expression, or the name of a previously declared pattern:
 </p>
-<pre>&lt;include regex="<span class="comment">expression</span>" /&gt;
-&lt;exclude regex="<span class="comment">expression</span>" /&gt;
+<pre>&lt;include class="<span class="comment">expression</span>" /&gt;
+&lt;exclude class="<span class="comment">expression</span>" /&gt;
 &lt;include pattern="<span class="comment">pattern-name</span>" /&gt;
 &lt;exclude pattern="<span class="comment">pattern-name</span>" /&gt;</pre>
 <p>
 When you list includes and excludes inside a pattern definition, Macker will apply each in turn to see if a class matches.  This pattern, for example, matches the Java APIs which are not automatically imported:
 </p>
 <pre>&lt;pattern name="java-api-noautoimport"&gt;
-    &lt;include regex="java.**" /&gt;
-    &lt;exclude regex="java.lang.*" /&gt;
+    &lt;include class="java.**" /&gt;
+    &lt;exclude class="java.lang.*" /&gt;
 &lt;/pattern&gt;</pre>
 <p>
 One could also define this pattern incrementally -- first, all Java APIs, then those which are auto-imported, then those which are not:
 </p>
-<pre>&lt;pattern name="java-api" regex="java.**" /&gt;
-&lt;pattern name="java-api-autoimport" regex="java.lang.*" /&gt;
+<pre>&lt;pattern name="java-api" class="java.**" /&gt;
+&lt;pattern name="java-api-autoimport" class="java.lang.*" /&gt;
 &lt;pattern name="java-api-noautoimport"&gt;
     &lt;include pattern=java-api" /&gt;
     &lt;exclude pattern="java-api-autoimport" /&gt;
@@ -101,15 +101,15 @@ Note that the order of includes and excludes within a list <i>is</i> important -
 You can place an include/exclude list <i>inside</i> another include or exclude tag.  When you do this, Macker will apply the nested rules only when the outer one applied.
 <p>
 <pre>&lt;pattern name="java2-collections"&gt;
-    &lt;include regex="java.util.*"&gt;
-        &lt;include regex="**Collection*" /&gt;
-        &lt;include regex="**List*" /&gt;
-        &lt;include regex="**Map**" /&gt;
-        &lt;include regex="**Set*"&gt;
-            &lt;exclude regex="**.BitSet" /&gt;
+    &lt;include class="java.util.*"&gt;
+        &lt;include class="**Collection*" /&gt;
+        &lt;include class="**List*" /&gt;
+        &lt;include class="**Map**" /&gt;
+        &lt;include class="**Set*"&gt;
+            &lt;exclude class="**.BitSet" /&gt;
         &lt;/include&gt;
-        &lt;include regex="**Array*" /&gt;
-        &lt;include regex="**.Iterator" /&gt;
+        &lt;include class="**Array*" /&gt;
+        &lt;include class="**.Iterator" /&gt;
     &lt;/include&gt;
 &lt;/pattern&gt;</pre>
 <p>
@@ -129,7 +129,7 @@ Sequential includes form a boolean OR; nested includes form a boolean AND.
     &lt;/include&gt;
 &lt;/pattern&gt;</pre>
 <p>
-You can specify both a <code>regex</code> or <code>pattern</code> attribute on a <code>&lt;pattern&gt;</code> tag, <i>and</i> nested include/exclude rules.  When you do this, the outer <code>&lt;pattern&gt;</code> behaves like an outer <code>&lt;include&gt;</code> element.  We can thus slightly simplify one of the patterns above:
+You can specify both a <code>class</code> / <code>pattern</code> attribute on a <code>&lt;pattern&gt;</code> tag, <i>and</i> nested include/exclude rules.  When you do this, the outer <code>&lt;pattern&gt;</code> behaves like an outer <code>&lt;include&gt;</code> element.  We can thus slightly simplify one of the patterns above:
 <pre>
 &lt;pattern name="java-api-noautoimport" pattern=java-api"&gt;
     &lt;exclude pattern="java-api-autoimport" /&gt;
