@@ -66,6 +66,9 @@ public class ThrowingListener
     public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
         throws MackerIsMadException
         {
+        if(event instanceof ForEachEvent)
+            return;
+        
         events.add(event);
 
         RuleSeverity severity = event.getRule().getSeverity();
