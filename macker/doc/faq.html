@@ -60,6 +60,8 @@ Macker allows you to specify broad access rules that Java's native access modifi
 <li> One functional module may access another only through its API.
 </ul>
 <p>
+(All of these are all just examples.  Macker doesn't check anything by default; it's up to you to write rules to fit what you're doing.)
+<p>
 Future versions will also support attributes other than class/package name, existence/nonexistence rules in addition to access rules, and possibly rules applying at the method as well the class level.  This would allow rules such as:
 <ul>
 <li> Classes implementing the SessionBean interface must have the suffix 'EJB'.
