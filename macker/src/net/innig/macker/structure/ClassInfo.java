@@ -26,6 +26,12 @@ public abstract class ClassInfo
     {
     public abstract String getClassName();
     
+    public String getClassNameShort()
+        {
+        String className = getClassName();
+        return className.substring(className.lastIndexOf('.') + 1);
+        }
+    
     public abstract Set/*<String>*/ getReferences();
     }
 

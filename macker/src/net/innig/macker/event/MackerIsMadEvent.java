@@ -51,14 +51,13 @@ public class MackerIsMadEvent
         {
         final String CR = System.getProperty("line.separator");
         StringBuffer s = new StringBuffer();
-        s.append(getDescription());
-        s.append(CR);
         for(Iterator i = messages.iterator(); i.hasNext(); )
             {
-            s.append("- ");
             s.append(i.next().toString());
             s.append(CR);
             }
+        s.append(getDescription());
+        s.append(CR);
         return s.toString();
         }
     

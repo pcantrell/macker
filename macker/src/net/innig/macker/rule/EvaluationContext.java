@@ -52,7 +52,8 @@ public class EvaluationContext
         { return ruleSet; }
     
     public void setVariableValue(String name, String value)
-        { varValues.put(name, value); }
+        throws UndeclaredVariableException
+        { varValues.put(name, VariableParser.parse(this, value)); }
     
     public String getVariableValue(String name)
         throws UndeclaredVariableException

@@ -63,18 +63,12 @@ public class AccessRule
     public void setFrom(Pattern from)
         { this.from = from; }
     
-    public String getFromMessage()
-        { return fromMessage; }
+    public String getMessage()
+        { return message; }
     
-    public void setFromMessage(String fromMessage)
-        { this.fromMessage = fromMessage; }
-    
-    public String getToMessage()
-        { return toMessage; }
-    
-    public void setToMessage(String toMessage)
-        { this.toMessage = toMessage; }
-    
+    public void setMessage(String message)
+        { this.message = message; }
+
     public Pattern getTo()
         { return to; }
     
@@ -95,7 +89,7 @@ public class AccessRule
     
     private AccessRuleType type;
     private Pattern from, to;
-    private String fromMessage, toMessage;
+    private String message;
     private boolean bound;
     private AccessRule child, next;
 
@@ -117,8 +111,24 @@ public class AccessRule
                 continue;
 
             if(!checkAccess(context, from, to))
+                {
+                List messages;
+                if(getMessage() == null)
+                    messages = Collections.EMPTY_LIST;
+                else
+                    {
+                    EvaluationContext errorCtx = new EvaluationContext(context.getRuleSet(), context);
+                    errorCtx.setVariableValue("from",      from.getClassNameShort());
+                    errorCtx.setVariableValue("from-full", from.getClassName());
+                    errorCtx.setVariableValue("to",          to.getClassNameShort());
+                    errorCtx.setVariableValue("to-full",     to.getClassName());
+                    messages = new LinkedList();
+                    messages.add(VariableParser.parse(errorCtx, getMessage()));
+                    }
+                
                 context.broadcastEvent(
-                    new AccessRuleViolation(this, from, to, Collections.EMPTY_LIST));
+                    new AccessRuleViolation(this, from, to, messages));
+                }
             }
         }
     

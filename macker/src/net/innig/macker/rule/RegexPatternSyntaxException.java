@@ -38,7 +38,7 @@ public class RegexPatternSyntaxException
     
     public RegexPatternSyntaxException(String regexp, String message)
         {
-        super("\"" + regexp + "\" is not a valid Macker regexp pattern" + message);
+        super("\"" + regexp + "\" is not a valid Macker regexp pattern: " + message);
         this.regexp = regexp;
         }
     

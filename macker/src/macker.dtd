@@ -48,11 +48,11 @@
 <!ATTLIST exclude pattern CDATA #IMPLIED> 
 <!ATTLIST exclude regex   CDATA #IMPLIED> 
 
-<!ELEMENT access-rule (deny,(allow|deny)*)>
+<!ELEMENT access-rule (message?,(allow|deny)*)>
 <!ELEMENT allow (from?,to?,(allow|deny)*)>
 <!ELEMENT deny  (from?,to?,(allow|deny)*)>
-<!ELEMENT from  (message?,(include|exclude)*)>
-<!ELEMENT to    (message?,(include|exclude)*)>
+<!ELEMENT from  ((include|exclude)*)>
+<!ELEMENT to    ((include|exclude)*)>
 <!ATTLIST from pattern CDATA #IMPLIED> 
 <!ATTLIST to   pattern CDATA #IMPLIED> 
 <!ATTLIST from regex   CDATA #IMPLIED> 

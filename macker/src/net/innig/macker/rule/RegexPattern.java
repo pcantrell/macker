@@ -100,7 +100,7 @@ public class RegexPattern
                 }
             }
 
-        if(regex == null || prevContext != context) // prob shouldn't be ==
+        if(regex == null || prevContext != context)
             {
             StringBuffer builtRegexStr = new StringBuffer("^\\.?");
             for(Iterator i = parts.iterator(); i.hasNext(); )
@@ -119,7 +119,10 @@ public class RegexPattern
             
             try { regex = new RE(builtRegexStr.toString()); }
             catch(RESyntaxException rese)
-                { throw new RegexPatternSyntaxException(regexStr, rese); }
+                {
+                System.out.println("builtRegexStr = " + builtRegexStr);
+                throw new RegexPatternSyntaxException(regexStr, rese);
+                }
                 
             if(regex.getParenCount() > 1)
                 throw new RegexPatternSyntaxException(regexStr, "Too many parenthesized expressions");

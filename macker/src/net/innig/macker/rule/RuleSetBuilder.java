@@ -248,27 +248,22 @@ public class RuleSetBuilder
             else if(subElem.getName().equals("deny"))
                 accRule.setType(AccessRuleType.DENY);
             else if(subElem.getName().equals("from")
-                 || subElem.getName().equals("to"))
+                 || subElem.getName().equals("to")
+                 || subElem.getName().equals("message"))
                 continue;
             else
                 throw new RulesDocumentException(
                     subElem,
                     "Invalid element <" + subElem.getName() + "> --"
-                    + " expected a accerence rule (<deny> or <allow>)");
+                    + " expected an access rule (<deny> or <allow>)");
             
             Element fromElem = subElem.getChild("from");
             if(fromElem != null)
-                {
-                accRule.setFromMessage(fromElem.getChildText("message"));
                 accRule.setFrom(buildPattern(fromElem, ruleSet, true));
-                }
             
             Element toElem = subElem.getChild("to");
             if(toElem != null)
-                {
-                accRule.setToMessage(toElem.getChildText("message"));
                 accRule.setTo(buildPattern(toElem, ruleSet, true));
-                }
 
             if(!subElem.getChildren().isEmpty())
                 accRule.setChild(buildAccessRule(subElem, ruleSet));
@@ -279,6 +274,8 @@ public class RuleSetBuilder
                 prevRule.setNext(accRule);
             prevRule = accRule;
             }
+        if(topRule != null)
+            topRule.setMessage(ruleElem.getChildText("message"));
         return topRule;
         }
     

@@ -30,7 +30,7 @@ public class IncompleteClassInfo
     
     public String getClassName()
         { return className; }
-    
+
     public Set/*<String>*/ getReferences()
         {
         throw new UnsupportedOperationException(
@@ -42,7 +42,7 @@ public class IncompleteClassInfo
     public String toString()
         { return getClassName(); }
     
-    public String className;
+    private String className, classNameUq;
     }
 
 
