@@ -20,25 +20,27 @@
  
 package net.innig.macker.ant;
 
-import java.util.*;
-import java.io.File;
-import java.io.IOException;
-
 import net.innig.macker.Macker;
-import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.rule.RuleSeverity;
+import net.innig.macker.rule.RulesException;
 import net.innig.macker.structure.ClassParseException;
 import net.innig.macker.structure.IncompleteClassInfoException;
-import net.innig.macker.rule.RulesException;
-import net.innig.macker.rule.RuleSeverity;
 
-import org.apache.tools.ant.Task;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.taskdefs.Java;
 
 /** 
     A task which allows access to Macker from Ant build files.

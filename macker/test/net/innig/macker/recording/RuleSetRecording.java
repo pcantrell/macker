@@ -20,16 +20,17 @@
  
 package net.innig.macker.recording;
 
-import net.innig.macker.event.*;
-import net.innig.macker.rule.Rule;
+import net.innig.macker.event.ForEachIterationFinished;
+import net.innig.macker.event.ForEachStarted;
+import net.innig.macker.event.MackerEvent;
 import net.innig.macker.rule.RuleSet;
 
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.jdom.Element;
-
-import net.innig.collect.CollectionDiff;
 
 public class RuleSetRecording
     extends EventRecording

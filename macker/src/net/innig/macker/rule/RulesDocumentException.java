@@ -21,7 +21,6 @@
 package net.innig.macker.rule;
 
 import org.jdom.Element;
-import org.jdom.JDOMException;
 
 /**
     Indicates a structural exception in rules specification XML.

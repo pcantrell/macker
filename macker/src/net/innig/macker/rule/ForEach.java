@@ -20,11 +20,19 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.ClassManager;
+import net.innig.macker.event.ForEachFinished;
+import net.innig.macker.event.ForEachIterationFinished;
+import net.innig.macker.event.ForEachIterationStarted;
+import net.innig.macker.event.ForEachStarted;
+import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassInfo;
-import net.innig.macker.event.*;
+import net.innig.macker.structure.ClassManager;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ForEach
     extends Rule

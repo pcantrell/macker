@@ -20,15 +20,33 @@
  
 package net.innig.macker.structure;
 
+import net.innig.collect.CompositeMultiMap;
+import net.innig.collect.InnigCollections;
+import net.innig.collect.MultiMap;
 import net.innig.macker.util.ClassNameTranslator;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.*;
-import net.innig.collect.*;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import org.apache.bcel.classfile.*;
+import org.apache.bcel.classfile.AccessFlags;
+import org.apache.bcel.classfile.Attribute;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantClass;
+import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.Field;
+import org.apache.bcel.classfile.InnerClass;
+import org.apache.bcel.classfile.InnerClasses;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
 
 /**
     Class info retrieved from a class file.

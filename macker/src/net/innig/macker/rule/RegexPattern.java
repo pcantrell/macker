@@ -22,11 +22,6 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
 
-import java.util.*;
-
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
-
 public final class RegexPattern
     implements Pattern
     {

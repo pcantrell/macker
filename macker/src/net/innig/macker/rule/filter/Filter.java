@@ -20,9 +20,12 @@
  
 package net.innig.macker.rule.filter;
 
-import net.innig.macker.rule.*;
-import java.util.Map;
+import net.innig.macker.rule.Pattern;
+import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RulesException;
+
 import java.util.List;
+import java.util.Map;
 
 public interface Filter
     {

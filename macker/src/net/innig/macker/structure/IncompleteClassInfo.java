@@ -20,8 +20,9 @@
  
 package net.innig.macker.structure;
 
-import java.util.Set;
 import net.innig.collect.MultiMap;
+
+import java.util.Set;
 
 /**
     Class info for a class which Macker couldn't load.  Attempts to get attributes other than

@@ -20,16 +20,31 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.rule.filter.*;
-
-import java.io.*;
-import java.util.*;
-
-import net.innig.util.EnumeratedType;
-import net.innig.util.OrderedType;
 import net.innig.io.NullOutputStream;
+import net.innig.macker.rule.filter.Filter;
+import net.innig.macker.rule.filter.FilterFinder;
 
-import org.jdom.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.jdom.Attribute;
+import org.jdom.DocType;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 

@@ -20,8 +20,9 @@
  
 package net.innig.macker.structure;
 
-import java.util.*;
-import net.innig.collect.*;
+import net.innig.collect.MultiMap;
+
+import java.util.Set;
 
 /**
     Information about a class's structure.

@@ -21,7 +21,6 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
-import java.util.*;
 
 public class ForEachFinished
     extends ForEachEvent

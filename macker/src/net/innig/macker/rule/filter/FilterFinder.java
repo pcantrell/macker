@@ -20,8 +20,11 @@
  
 package net.innig.macker.rule.filter;
 
-import net.innig.util.*;
-import java.util.*;
+import net.innig.util.Conf;
+import net.innig.util.CorruptConfigurationException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class FilterFinder
     {

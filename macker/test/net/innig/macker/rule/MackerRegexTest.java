@@ -20,7 +20,7 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.*;
+import net.innig.macker.structure.ClassManager;
 
 import junit.framework.TestCase;
 

@@ -20,8 +20,6 @@
  
 package net.innig.macker.rule;
 
-import org.jdom.Element;
-
 import org.apache.regexp.RESyntaxException;
 
 public class MackerRegexSyntaxException

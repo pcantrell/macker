@@ -20,8 +20,13 @@
 
 package net.innig.macker.structure;
 
-import java.util.*;
-import net.innig.collect.*;
+import net.innig.collect.GraphWalker;
+import net.innig.collect.Graphs;
+import net.innig.collect.MultiMap;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractClassInfo
     implements ClassInfo

@@ -22,7 +22,7 @@ package net.innig.macker.event;
 
 import net.innig.macker.rule.RuleSet;
 
-import java.util.*;
+import java.util.EventListener;
 
 public interface MackerEventListener
     extends EventListener

@@ -21,26 +21,34 @@
 package net.innig.macker.recording;
 
 import net.innig.macker.Macker;
-import net.innig.macker.rule.*;
-import net.innig.macker.event.*;
-import net.innig.macker.structure.*;
+import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RuleSetBuilder;
+import net.innig.macker.rule.RulesException;
+import net.innig.macker.structure.ClassParseException;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.framework.TestResult;
 import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
-import org.jdom.*;
+import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 
 
 public final class RecordingTest
@@ -162,12 +170,6 @@ public final class RecordingTest
         if(expectedAngerEvents >= 0 && actualAngerEvents.size() != expectedAngerEvents)
             throw new AssertionFailedError(
                 "Expected " + expectedAngerEvents + " anger events, but got " + actualAngerEvents.size() + ": " + actualAngerEvents);
-        }
-    
-    private void dump(Collection c)
-        {
-        for(Iterator i = c.iterator(); i.hasNext(); )
-            System.out.println("   " + i.next());
         }
     
     public String getName()

@@ -20,8 +20,7 @@
  
 package net.innig.macker.structure;
 
-import org.apache.bcel.classfile.*;
-
+import org.apache.bcel.classfile.JavaClass;
 import org.apache.commons.lang.exception.NestableException;
 
 /**

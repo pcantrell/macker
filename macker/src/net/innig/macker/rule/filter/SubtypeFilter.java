@@ -20,9 +20,15 @@
  
 package net.innig.macker.rule.filter;
 
-import net.innig.macker.rule.*;
+import net.innig.macker.rule.EvaluationContext;
+import net.innig.macker.rule.Pattern;
+import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RulesException;
 import net.innig.macker.structure.ClassInfo;
-import java.util.*;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class SubtypeFilter
     implements Filter

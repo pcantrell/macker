@@ -21,7 +21,8 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.Message;
-import java.util.*;
+
+import java.util.Collections;
 
 public class MessageEvent
     extends MackerEvent

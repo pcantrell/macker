@@ -20,11 +20,10 @@
  
 package net.innig.macker.recording;
 
-import net.innig.macker.event.*;
-import net.innig.macker.rule.Rule;
+import net.innig.macker.event.MackerEvent;
+import net.innig.macker.event.MackerEventListener;
+import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.rule.RuleSet;
-
-import java.util.*;
 
 public class RecordingListener
     implements MackerEventListener

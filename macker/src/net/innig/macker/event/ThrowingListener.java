@@ -23,7 +23,8 @@ package net.innig.macker.event;
 import net.innig.macker.rule.RuleSet;
 import net.innig.macker.rule.RuleSeverity;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ThrowingListener
     implements MackerEventListener

@@ -20,10 +20,12 @@
  
 package net.innig.macker.structure;
 
-import java.util.*;
 import net.innig.collect.InnigCollections;
 import net.innig.collect.MultiMap;
 import net.innig.util.EnumeratedType;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
     Hard-coded class info for Java's primitive types.

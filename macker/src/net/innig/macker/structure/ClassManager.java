@@ -20,15 +20,20 @@
  
 package net.innig.macker.structure;
 
+import net.innig.collect.InnigCollections;
+import net.innig.collect.MultiMap;
+import net.innig.collect.TreeMultiMap;
 import net.innig.macker.util.ClassNameTranslator;
-import net.innig.macker.structure.ClassParseException;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.*;
-
-import net.innig.collect.*;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
     The global collection of classes in Macker's rule-checking space.

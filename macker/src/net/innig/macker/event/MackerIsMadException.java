@@ -20,9 +20,9 @@
  
 package net.innig.macker.event;
 
-import net.innig.macker.rule.Rule;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MackerIsMadException
     extends Exception

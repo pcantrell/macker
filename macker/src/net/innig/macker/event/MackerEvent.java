@@ -23,7 +23,11 @@ package net.innig.macker.event;
 import net.innig.macker.rule.Rule;
 import net.innig.macker.rule.RuleSeverity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.List;
 
 public class MackerEvent
     extends EventObject

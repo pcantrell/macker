@@ -20,16 +20,18 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.ClassManager;
+import net.innig.collect.MultiMap;
+import net.innig.macker.event.AccessRuleViolation;
+import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.structure.ClassManager;
 import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
-import net.innig.macker.event.AccessRuleViolation;
-import net.innig.macker.event.MackerIsMadException;
-import net.innig.macker.event.ListenerException;
 
-import java.util.*;
-import net.innig.collect.MultiMap;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class AccessRule
     extends Rule
@@ -92,7 +94,6 @@ public class AccessRule
     private AccessRuleType type;
     private Pattern from, to;
     private String message;
-    private boolean bound;
     private AccessRule child, next;
 
     //--------------------------------------------------------------------------
@@ -139,7 +140,7 @@ public class AccessRule
         throws RulesException
         { return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, fromClass, toClass)); }
     
-    private static IncludeExcludeNode makeIncludeExcludeNode(
+    static IncludeExcludeNode makeIncludeExcludeNode(
             final AccessRule rule,
             final EvaluationContext context,
             final ClassInfo fromClass,

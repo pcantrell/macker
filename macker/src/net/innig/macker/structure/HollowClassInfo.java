@@ -20,8 +20,9 @@
  
 package net.innig.macker.structure;
 
-import java.util.Set;
 import net.innig.collect.MultiMap;
+
+import java.util.Set;
 
 /**
     Holds a class name, and lazily loads other attributes.

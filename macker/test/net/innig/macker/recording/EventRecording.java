@@ -20,14 +20,12 @@
  
 package net.innig.macker.recording;
 
-import net.innig.macker.event.*;
-import net.innig.macker.rule.Rule;
-import net.innig.macker.rule.RuleSet;
+import net.innig.macker.event.MackerEvent;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+
 import org.jdom.Element;
-import net.innig.collect.CollectionDiff;
 
 public abstract class EventRecording
     {

@@ -20,13 +20,17 @@
  
 package net.innig.macker.rule;
 
+import net.innig.macker.event.ListenerException;
 import net.innig.macker.event.MackerEvent;
 import net.innig.macker.event.MackerEventListener;
 import net.innig.macker.event.MackerIsMadException;
-import net.innig.macker.event.ListenerException;
 import net.innig.macker.structure.ClassManager;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class EvaluationContext
     {

@@ -20,17 +20,22 @@
  
 package net.innig.macker.recording;
 
-import net.innig.macker.event.*;
+import net.innig.collect.CollectionDiff;
+import net.innig.macker.event.AccessRuleViolation;
+import net.innig.macker.event.MackerEvent;
+import net.innig.macker.event.MessageEvent;
 import net.innig.macker.rule.Rule;
-import net.innig.macker.rule.RuleSet;
 
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-import org.jdom.Element;
 import org.jdom.Attribute;
-
-import net.innig.collect.CollectionDiff;
+import org.jdom.Element;
 
 public class GenericRuleRecording
     extends EventRecording
@@ -76,7 +81,6 @@ public class GenericRuleRecording
     
     public void read(Element elem)
         {
-        Set eventSet = new HashSet();
         Map baseAtt = getAttributeValueMap(elem);
         for(Iterator evtIter = elem.getChildren("event").iterator(); evtIter.hasNext(); )
             {

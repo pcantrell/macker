@@ -20,16 +20,39 @@
  
 package net.innig.macker;
 
-import net.innig.macker.structure.*;
-import net.innig.macker.rule.*;
-import net.innig.macker.event.*;
+import net.innig.collect.GraphWalker;
+import net.innig.collect.Graphs;
+import net.innig.collect.InnigCollections;
+import net.innig.collect.Selector;
+import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerEventListener;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.PrintingListener;
+import net.innig.macker.event.ThrowingListener;
+import net.innig.macker.event.XmlReportingListener;
+import net.innig.macker.rule.EvaluationContext;
+import net.innig.macker.rule.Pattern;
+import net.innig.macker.rule.RuleSet;
+import net.innig.macker.rule.RuleSetBuilder;
+import net.innig.macker.rule.RuleSeverity;
+import net.innig.macker.rule.RulesException;
+import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.structure.ClassManager;
+import net.innig.macker.structure.ClassParseException;
+import net.innig.macker.structure.IncompleteClassInfoException;
 
-import net.innig.collect.*;
-
-import java.io.*;
-import java.util.*;
-
-import org.jdom.input.SAXBuilder;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
     The main class for the command line interface.
@@ -99,6 +122,8 @@ public class Macker
                     macker.setAngerThreshold(RuleSeverity.fromName(args[++arg]));
                 else if(args[arg].equals("-r") || args[arg].equals("--rulesfile"))
                     nextIsRule = true;
+                else if(args[arg].startsWith("@"))
+                    macker.addClassesFromFile(args[arg].substring(1)); // the arg is a file with class names
                 else if(args[arg].endsWith(".xml") || nextIsRule)
                     {
                     macker.addRulesFile(new File(args[arg]));
@@ -141,7 +166,7 @@ public class Macker
     
     public static void commandLineUsage()
         {
-        System.out.println("usage: macker [opts]* <rules files> <classes>");
+        System.out.println("usage: macker [opts]* <rules files> <classes> [@class list file]");
         System.out.println("          -r, --rulesfile <rules.xml>");
         System.out.println("          -o, --output <report.xml>");
         System.out.println("          -D, --define <var>=<value>");
@@ -183,6 +208,19 @@ public class Macker
         {
         cm.makePrimary(
             cm.getClassInfo(className));
+        }
+
+    public void addClassesFromFile(String fileName)
+        throws IOException, ClassParseException
+        {
+        File indexFile = new File(fileName);
+
+        BufferedReader indexReader = new BufferedReader(new FileReader(indexFile));
+
+        for(String line; (line = indexReader.readLine()) != null;)
+            addClass(new File(line));
+
+        indexReader.close();
         }
 
     public void addReachableClasses(Class initialClass, final String primaryPrefix)

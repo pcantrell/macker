@@ -20,9 +20,9 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.ClassManager;
-import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.ListenerException;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.structure.ClassManager;
 
 public abstract class Rule
     {

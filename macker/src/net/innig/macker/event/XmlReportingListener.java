@@ -3,20 +3,19 @@ package net.innig.macker.event;
 import net.innig.macker.rule.RuleSet;
 import net.innig.macker.structure.ClassInfo;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
-import java.io.Writer;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Iterator;
+import java.util.LinkedList;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
-
-import org.apache.commons.lang.StringUtils;
 
 public class XmlReportingListener
     implements MackerEventListener

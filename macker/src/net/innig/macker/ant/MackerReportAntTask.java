@@ -23,20 +23,18 @@ package net.innig.macker.ant;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.*;
-
-import org.mpr.util.StreamSplitter;
-
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.BuildException;
+import java.net.URL;
 
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.mpr.util.StreamSplitter;
 
 /** 
     A task which formats Macker reports using XSLT.

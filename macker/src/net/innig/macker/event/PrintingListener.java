@@ -20,15 +20,21 @@
  
 package net.innig.macker.event;
 
+import net.innig.collect.CompositeMultiMap;
+import net.innig.collect.MultiMap;
 import net.innig.macker.rule.RuleSet;
 import net.innig.macker.rule.RuleSeverity;
 
-import java.io.Writer;
-import java.io.PrintWriter;
 import java.io.OutputStream;
-import java.util.*;
-import net.innig.collect.MultiMap;
-import net.innig.collect.CompositeMultiMap;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
 
 public class PrintingListener
     implements MackerEventListener

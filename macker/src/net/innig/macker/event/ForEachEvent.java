@@ -21,7 +21,8 @@
 package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
-import java.util.*;
+
+import java.util.Collections;
 
 public class ForEachEvent
     extends MackerEvent

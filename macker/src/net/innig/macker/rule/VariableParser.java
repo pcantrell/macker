@@ -20,8 +20,6 @@
  
 package net.innig.macker.rule;
 
-import java.util.*;
-
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 

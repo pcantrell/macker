@@ -20,11 +20,8 @@
  
 package net.innig.macker.rule;
 
-import net.innig.macker.structure.ClassManager;
-import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.event.MackerIsMadException;
-
-import java.util.*;
+import net.innig.macker.structure.ClassManager;
 
 public class Variable
     extends Rule
