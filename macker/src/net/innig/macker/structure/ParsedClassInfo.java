@@ -187,7 +187,8 @@ public class ParsedClassInfo
                         addReference(
                             new Reference(
                                 getClassName(),
-                                classFile.getConstantPoolEntryName(excepts[e]),
+                                ClassNameTranslator.typeConstantToClassName(
+                                    classFile.getConstantPoolEntryName(excepts[e])),
                                 ReferenceType.METHOD_THROWS,
                                 method.getName(),
                                 methodAccess));
