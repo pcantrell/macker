@@ -22,17 +22,13 @@ package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.*;
 import java.util.Map;
+import java.util.List;
 
 public interface Filter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
-            Map/*<String,String>*/ options)
-        throws RulesException;
-
-    public Pattern createPattern(
-            RuleSet ruleSet,
-            Pattern childPattern,
+            List/*<Pattern>*/ params,
             Map/*<String,String>*/ options)
         throws RulesException;
     }

@@ -272,7 +272,7 @@ public class Macker
                 for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
                     {
                     final Pattern pat = (Pattern) patIter.next();
-                    final EvaluationContext ctx = new EvaluationContext(rs);
+                    final EvaluationContext ctx = new EvaluationContext(cm, rs);
                     System.out.println("matching " + pat);
                     for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
                         {
@@ -282,7 +282,7 @@ public class Macker
                         }
                     System.out.println();
                     }
-            EvaluationContext context = new EvaluationContext(rs);
+            EvaluationContext context = new EvaluationContext(cm, rs);
             context.setVariables(vars);
             context.addListener(throwing);
             context.addListener(printing);

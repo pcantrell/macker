@@ -23,22 +23,22 @@ package net.innig.macker.rule.filter;
 import net.innig.macker.rule.*;
 import net.innig.macker.structure.ClassInfo;
 import java.util.Map;
+import java.util.List;
 
 public class AbstractFilter
     implements Filter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
+            List/*<Pattern>*/ params,
             Map/*<String,String>*/ options)
         throws RulesException
-        { return ABSTRACT_PATTERN; } 
-    
-    public Pattern createPattern(
-            RuleSet ruleSet,
-            Pattern childPattern,
-            Map/*<String,String>*/ options)
-        throws RulesException
-        { throw new FilterSyntaxException(options.get("filter") + " filter does not take a nested pattern"); }
+        {
+        if(params.size() != 0)
+            throw new FilterSyntaxException(
+                options.get("filter") + " expects no parameters, but has " + params.size());
+        return ABSTRACT_PATTERN;
+        }
 
     private final Pattern ABSTRACT_PATTERN =
         new Pattern()

@@ -22,11 +22,10 @@ package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.*;
 import net.innig.macker.structure.ClassInfo;
-import net.innig.macker.structure.PrimitiveTypeInfo;
 import java.util.Map;
 import java.util.List;
 
-public class PrimitiveFilter
+public class PrimaryFilter
     implements Filter
     {
     public Pattern createPattern(
@@ -38,14 +37,14 @@ public class PrimitiveFilter
         if(params.size() != 0)
             throw new FilterSyntaxException(
                 options.get("filter") + " expects no parameters, but has " + params.size());
-        return PRIMITIVE_PATTERN;
-        } 
-    
-    private final Pattern PRIMITIVE_PATTERN =
+        return PRIMARY_PATTERN;
+        }
+
+    private final Pattern PRIMARY_PATTERN =
         new Pattern()
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 throws RulesException
-                { return classInfo instanceof PrimitiveTypeInfo; }
+                { return context.getClassManager().getPrimaryClasses().contains(classInfo); }
             };
     }

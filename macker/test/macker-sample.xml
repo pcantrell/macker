@@ -9,11 +9,8 @@
         
         <access-rule>
             <deny>
-                <from pattern="foo" />
-                <to>
-                    <exclude filter="interface" />
-                    <exclude filter="primitive" />
-                </to>
+                <from filter="interface" />
+                <to filter="primary" />
             </deny>
         </access-rule>
         

@@ -23,13 +23,15 @@ package net.innig.macker.rule;
 import net.innig.macker.event.MackerEvent;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.MackerEventListener;
+import net.innig.macker.structure.ClassManager;
 
 import java.util.*;
 
 public class EvaluationContext
     {
-    public EvaluationContext(RuleSet ruleSet)
+    public EvaluationContext(ClassManager classManager, RuleSet ruleSet)
         {
+        this.classManager = classManager;
         this.ruleSet = ruleSet;
         varValues = new HashMap();
         listeners = new HashSet();
@@ -37,7 +39,7 @@ public class EvaluationContext
     
     public EvaluationContext(RuleSet ruleSet, EvaluationContext parent)
         {
-        this(ruleSet);
+        this(parent.getClassManager(), ruleSet);
         this.parent = parent;
 // Relaxed to allow ForEach to have its own context; should ForEach extend RuleSet?
 //        if(getParent().getRuleSet() != getRuleSet().getParent())
@@ -47,6 +49,9 @@ public class EvaluationContext
     
     public EvaluationContext getParent()
         { return parent; }
+    
+    public ClassManager getClassManager()
+        { return classManager; }
     
     public RuleSet getRuleSet()
         { return ruleSet; }
@@ -127,6 +132,7 @@ public class EvaluationContext
     private EvaluationContext parent;
     private Map varValues;
     private Set listeners;
+    private ClassManager classManager;
     }
 
 

@@ -220,9 +220,12 @@ public class RuleSetBuilder
             options.remove("regex");
             
             Filter filter = FilterFinder.findFilter(filterName);
-            result = (result == null)
-                ? filter.createPattern(ruleSet, options)
-                : filter.createPattern(ruleSet, result, options);
+            result = filter.createPattern(
+                ruleSet,
+                (result == null) // this is screwy -- should really be a <filter-param> tag or somesuch
+                    ? Collections.EMPTY_LIST
+                    : Collections.singletonList(result),
+                options);
                 
             if(patternElem.getName().equals("exclude"))
                 result = new CompositePattern(CompositePatternType.EXCLUDE, result, null);
