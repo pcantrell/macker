@@ -20,6 +20,9 @@
  
 package net.innig.macker.structure;
 
+/**
+    A reference from one class to another.
+*/
 public final class Reference
     {
     public Reference(

@@ -22,6 +22,11 @@ package net.innig.macker.structure;
 
 import java.util.Set;
 
+/**
+    Macker needs attributes of a missing class.
+    
+    @see IncompleteClassInfo
+*/
 public class IncompleteClassInfoException
     extends UnsupportedOperationException
     {

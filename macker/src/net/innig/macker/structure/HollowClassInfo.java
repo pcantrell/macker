@@ -23,6 +23,9 @@ package net.innig.macker.structure;
 import java.util.Set;
 import net.innig.collect.MultiMap;
 
+/**
+    Holds a class name, and lazily loads other attributes.
+*/
 public class HollowClassInfo
     extends AbstractClassInfo
     {

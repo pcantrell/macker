@@ -30,6 +30,9 @@ import java.util.*;
 
 import net.innig.collect.*;
 
+/**
+    The global collection of classes in Macker's rule-checking space.
+*/
 public class ClassManager
     {
     public ClassManager()

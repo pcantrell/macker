@@ -23,6 +23,9 @@ package net.innig.macker.structure;
 import java.util.*;
 import net.innig.collect.*;
 
+/**
+    Information about a class's structure.
+*/
 public interface ClassInfo
     extends Comparable
     {

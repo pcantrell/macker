@@ -22,6 +22,10 @@ package net.innig.macker.structure;
 
 import net.innig.util.OrderedType;
 
+/**
+    Java access modifiers for classes and members.
+    Ordered by increasing visibility.
+*/
 public class AccessModifier
     extends OrderedType
     {

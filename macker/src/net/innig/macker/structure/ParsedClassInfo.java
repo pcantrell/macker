@@ -30,6 +30,9 @@ import net.innig.collect.*;
 
 import org.apache.bcel.classfile.*;
 
+/**
+    Class info retrieved from a class file.
+*/
 public class ParsedClassInfo
     extends AbstractClassInfo
     {

@@ -25,6 +25,9 @@ import net.innig.collect.InnigCollections;
 import net.innig.collect.MultiMap;
 import net.innig.util.EnumeratedType;
 
+/**
+    Hard-coded class info for Java's primitive types.
+*/
 public final class PrimitiveTypeInfo
     extends EnumeratedType
     implements ClassInfo

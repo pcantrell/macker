@@ -22,6 +22,9 @@ package net.innig.macker.structure;
 
 import org.apache.bcel.classfile.*;
 
+/**
+    A class file was found, but was unparsable.
+*/
 public class ClassParseException
     extends Exception
     {

@@ -79,6 +79,7 @@ public class PrintingListener
     
     public void printSummary()
         {
+        // output looks like: "(2 errors, 1 warning)"
         boolean firstSeverity = true;
         List severities = new ArrayList(eventsBySeverity.keySet());
         Collections.reverse(severities);

@@ -22,6 +22,11 @@ package net.innig.macker.structure;
 
 import net.innig.util.GraphType;
 
+/**
+    Taxonomy of different kinds of references between classes.
+    
+    @see Reference
+*/
 public class ReferenceType
     extends GraphType
     {
