@@ -62,7 +62,7 @@
         <div class="event">
             <div>
                 <xsl:attribute name="class">event-severity-<xsl:value-of select="@severity" /></xsl:attribute>
-                <xsl:value-of select="$maxseverity"/>
+                <xsl:value-of select="@severity"/>
             </div>
             <div class="event-header">
                 <xsl:choose>

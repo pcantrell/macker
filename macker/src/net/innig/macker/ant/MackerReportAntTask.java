@@ -139,9 +139,9 @@ public class MackerReportAntTask extends Task
                 new StreamResult(new FileOutputStream(outputFile)));
             }
         catch(IOException ioe)
-            { throw new BuildException("Unable to process report", ioe); }
+            { throw new BuildException("Unable to process report: " + ioe, ioe); }
         catch(TransformerException te)
-            { throw new BuildException("Unable to apply report formatting", te); }
+            { throw new BuildException("Unable to apply report formatting: " + te.getMessage(), te); }
         
         File skinOutputFile = new File(outputDir, "macker-report.css");
         try {
