@@ -36,7 +36,14 @@ public class ClassManager
         primaryClasses = new HashSet();
         classNameToInfo = new HashMap();
         references = new TreeMultiMap();
+        classLoader = Thread.currentThread().getContextClassLoader();
         }
+    
+    public ClassLoader getClassLoader()
+        { return classLoader; }
+    
+    public void setClassLoader(ClassLoader classLoader)
+        { this.classLoader = classLoader; }
     
     public void addClass(ClassInfo classInfo, boolean primary)
         {
@@ -76,10 +83,7 @@ public class ClassManager
             if(classInfo == null)
                 {
                 String resourceName = ClassNameTranslator.classToResourceName(className);
-                InputStream classStream =
-                    Thread.currentThread()
-                          .getContextClassLoader()
-                          .getResourceAsStream(resourceName);
+                InputStream classStream = classLoader.getResourceAsStream(resourceName);
                 
                 try {
                     classInfo = new ParsedClassInfo(classStream);
@@ -108,6 +112,7 @@ public class ClassManager
         }
     
     private boolean incompleteClassWarning;
+    private ClassLoader classLoader;
     private Set/*<String>*/ allClassNames, primaryClasses;
     private Map/*<String,ClassInfo>*/ classNameToInfo;
     private MultiMap/*<String,String>*/ references;

@@ -32,7 +32,7 @@
 <li> <a href="#example">An Example</a>
 </ul>
 
-<h3><a name="using">Using the Ant Task</a></h3>
+<h3><a name="using">Declaring the Ant Task</a></h3>
 <p>
 Macker runs reasonably cooperatively as an Ant task.  Is is somewhat more cooperative running under Ant 1.5, which fixed a number of difficulties in the handling of classpaths for custom Ant tasks.  The rest of this page presumes Ant 1.5; if you are using an earlier version, you're on your own.
 <p>
@@ -49,14 +49,16 @@ Specifying the classpath can be tedious, since Macker requires so many jars.  Fo
 &lt;taskdef name="macker"
     classname="net.innig.macker.ant.MackerAntTask"
     classpath="${macker.classpath}"/&gt;</pre>
+<p>
+Once you're declared the macker task, you can use it in your Ant file with the options below.
 
 <h3>Parameters</h3>
 <table class="example-table" cellspacing=0>
 <tr><th>Attribute</th><th>Description</th><th>Default</th></tr>
 <tr valign="top">
 <td class="example">fork</td>
-<td>Should Macker run in its own JVM?  The answer is "yes" if you need to specify a custom classpath containing your project's classes (which is typically the case).</td>
-<td>yes</td>
+<td>Should Macker run in its own JVM? As of version 0.3, the answer is probably "no", unless you encounter problems.</td>
+<td>no</td>
 </tr>
 <tr valign="top">
 <td class="example">failonerror</td>
@@ -100,13 +102,16 @@ The Macker task does not automatically pass Ant properties through as Macker var
 
 <h4><a name="classpath">&lt;classpath&gt;</a></h4>
 <p>
-If you have set the <code>fork</code> attribute, you can specify a custom classpath for Macker to look for classes used by the primary classes.
+If you'd like Macker to be able to load information about classes other than the primary classes -- stuff from your libraries -- you can specify a custom classpath for Macker to look for classes used by the primary classes.
 
 <h3><a name="example">An Example</a></h3>
 <p>
 Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starting point for your own Macker files.
 <p>
 <pre><span class="comment">&lt;!-- Declare a catch-all classpath for the project, its libs, and Macker --&gt;</span>
+&lt;path id="build.classpath"&gt;
+    &lt;pathelement location="${build.classes.dir}" /&gt;
+&lt;/path&gt;
 &lt;path id="macker.classpath"&gt;
     &lt;pathelement location="${build.classes.dir}" /&gt;
     &lt;fileset dir="${lib.dir}" /&gt;
@@ -126,7 +131,7 @@ Here, for your copy-and-pasting enjoyment, is a not entirely unreasonable starti
         &lt;include name="**/*.class" /&gt;
     &lt;/classes&gt;
     &lt;var name="basepkg" value="com.vaporcorp" /&gt;
-    &lt;classpath refid="macker.classpath" /&gt;
+    &lt;classpath refid="build.classpath" /&gt;
 &lt;/macker&gt;</pre>
 <p>
 Congratulations!  You have now completed the Macker Online Training Course.  If you wish, you may print this page as evidence of your certification and post it on your wall.  Feel free to <a href="../contact.html">contact me</a> with questions -- I'd love to know that people are interested in the project!

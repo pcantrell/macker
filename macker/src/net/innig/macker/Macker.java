@@ -110,21 +110,10 @@ public class Macker
                     }
                 }
             
-            if(!macker.hasRules())
-                {
-                System.out.println("WARNING: No rules files specified");
-                commandLineUsage();
-                return;
-                }
-            
-            if(!macker.hasClasses())
-                {
-                System.out.println("WARNING: No class files specified");
-                commandLineUsage();
-                return;
-                }
-            
             macker.check();
+            
+            if(!macker.hasRules() || !macker.hasClasses())
+                commandLineUsage();
             }
         catch(MackerIsMadException mime)
             {
@@ -226,16 +215,24 @@ public class Macker
     public boolean hasRules()
         { return !ruleSets.isEmpty(); }
     
+    
     public void setVariable(String name, String value)
         { vars.put(name, value); }
     
     public void setVerbose(boolean verbose)
         { this.verbose = verbose; }
     
+    public void setClassLoader(ClassLoader classLoader)
+        { cm.setClassLoader(classLoader); }
     
     public void check()
         throws MackerIsMadException, RulesException
         {
+        if(!hasRules())
+            System.out.println("WARNING: No rules files specified");
+        if(!hasClasses())
+            System.out.println("WARNING: No class files specified");
+
         if(verbose)
             {
             System.out.println(cm.getPrimaryClasses().size() + " primary classes");

@@ -22,10 +22,17 @@ package net.innig.macker.ant;
 
 import java.util.*;
 import java.io.File;
+import java.io.IOException;
+
+import net.innig.macker.Macker;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.structure.ClassParseException;
+import net.innig.macker.rule.RulesException;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.taskdefs.Java;
@@ -39,7 +46,8 @@ public class MackerAntTask extends Task
     {
     public MackerAntTask()
         {
-        args = new ArrayList();
+        macker = new Macker();
+        jvmArgs = new ArrayList();
         }
         
     public void execute()
@@ -47,19 +55,39 @@ public class MackerAntTask extends Task
         {
         if(verbose)
             System.out.println("Macker:");
-        jvm.setTaskName("macker");
-        jvm.setClassname("net.innig.macker.Macker");
-        jvm.setFork(fork);
-        jvm.setFailonerror(failOnError);
-        jvm.clearArgs();
-        for(Iterator i = args.iterator(); i.hasNext(); )
-            jvm.createArg().setValue((String) i.next());
-        try
-            { jvm.execute(); }
-        catch(BuildException be)
+
+        if(!fork)
             {
-            // Any necessary stack trace was already reported to stderr
-            throw new BuildException("Macker rules checking failed");
+            if(classPath != null)
+                macker.setClassLoader(new AntClassLoader(getProject(), classPath, false));
+            
+            try
+                { macker.check(); }
+            catch(MackerIsMadException mime)
+                { throw new BuildException(MACKER_IS_MAD_MESSAGE); }
+            catch(RulesException re)
+                {
+                System.out.println(re.getMessage());
+                throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
+            }
+        else
+            {
+            jvm.setTaskName("macker");
+            jvm.setClassname("net.innig.macker.Macker");
+            jvm.setFork(fork);
+            jvm.setFailonerror(failOnError);
+            jvm.clearArgs();
+            
+            for(Iterator i = jvmArgs.iterator(); i.hasNext(); )
+                jvm.createArg().setValue((String) i.next());
+            try
+                { jvm.execute(); }
+            catch(BuildException be)
+                {
+                // Any necessary stack trace was already reported to stderr
+                throw new BuildException(MACKER_IS_MAD_MESSAGE);
+                }
             }
         }
 
@@ -72,17 +100,19 @@ public class MackerAntTask extends Task
     public void setVerbose(boolean verbose)
         {
         this.verbose = verbose;
+        macker.setVerbose(verbose);
         if(verbose)
-            args.add("-v");
+            jvmArgs.add("-v");
         }
 
     public Path createClasspath()
-        { return getJvm().createClasspath(); }
+        { return classPath = getJvm().createClasspath(); }
 
     public void addConfiguredVar(Var var)
         {
-        args.add("-D");
-        args.add(var.getName() + "=" + var.getValue());
+        macker.setVariable(var.getName(), var.getValue());
+        jvmArgs.add("-D");
+        jvmArgs.add(var.getName() + "=" + var.getValue());
         }
     
     static public class Var
@@ -95,6 +125,7 @@ public class MackerAntTask extends Task
         }
 
     public void addConfiguredClasses(FileSet classFiles)
+        throws IOException
         {
         DirectoryScanner classScanner = classFiles.getDirectoryScanner(getProject());
         String[] fileNames = classScanner.getIncludedFiles();
@@ -105,19 +136,36 @@ public class MackerAntTask extends Task
             if(!classFile.getName().endsWith(".class"))
                 System.out.println("WARNING: " + fileNames[n]
                     + " is not a .class file; ignoring");
-            args.add(classFile.getPath());
+            jvmArgs.add(classFile.getPath());
+            try
+                { macker.addClass(classFile); }
+            catch(ClassParseException cpe)
+                {
+                System.out.println("Unable to parse class file: " + classFile.getPath());
+                System.out.println(cpe.getMessage());
+                throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
             }
         }
 
     public void addConfiguredRules(FileSet rulesFiles)
+        throws IOException
         {
         DirectoryScanner rulesScanner = rulesFiles.getDirectoryScanner(getProject());
         String[] fileNames = rulesScanner.getIncludedFiles();
         File baseDir = rulesScanner.getBasedir();
         for(int n = 0; n < fileNames.length; n++)
             {
-            args.add("-r");
-            args.add(new File(baseDir, fileNames[n]).getPath());
+            File rulesFile = new File(baseDir, fileNames[n]);
+            jvmArgs.add("-r");
+            jvmArgs.add(rulesFile.getPath());
+            try
+                { macker.addRulesFile(rulesFile); }
+            catch(RulesException re)
+                {
+                System.out.println(re.getMessage());
+                throw new BuildException(MACKER_CHOKED_MESSAGE);
+                }
             }
         }
     
@@ -131,10 +179,15 @@ public class MackerAntTask extends Task
         return jvm;
         }
 
-    private boolean fork = true;
+    private boolean fork = false;
     private boolean failOnError = true;
     private boolean verbose = false;
-    private List/*<File>*/ rulesFiles;
-    private List/*<String>*/ args;
-    private Java jvm;
+    private List/*<File>*/ rulesFileList, classFileList;
+    private List/*<String>*/ jvmArgs;
+    private Macker macker;  // for non-forked
+    private Java jvm;       // for forked
+    private Path classPath;
+    
+    private static final String MACKER_CHOKED_MESSAGE = "Macker configuration failed";
+    private static final String MACKER_IS_MAD_MESSAGE = "Macker rules checking failed";
     }
