@@ -89,13 +89,18 @@ public class RuleSetBuilder
         throws RulesException
         {
         validateAgainstDTD(doc);
-        
+        return build(doc.getRootElement());
+        }
+    
+    public Collection/*<RuleSet>*/ build(Element elem)
+        throws RulesException
+        {
         Collection ruleSets = new ArrayList();
-        for(Iterator rsIter = doc.getRootElement().getChildren("ruleset").iterator(); rsIter.hasNext(); )
+        for(Iterator rsIter = elem.getChildren("ruleset").iterator(); rsIter.hasNext(); )
             ruleSets.add(buildRuleSet((Element) rsIter.next(), null));
         return ruleSets;
         }
-    
+
     private void validateAgainstDTD(Document doc)
         throws RulesDocumentException
         {

@@ -42,7 +42,7 @@ public class ForEach
         { return regexS; }
     
     public void setRegex(String regexS)
-        throws RegexPatternSyntaxException
+        throws MackerRegexSyntaxException
         {
         this.regexS = regexS;
         regexPat = new RegexPattern(regexS);
@@ -70,7 +70,7 @@ public class ForEach
         for(Iterator i = pool.iterator(); i.hasNext(); )
             {
             ClassInfo classInfo = (ClassInfo) i.next();
-            String varValue = regexPat.getParen(parentContext, classInfo);
+            String varValue = regexPat.getMatch(parentContext, classInfo);
             if(varValue != null)
                 varValues.add(varValue);
             }

@@ -14,6 +14,8 @@
             <pathelement location="${macker.jar.file}" />
         </path>
         <property name="build.classpath" refid="build.classpath" />
+        
+        <available property="macker.jar.file.exists" file="${macker.jar.file}" />
     </target>
 
     <target name="compile" depends="prepare">
@@ -23,8 +25,15 @@
             <classpath refid="build.classpath" />
         </javac>        
     </target>
+    
+    <target name="build-macker-jar" depends="prepare" unless="macker.jar.file.exists">
+        <ant dir="${basedir}"
+            target="jar"
+            inheritAll="false" />
+    </target>
 
-    <target name="macker" depends="compile,explain">
+    <!-- You can use this Ant target as an example for your own build files: -->
+    <target name="macker" depends="build-macker-jar,compile,explain">
 
         <property name="macker.verbose" value="false" />
         
@@ -48,6 +57,7 @@
         </macker>
         
     </target>
+    <!--====================================================================-->
 
     <target name="clean" description="Removes all build files">
         <delete dir="${build.classes.dir}" />

@@ -24,19 +24,19 @@ import org.jdom.Element;
 
 import org.apache.regexp.RESyntaxException;
 
-public class RegexPatternSyntaxException
+public class MackerRegexSyntaxException
     extends RulesException
     {
-    public RegexPatternSyntaxException(String regexp)
+    public MackerRegexSyntaxException(String regexp)
         { this(regexp, ""); }
     
-    public RegexPatternSyntaxException(String regexp, RESyntaxException root)
+    public MackerRegexSyntaxException(String regexp, RESyntaxException root)
         {
         this(regexp, root.toString());
         root.printStackTrace(System.out);
         }
     
-    public RegexPatternSyntaxException(String regexp, String message)
+    public MackerRegexSyntaxException(String regexp, String message)
         {
         super("\"" + regexp + "\" is not a valid Macker regexp pattern: " + message);
         this.regexp = regexp;

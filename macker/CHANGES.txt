@@ -44,7 +44,7 @@ version 0.1:
 version 0.0:
     - Macker doesn't work
 
-s___________________________
+___________________________
 
 LIKELY FUTURE FEATURES
 (with wild guesses at version numbers)
