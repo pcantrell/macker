@@ -1,14 +1,15 @@
 version 0.4 (future):
   remaning:
     - solidify filter syntax
-    - add reference type filters for access rules (including accessed method name)
     - complete basic filters
+    - add reference type filters for access rules
   done:
-    - added customer filtering capability for patterns
+    - added filter patterns
     - parsing for superclass, interfaces, access modifiers
-    - parsing differentiates signature-level reference types
+    - parsing distinguishes different types of signature-level reference
     - ForEach now checks more than just the primary classes
     - severity levels allow some rules to generate only warning instead of errors
+    - Macker now uses BCEL for class parsing
     - verbose output shows classes in sorted order
 
 version 0.3.1:

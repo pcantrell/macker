@@ -20,7 +20,7 @@
  
 package net.innig.macker.structure;
 
-import org.gjt.jclasslib.structures.InvalidByteCodeException;
+import org.apache.bcel.classfile.*;
 
 public class ClassParseException
     extends Exception
@@ -28,6 +28,6 @@ public class ClassParseException
     public ClassParseException(String message)
         { super(message); }
         
-    public ClassParseException(InvalidByteCodeException ibce)
-        { super(ibce.toString()); }
+    public ClassParseException(ClassFormatError cfe)
+        { super(cfe.toString()); }
     }
