@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <pattern name="A" class="*A*" />
+            <pattern name="B" class="*B*" />
+            <pattern name="C" class="*C*" />
+            <pattern name="AB">
+                <include pattern="A" />
+                <include pattern="B" />
+            </pattern>
+            <pattern name="BC">
+                <include pattern="B" />
+                <include pattern="C" />
+            </pattern>
+            <pattern name="AC">
+                <include pattern="A" />
+                <include pattern="C" />
+            </pattern>
+            
+            <access-rule>
+                <message>-ABC</message>
+                <deny> <to pattern="A" /> </deny>
+                <deny> <to pattern="B" /> </deny>
+                <deny> <to pattern="C" /> </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>-ABC 2</message>
+                <allow>
+                    <to><exclude filter="primary-class" /></to>
+                </allow>
+            </access-rule>
+            
+            <access-rule>
+                <message>A-any</message>
+                <deny>
+                    <from pattern="A" />
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>any-A</message>
+                <deny>
+                    <to pattern="A" />
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>A-B</message>
+                <deny>
+                    <from pattern="A" />
+                    <to pattern="B" />
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>-B except C-</message>
+                <deny>
+                    <to pattern="B" />
+                </deny>
+                <allow>
+                    <from pattern="C" />
+                </allow>
+            </access-rule>
+
+            <access-rule>
+                <message>-B except C- 2</message>
+                <deny>
+                    <to pattern="B" />
+                    <allow>
+                        <from pattern="C" />
+                    </allow>
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>A-B 2</message>
+                <deny>
+                    <from pattern="A" />
+                    <to pattern="BC" />
+                </deny>
+                <allow>
+                    <to pattern="C" />
+                </allow>
+            </access-rule>
+            
+            <access-rule>
+                <message>A-B 3</message>
+                <deny>
+                    <from pattern="A" />
+                    <to pattern="BC" />
+                    <allow>
+                        <to pattern="C" />
+                    </allow>
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>only clockwise</message>
+                <deny>
+                    <to pattern="B" />
+                    <allow> <from pattern="A" /> </allow>
+                </deny>
+                <deny>
+                    <to pattern="C" />
+                    <allow> <from pattern="B" /> </allow>
+                </deny>
+                <deny>
+                    <to pattern="A" />
+                    <allow> <from pattern="C" /> </allow>
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>-AB except BC- except -AC</message>
+                <deny>
+                    <to pattern="AB" />
+                    <allow>
+                        <from pattern="BC" />
+                        <deny>
+                            <to pattern="AC" />
+                        </deny>
+                    </allow>
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>-AB and BC- and -AC</message>
+                <deny>
+                    <to pattern="AB" />
+                    <deny>
+                        <from pattern="BC" />
+                        <deny>
+                            <to pattern="AC" />
+                        </deny>
+                    </deny>
+                </deny>
+            </access-rule>
+        </ruleset>
+    </rules-file>
+
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error" message0="-ABC">
+            <event from="Ba"  to="A" />
+            <event from="Bac" to="A" />
+            <event from="Ca"  to="A" />
+            <event from="Cab" to="A" />
+            <event from="Xa"  to="A" />
+            <event from="Ab"  to="B" />
+            <event from="Abc" to="B" />
+            <event from="Cb"  to="B" />
+            <event from="Cab" to="B" />
+            <event from="Xb"  to="B" />
+            <event from="Ac"  to="C" />
+            <event from="Abc" to="C" />
+            <event from="Bc"  to="C" />
+            <event from="Bac" to="C" />
+            <event from="Xc"  to="C" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="-ABC 2">
+            <event from="Ba"  to="A" />
+            <event from="Bac" to="A" />
+            <event from="Ca"  to="A" />
+            <event from="Cab" to="A" />
+            <event from="Xa"  to="A" />
+            <event from="Ab"  to="B" />
+            <event from="Abc" to="B" />
+            <event from="Cb"  to="B" />
+            <event from="Cab" to="B" />
+            <event from="Xb"  to="B" />
+            <event from="Ac"  to="C" />
+            <event from="Abc" to="C" />
+            <event from="Bc"  to="C" />
+            <event from="Bac" to="C" />
+            <event from="Xc"  to="C" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="A-any">
+            <event from="A" to="java.lang.Object" />
+            <event from="A" to="void" />
+            <event from="Ab" to="B" />
+            <event from="Ab" to="java.lang.Object" />
+            <event from="Ab" to="void" />
+            <event from="Ac" to="C" />
+            <event from="Ac" to="java.lang.Object" />
+            <event from="Ac" to="void" />
+            <event from="Abc" to="B" />
+            <event from="Abc" to="C" />
+            <event from="Abc" to="java.lang.Object" />
+            <event from="Abc" to="void" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="A" message0="any-A">
+            <event from="Ba" />
+            <event from="Bac" />
+            <event from="Ca" />
+            <event from="Cab" />
+            <event from="Xa" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="B" message0="A-B">
+            <event from="Ab" />
+            <event from="Abc" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="B" message0="-B except C-">
+            <event from="Ab" />
+            <event from="Abc" />
+            <event from="Xb" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="B" message0="-B except C- 2">
+            <event from="Ab" />
+            <event from="Abc" />
+            <event from="Xb" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="B" message0="A-B 2">
+            <event from="Ab" />
+            <event from="Abc" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="B" message0="A-B 3">
+            <event from="Ab" />
+            <event from="Abc" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="only clockwise">
+            <event from="Ac"  to="C" />
+            <event from="Abc" to="C" />
+            <event from="Ba"  to="A" />
+            <event from="Bac" to="A" />
+            <event from="Cb"  to="B" />
+            <event from="Cab" to="B" />
+            <event from="Xa"  to="A" />
+            <event from="Xb"  to="B" />
+            <event from="Xc"  to="C" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="-AB except BC- except -AC">
+            <event from="Ba"  to="A" />
+            <event from="Bac" to="A" />
+            <event from="Ca"  to="A" />
+            <event from="Cab" to="A" />
+            <event from="Xa"  to="A" />
+            <event from="Ab"  to="B" />
+            <event from="Abc" to="B" />
+            <event from="Xb"  to="B" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="-AB and BC- and -AC">
+            <event from="Ba"  to="A" />
+            <event from="Bac" to="A" />
+            <event from="Ca"  to="A" />
+            <event from="Cab" to="A" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source class="A">
+            public class A { }
+        </source>
+        <source class="B">
+            public class B { }
+        </source>
+        <source class="C">
+            public class C { }
+        </source>
+        <source class="Ab">
+            public class Ab { private B x; }
+        </source>
+        <source class="Ac">
+            public class Ac { private C x; }
+        </source>
+        <source class="Abc">
+            public class Abc { private B x; private C y; }
+        </source>
+        <source class="Ba">
+            public class Ba { private A x; }
+        </source>
+        <source class="Bc">
+            public class Bc { private C x; }
+        </source>
+        <source class="Bac">
+            public class Bac { private A x; private C y; }
+        </source>
+        <source class="Ca">
+            public class Ca { private A x; }
+        </source>
+        <source class="Cb">
+            public class Cb { private B x; }
+        </source>
+        <source class="Cab">
+            public class Cab { private A x; private B y; }
+        </source>
+        <source class="Xa">
+            public class Xa { private A x; }
+        </source>
+        <source class="Xb">
+            public class Xb { private B x; }
+        </source>
+        <source class="Xc">
+            public class Xc { private C x; }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

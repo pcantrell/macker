@@ -66,8 +66,20 @@ public final class RecordingTest
         if(!buildDir.isDirectory())
             throw new IllegalArgumentException(buildDir + " is not a directory");
         
-        TestSuite suite = new TestSuite("Rules File Tests");
         File[] testFiles = testDir.listFiles();
+        
+        Arrays.sort(  // most recent first
+            testFiles,
+            new Comparator()
+                {
+                public int compare(Object f1, Object f2)
+                    {
+                    long diff = ((File) f2).lastModified() - ((File) f1).lastModified();
+                    return diff > 0 ? 1 : -1;
+                    }
+                });
+        
+        TestSuite suite = new TestSuite("Rules File Tests");
         for(int f = 0; f < testFiles.length; f++)
             if(testFiles[f].getName().endsWith(".xml"))
                 suite.addTest(new RecordingTest(testFiles[f], buildDir));
@@ -94,6 +106,9 @@ public final class RecordingTest
         {
         result.startTest(this);
 
+        System.out.print(this + ":");
+        System.out.flush();
+        
         try {
             build();
             run();
@@ -110,6 +125,9 @@ public final class RecordingTest
         throws MackerIsMadException, ListenerException, RulesException,
                IOException, ClassParseException, AssertionFailedError
         {
+        System.out.print(" (run)");
+        System.out.flush();
+
         Macker macker = new Macker();
 
         RecordingListener recordingListener = new RecordingListener();
@@ -122,6 +140,9 @@ public final class RecordingTest
         
         macker.checkRaw();
         
+        System.out.print(" (check)");
+        System.out.flush();
+
         EventRecording actual = recordingListener.getRecording();
         
         StringWriter mismatches = new StringWriter();
@@ -137,6 +158,8 @@ public final class RecordingTest
             actual.dump(System.out, 4);
             throw new AssertionFailedError(mismatches.toString());
             }
+
+        System.out.println(" ... PASS");
         }
     
     private void dump(Collection c)
@@ -156,8 +179,9 @@ public final class RecordingTest
     private void build()
         throws Exception
         {
-        System.out.println("Setting up test case: " + this + " ...");
-        
+        System.out.print(" (parse)");
+        System.out.flush();
+
         SAXBuilder saxBuilder = new SAXBuilder(false);
         Element rootElem = saxBuilder.build(testFile).getRootElement();
         
@@ -178,7 +202,8 @@ public final class RecordingTest
         javacArgs.add(classesDir.getPath());
         classesDir.mkdirs();
         
-        System.out.println("Generating source files ...");
+        System.out.print(" (source)");
+        System.out.flush();
         for(Iterator sourceIter = testClassesElem.getChildren("source").iterator(); sourceIter.hasNext(); )
             {
             Element sourceElem = (Element) sourceIter.next();
@@ -210,7 +235,8 @@ public final class RecordingTest
             javacArgs.add(sourceFile.getPath());
             }
 
-        System.out.println("Compiling ...");
+        System.out.print(" (compile)");
+        System.out.flush();
 
         int compilerResult = com.sun.tools.javac.Main.compile(
             (String[]) javacArgs.toArray(new String[0]));
