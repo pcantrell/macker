@@ -1,6 +1,6 @@
 /*______________________________________________________________________________
  *
- * Current distribution and futher info:  http://innig.net/macker/
+ * Macker   http://innig.net/macker/
  *
  * Copyright 2002 Paul Cantrell
  * 

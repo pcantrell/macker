@@ -1,6 +1,6 @@
 /*______________________________________________________________________________
  *
- * Current distribution and futher info:  http://innig.net/macker/
+ * Macker   http://innig.net/macker/
  *
  * Copyright 2002 Paul Cantrell
  * 
@@ -64,6 +64,9 @@ public class EvaluationContext
             return parent.getVariableValue(name);
         throw new UndeclaredVariableException(name);
         }
+        
+    public void setVariables(Map/*<String,String>*/ vars)
+        { varValues.putAll(vars); }
     
     public void addListener(MackerEventListener listener)
         { listeners.add(listener); }

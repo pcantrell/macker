@@ -1,6 +1,6 @@
 /*______________________________________________________________________________
  *
- * Current distribution and futher info:  http://innig.net/macker/
+ * Macker   http://innig.net/macker/
  *
  * Copyright 2002 Paul Cantrell
  * 
@@ -79,6 +79,21 @@ public class MackerAntTask extends Task
     public Path createClasspath()
         { return getJvm().createClasspath(); }
 
+    public void addConfiguredVar(Var var)
+        {
+        args.add("-D");
+        args.add(var.getName() + "=" + var.getValue());
+        }
+    
+    static public class Var
+        {
+        public String getName() { return name; }
+        public String getValue() { return value; }
+        public void setName(String name) { this.name = name; }
+        public void setValue(String value) { this.value = value; }
+        private String name, value;
+        }
+
     public void addConfiguredClasses(FileSet classFiles)
         {
         DirectoryScanner classScanner = classFiles.getDirectoryScanner(getProject());
@@ -88,8 +103,8 @@ public class MackerAntTask extends Task
             {
             File classFile = new File(baseDir, fileNames[n]);
             if(!classFile.getName().endsWith(".class"))
-                throw new BuildException("File in <class/> fileset does not end in \".class\":"
-                    + fileNames[n]);
+                System.out.println("WARNING: " + fileNames[n]
+                    + " is not a .class file; ignoring");
             args.add(classFile.getPath());
             }
         }

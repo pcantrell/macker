@@ -1,6 +1,6 @@
 /*______________________________________________________________________________
  *
- * Current distribution and futher info:  http://innig.net/macker/
+ * Macker   http://innig.net/macker/
  *
  * Copyright 2002 Paul Cantrell
  * 
@@ -45,6 +45,7 @@ public class Macker
             
             ClassManager cm = new ClassManager();
             List rulesFiles = new ArrayList();
+            Map vars = new HashMap();
             boolean verbose = false;
             
             boolean nextIsRule = false;
@@ -59,6 +60,25 @@ public class Macker
                     }
                 else if(args[arg].equals("-v"))
                     verbose = true;
+                else if(args[arg].startsWith("-D"))
+                    {
+                    int initialPos = 0, equalPos;
+                    if(args[arg].length() == 2)
+                        arg++;
+                    else
+                        initialPos = 2;
+                    
+                    equalPos = args[arg].indexOf('=');
+                    if(equalPos == -1)
+                        {
+                        System.out.println("-D argument doesn't have name=value form: " + args[arg]);
+                        usage();
+                        return;
+                        }
+                    String varName = args[arg].substring(initialPos, equalPos);
+                    String value   = args[arg].substring(equalPos + 1);
+                    vars.put(varName, value);
+                    }
                 else if(args[arg].equals("-r"))
                     nextIsRule = true;
                 else if(args[arg].endsWith(".xml") || nextIsRule)
@@ -136,6 +156,7 @@ public class Macker
                             }
                     
                     EvaluationContext context = new EvaluationContext(rs);
+                    context.setVariables(vars);
                     context.addListener(new PrintingListener(System.out));
                     context.addListener(new ThrowingListener(false));
                     rs.check(context, cm);
@@ -153,9 +174,9 @@ public class Macker
         
     public static void usage()
         {
-        System.out.println("usage:");
-        System.out.println("    macker [-v] [rulesfile.xml | -r rulesfile | javaclass.class]+");
-//            System.out.println("    macker [javalib.jar]+");
+        System.out.println("arguments:");
+        System.out.println("    macker [-v] [-D var=value]* [-r rulesfile]* classes");
+//      System.out.println("    macker [javalib.jar]+");
         }
     }
 
