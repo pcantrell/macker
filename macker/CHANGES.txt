@@ -19,3 +19,11 @@ version 0.1:
 
 version 0.0:
     - Macker doesn't work
+
+___________________________
+
+Sketch of future versions:
+
+0.4? filtering on attributes other than name
+0.5? forall / exists rules
+0.6? method-based matching
