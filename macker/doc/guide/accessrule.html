@@ -8,7 +8,7 @@
 <h1>Macker Guide</h1>
 
 <div class="navbar">
-<span class="next">Next:</span> <a href="foreach.html">For Each</a> |
+<span class="next">Next:</span> <a href="var-foreach.html">Variables and For Each</a> |
 <a href="index.html">Table of Contents</a>
 <br>
 <a href="../index.html">Home</a> | 
@@ -20,28 +20,75 @@
 
 <h2>Access Rules</h2>
 <ul class="pagecontents">
-<li> <a href="#access">What is an Access?</a>
 <li> <a href="#allowdeny">Allow / Deny</a>
-<li> <a href="#examples">Examples</a>
+<li> <a href="#limitations">Limitations</a>
 </ul>
-
-<h3><a name="access">What is an Access?</a></h3>
-<p>
 
 <h3><a name="allowdeny">Allow / Deny</a></h3>
 <p>
-
-<h3><a name="examples">Examples</a></h3>
+Class A <i>accesses</i> class B if A extends, implements, contains, aggregates, references, or otherwise depends on B.  Macker allows you to allow and deny such accesses between classes by pattern, using the <code>&lt;access-rule&gt;</code> tag.
 <p>
+The allow/deny construct is very similar to the include/exclude construct, except that it applies to <i>pairs</i> of classes.  An <code>&lt;access-rule&gt;</code> contains <code>&lt;allow&gt;</code> and <code>&lt;deny&gt;</code> rules, each of which may specify a <code>&lt;from&gt;</code> and a <code>&lt;to&gt;</code> pattern:
+</p>
+<pre>&lt;access-rule&gt;
+    &lt;deny&gt;
+        &lt;from pattern="ui-layer" /&gt;
+        &lt;to pattern="db-layer" /&gt;
+    &lt;/deny&gt;
+&lt;/access-rule&gt;</pre>
+<p>
+If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any input class from using <code>ThreadGroup</code>:
+<pre>&lt;access-rule&gt;
+    &lt;deny&gt;
+        &lt;to regex="java.lang.ThreadGroup" /&gt;
+    &lt;/deny&gt;
+&lt;/access-rule&gt;</pre>
+<p>
+(If you want to see Macker really mad, try putting <code>&lt;deny/&gt;</code> in an access rule!)
+<p>
+The <code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> tags are secretly anonymous <code>&lt;pattern&gt;</code> tags -- you can nest include/exclude rules inside them.
+</p>
+<pre>&lt;access-rule&gt;
+    &lt;deny&gt;
+        &lt;to&gt;
+            &lt;include regex="java.lang.ThreadGroup" /&gt;
+            &lt;include regex="java.util.Vector" /&gt;
+            &lt;include regex="java.util.Hashtable" /&gt;
+            &lt;include regex="java.util.Enumeration" /&gt;
+        &lt;/to&gt;
+    &lt;/deny&gt;
+&lt;/access-rule&gt;</pre>
+<p>
+Nesting allow/deny tags works just as nesting include/exclude does.  One common idiom is to specicfy that only a specific set of classes are allowed to use a certain API or layer by first ruling out everything, then adding back in the privileged classes.  Here, for example, is a rule that says only the DB layer is allowed to access Java's database APIs:
+</p>
+<pre>&lt;access-rule&gt;
+    &lt;deny&gt;
+        &lt;to&gt;
+            &lt;include regex="java.sql.**" /&gt;
+            &lt;include regex="javax.sql.**" /&gt;
+            &lt;include regex="javax.jdo.**" /&gt;
+        &lt;/to&gt;
+        &lt;allow&gt;
+            &lt;from pattern="db-layer" /&gt;
+        &lt;/allow&gt;
+    &lt;/deny&gt;
+&lt;/access-rule&gt;</pre>
+
+
+<h3><a name="limitations">Limitations</a></h3>
+<p>
+The ultimate intent is to make Macker's notion of "access" cover all the kinds of relationships that Java itself would check if B were private to A.  In its current version, Macker a bit falls short of this ideal -- it looks for things in A that would cause the JVM to actually load class B.   This covers any attempt to instantiate, invoke methods on, or typecast to or from B; however, it lets some cases slip through the cracks where B is the declared type of a parameter or variable, but the variable never actually gets used in any of the aforementioned ways.  Macker should be able to catch more of these cases with more meticulous class file parsing.
+<p>
+There are also some cases which Macker simply cannot check.  Usage of primitive types is usually difficult to detect in Java bytecode (array instantiation and some typecasts do show up).  For obvious reasons, dynamic loading of classes (<code>Class.forName</code> and friends) is beyond Macker's reach.  It is also possible that the compiler will simply optimize away certain kinds of trivial usage of a class; as long as Macker operates on compiled classes, there's nothing we can do about that.
 
 
 <div class="next">
-Next: <a href="foreach.html">For Each</a>
+Next: <a href="var-foreach.html">Variables and For Each</a>
 </div>
 
 <div class="footer">
 <div class="navbar">
-<span class="next">Next:</span> <a href="foreach.html">For Each</a> |
+<span class="next">Next:</span> <a href="var-foreach.html">Variables and For Each</a> |
 <a href="index.html">Table of Contents</a>
 <br>
 <a href="../index.html">Home</a> | 

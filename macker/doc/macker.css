@@ -173,3 +173,14 @@ pre {
     color : #DDD;
     background : #003;
 }
+
+.moreinfo {
+    font-family : Verdana,Geneva,Helvetica;
+    font-size : 9px;
+    color : #888;
+}
+.moreinfo a, .moreinfo A:link, .moreinfo A:visited {
+    font-weight : bold;
+}
+
+

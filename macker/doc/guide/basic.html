@@ -40,7 +40,7 @@ Here is a very simple Macker rules file:
     &lt;/ruleset&gt;
 &lt;/macker&gt;</pre>
 <p>
-The <code>&lt;macker&gt;</code> tag encloses a whole rules file. The <code>&lt;ruleset&gt;</code> groups related rules.  An <code>&lt;access-rule&gt;</code> governs which classes may refer to other classes; it can contain <code>&lt;deny&gt;</code> and <code>&lt;allow&gt;</code> rules. The deny rule above says that any class whose name contains an "Print" may not reference any of the Java platform classes. (It's a rather absurd rule, but illustrative.)
+The <code>&lt;macker&gt;</code> tag encloses a whole rules file. The <code>&lt;ruleset&gt;</code> groups related rules.  An <code>&lt;access-rule&gt;</code> governs which classes may refer to other classes; it can contain <code>&lt;deny&gt;</code> and <code>&lt;allow&gt;</code> rules. The deny rule above says that any class whose name contains  "Print" may not reference any of the core Java classes. (It's a rather absurd rule, but illustrative.)
 
 <h3><a name="running">Running the Example</a></h3>
 <p>
@@ -49,7 +49,7 @@ You'll typically run Macker from within Ant, something like this:
 <pre>&lt;target name="macker" depends="compile"&gt;
 
     <span class="comment">&lt;!-- Defines the macker ant task.  You need this once per build file. --&gt;
-    &lt;!-- The classpath here tells Ant where to look for Macker classes. --&gt;</span>
+    &lt;!-- The classpath here tells Ant where to look for the Macker Ant task. --&gt;</span>
     &lt;taskdef name="macker"
         classname="net.innig.macker.ant.MackerAntTask"
         classpath="${build.classpath}"/&gt;  
@@ -57,13 +57,14 @@ You'll typically run Macker from within Ant, something like this:
     &lt;macker
         fork="yes"
         verbose="no"&gt;
-        <span class="comment">&lt;!-- This classpath tells Macker where to look for classes. --&gt;</span>
+        <span class="comment">&lt;!-- This classpath tells Macker where to look for its own --&gt;
+        &lt;!-- libraries, and the libraries used by the input classes. --&gt;</span>
         &lt;classpath refid="build.classpath" /&gt;
 
         <span class="comment">&lt;!-- Rules come from this file: --&gt;</span>
         &lt;rules dir="${src.dir}" includes="macker.xml" /&gt;
 
-        <span class="comment">&lt;!-- Macker will apply those rules to these classes: --&gt;</span>
+        <span class="comment">&lt;!-- Macker will apply those rules to these input classes: --&gt;</span>
         &lt;classes dir="${build.classes.dir}"&gt;
             &lt;include name="**/*.class" /&gt;
         &lt;/classes&gt;
@@ -78,21 +79,21 @@ If you are on a UNIX system (or at least have a Bourne shell), you can also use 
 <p>
 (If somebody would like to write a good .bat file to do the same thing the shell script does, <a href="contact.html">send it to me</a> and I'll include it.)
 <p>
-For both the ant task and the command line, you will need to include the following libraries in Macker's classpath when it runs:
+Macker requires the following libraries:
 <ul class="compact">
-<li> <code>innig-util.jar</code>
-<li> <code>jakarta-regexp-1.2.jar</code>
-<li> <code>jclasslib.jar</code>
-<li> <code>jdom.jar</code>
-<li> <code>jaxp.jar</code> (for Java versions < 1.4)
-<li> a JAXP-compliant XML parser
+<li> <code>innig-util.jar</code> <span class="moreinfo">(<a href="http://innig.net/util/">?</a>)</span>
+<li> <code>jakarta-regexp-1.2.jar</code> <span class="moreinfo">(<a href="http://jakarta.apache.org/regexp/">?</a>)</span>
+<li> <code>jclasslib.jar</code> <span class="moreinfo">(<a href="http://jclasslib.sourceforge.net/">?</a>)</span>
+<li> <code>jdom.jar</code> <span class="moreinfo">(<a href="http://jdom.org/">?</a>)</span>
+<li> <code>jaxp.jar</code>  <span class="moreinfo">(<a href="?????????">?</a>)</span> (included in Java 1.4+)
+<li> a JAXP-compliant XML parser (the Macker distro includes <a href="??????">Xerces</a>)
 </ul>
 <p>
-All these libraries are included in the <code>lib/</code> directory of the Macker distribution.
+All these libraries are included in the <code>lib/</code> directory of the Macker distribution.  The shell script version picks them up automatically, as long as you don't move it.  For the Ant task, you'll need to include them in the classpath when you run Macker.
 
 <h3><a name="output">The Example's Output</a></h3>
 <p>
-If we tell Macker to apply this rule to the following Java class...
+If we tell Macker to apply the absurd rule above to the following Java class...
 </p>
 <pre>public class PrintHelloWorld
     {
@@ -100,7 +101,7 @@ If we tell Macker to apply this rule to the following Java class...
         { System.out.println("Hello world, as they say!"); }
     }</pre>
 <p>
-...then Macker will tell us the following:
+...we will get the following response:
 </p>
 <pre>Checking ruleset: Simple example ...
 
@@ -116,7 +117,7 @@ Illegal reference
   from PrintHelloWorld
     to java.lang.System</pre>
 <p>
-Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.  (It also currently ignores certain things it should not; see the bug database on Sourceforge for details.)
+Note that Macker picked up not only <code>HelloWorld</code>'s access of <code>java.lang.System</code>, but also two less obvious accesses: <code>HelloWorld</code> implicitly extends <code>java.lang.Object</code>, and also makes use of <code>java.io.PrintStream</code> by calling its <code>println()</code> method.  Macker will pick up a number of accesses not immediately apparent to the naked eye.  (It also currently ignores certain things it should not; see the <a href="accessrule.html#limitations">access rule</a> section for details.)
 <p>
 Note also that Macker did <i>not</i> get mad about any of the references from <code>java.io.PrintStream</code> to other java utilities, even though its name contains "Print", and our rule would apply.  Macker only applies rules to the input classes you specify, not to every class it can find in your classpath.
 

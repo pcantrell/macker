@@ -26,7 +26,7 @@
 
 <h3><a name="rules">Macker's Regex Syntax</a></h3>
 <p>
-Part of Macker's power is its ability to apply rules to a whole categories of classes which have certain roles, or sit it certain architectural layers.  Macker relies on you to use naming and packaging conventions which make these roles and layers visible -- the programmer still has to think a bit about what they're doing!  (In the future, it will also be able to look at attributes other than name, such as implemented interfaces.  Strong AI which intuits the role of a particular class, however, is not currently in scope.)
+Part of Macker's power is its ability to apply rules to a whole categories of classes which have certain roles, or sit it certain architectural layers.  Macker relies on you to use naming and packaging conventions to make these roles and layers well-defined -- the programmer still has to think a bit about what they're doing!  (In the future, Macker will also be able to look at attributes other than name, such as implemented interfaces.  Strong AI which intuits the role of a particular class, however, is not currently in scope.)
 <p>
 At the heart of class categorization is a simple regular expression syntax, governed by just a few rules:
 <ul>
@@ -104,11 +104,11 @@ Here are a few examples to give you the idea:
 </tr>
 </table>
 <p>
-Note that the Macker regex syntax currently does not support any sort of "OR" construct.  This is because one can accomplish the same thing using include/exclude (see the <a href="pattern.html">next section</a>).  I might consider adding this functionality to the actual regex syntax if there is demand for it.
+Note that the Macker regex syntax currently does not support any sort of "OR" construct.  This is because one can accomplish the same thing using composite patterns (explained in the <a href="pattern.html">next section</a>).  I might consider adding this functionality to the actual regex syntax if there is demand for it.
 
 <h3><a name="alt">Using an Alternate Syntax</a></h3>
 <p>
-Macker does not currently support any alternate regex syntaxes.  In the future, it will include support for Java regex and/or Apache regexp.  Although Macker currently uses Apache regexp internally, I'm holding off on exposing its syntax as part of Macker's published API.
+Macker does not currently support any alternate regex syntaxes.  In the future, it will include support for Java regex and/or Apache regexp.  (Although Macker currently uses Apache regexp internally, I'm holding off on exposing its syntax as part of Macker's published API.)
 
 <div class="next">
 Next: <a href="pattern.html">Naming and Combining Patterns</a>
