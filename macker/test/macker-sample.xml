@@ -5,12 +5,24 @@
 
     <ruleset name="filter test">
         
+        <pattern name="foo" filter="interface" />
+        
+        <access-rule>
+            <deny>
+                <from pattern="foo" />
+                <to>
+                    <exclude filter="interface" />
+                    <exclude filter="primitive" />
+                </to>
+            </deny>
+        </access-rule>
         
     </ruleset>
 
+<!--
     <ruleset name="Macker internal rules" severity="info">
     
-<!--        <var name="basepkg" value="net.innig.macker" /> -->
+        <var name="basepkg" value="net.innig.macker" /> 
         
         <pattern name="macker" regex="${basepkg}.**" />
         
@@ -92,7 +104,7 @@
             </access-rule>
         </ruleset>
     </ruleset>
-
+-->
 </macker>
 
 

@@ -64,6 +64,6 @@ public abstract class FilterFinder
     
     private FilterFinder() { }
     
-    private static final String FILTER_CONF = "net.innig.macker.filters";
+    private static final String FILTER_CONF = "net.innig.macker.filter";
     private static Map filterCache = new HashMap();
     }

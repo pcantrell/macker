@@ -136,11 +136,19 @@ public class RuleSetBuilder
             boolean isTopElem)
         throws RulesException
         {
+        // handle options
+        
+        String otherPatName = patternElem.getAttributeValue("pattern");
+        String regex = patternElem.getAttributeValue("regex");
+        String filterName = patternElem.getAttributeValue("filter");
+
         CompositePatternType patType;
         if(patternElem.getName().equals("include"))
             patType = CompositePatternType.INCLUDE;
         else if(patternElem.getName().equals("exclude"))
-            patType = CompositePatternType.EXCLUDE;
+            patType = (filterName == null)
+                ? CompositePatternType.EXCLUDE
+                : CompositePatternType.INCLUDE;
         else if(isTopElem)
             patType = CompositePatternType.INCLUDE;
         else
@@ -149,17 +157,13 @@ public class RuleSetBuilder
                 "Invalid element <" + patternElem.getName() + "> --"
                 + " expected <include> or <exclude>");
         
-        String otherPatName = patternElem.getAttributeValue("pattern");
-        String regex = patternElem.getAttributeValue("regex");
-        String filterName = patternElem.getAttributeValue("filter");
-        if(!isTopElem
-         && (filterName == null)
-         && (otherPatName == null) == (regex == null))
+        if(otherPatName != null && regex != null)
             throw new RulesDocumentException(
                 patternElem,
-                "<include> and <exclude> tags must have either a \"pattern\" "
-                + " or a \"regex\" attribute, but cannot have both");
-                
+                "patterns cannot have both a \"pattern\" and a \"regex\" attribute");
+        
+        // do the head thing
+        
         Pattern head = null;
         if(regex != null)
             head = new RegexPattern(regex);
@@ -169,6 +173,8 @@ public class RuleSetBuilder
             if(head == null)
                 throw new UndeclaredPatternException(otherPatName);
             }
+        
+        // build up children
         
         CompositePattern firstChildPat = null, prevChildPat = null;        
         for(Iterator childIter = patternElem.getChildren().iterator(); childIter.hasNext(); )
@@ -186,6 +192,8 @@ public class RuleSetBuilder
             prevChildPat = pat;
             }
         
+        // pull together composite
+        
         Pattern result = null;
         if(head != null || firstChildPat != null)
             {
@@ -196,7 +204,9 @@ public class RuleSetBuilder
             else
                 result = new CompositePattern(patType, head, firstChildPat);
             }
-
+        
+        // wrap it in a filter if necessary
+        
         if(filterName != null)
             {
             Map options = new HashMap();
@@ -213,7 +223,12 @@ public class RuleSetBuilder
             result = (result == null)
                 ? filter.createPattern(ruleSet, options)
                 : filter.createPattern(ruleSet, result, options);
+                
+            if(patternElem.getName().equals("exclude"))
+                result = new CompositePattern(CompositePatternType.EXCLUDE, result, null);
             }
+        
+        // did we get something out of all that nonsense?
         
         if(result == null)
             throw new RulesDocumentException(
