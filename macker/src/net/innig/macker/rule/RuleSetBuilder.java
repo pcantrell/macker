@@ -57,16 +57,7 @@ public class RuleSetBuilder
                         subElem,
                         "Pattern named \"" + patternName + "\" is already defined in this context");
                 
-                CompositePattern pattern = buildCompositePattern(subElem, ruleSet);
-                
-                if(pattern.getType() == CompositePatternType.EXCLUDE)
-                    {
-                    CompositePattern includeAll = new CompositePattern();
-                    includeAll.setNext(pattern);
-                    pattern = includeAll;
-                    }
-                
-                ruleSet.setPattern(patternName, pattern);
+                ruleSet.setPattern(patternName, buildCompositePattern(subElem, ruleSet));
                 }
             else if(subElemName.equals("access-rule"))
                 ruleSet.addRule(buildAccessRule(subElem, ruleSet));

@@ -48,6 +48,9 @@ public class ClassInfo
     public Set/*<String>*/ getReferences()
         { return references; }
     
+    public String toString()
+        { return getClassName(); }
+    
     static private String slashesToDots(String className)
         {
         if(separatorRE == null)

@@ -60,6 +60,7 @@ public class CompositePattern
     //--------------------------------------------------------------------------
 
     public boolean matches(EvaluationContext context, ClassInfo classInfo)
+        throws RulesException
         {
         return matchesAsNext(
             context,
@@ -69,23 +70,21 @@ public class CompositePattern
                 : true); // exclude starts with all included
         }
 
-    protected boolean matchesAsNext(
+    private boolean matchesAsNext(
             EvaluationContext context,
             ClassInfo classInfo,
             boolean prevMatches)
+        throws RulesException
         {
+        boolean headMatches = getHead().matches(context, classInfo);
+        boolean matchesSoFar =
+            (type == CompositePatternType.INCLUDE)
+                ? prevMatches || ( headMatches && (getChild() == null || getChild().matches(context, classInfo)))
+                : prevMatches && (!headMatches || (getChild() != null && getChild().matches(context, classInfo)));
         return
-            getNext().matchesAsNext(
-                context,
-                classInfo,
-                ((type == CompositePatternType.INCLUDE) == prevMatches)
-                || selfMatches(context, classInfo));
-        }
-
-    protected boolean selfMatches(EvaluationContext context, ClassInfo classInfo)
-        {
-        return getHead().matches(context, classInfo)
-               && (getChild() == null || getChild().matches(context, classInfo));
+            (getNext() == null)
+                ? matchesSoFar
+                : getNext().matchesAsNext(context, classInfo, matchesSoFar);
         }
     
     //--------------------------------------------------------------------------

@@ -43,27 +43,16 @@ public class RegexPattern
     //--------------------------------------------------------------------------
 
     public boolean matches(EvaluationContext context, ClassInfo classInfo)
+        throws RulesException
         {
         parseExpr(context);
-return false;
+        return regex.match(classInfo.getClassName());
         }
     
     private void parseExpr(EvaluationContext context)
+        throws UndeclaredVariableException, RegexPatternSyntaxException
         {
         buildStaticPatterns();
-        if(allowable == null)
-            try {
-                matchWithin = new RE("\\*?");
-                matchAcross = new RE("\\*\\*");
-
-                String varS  = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
-                String partS = "(([:javastart:]|\\*|" + varS + ")"
-                               + "([:javapart:]|\\*|" + varS + ")*)";
-                var = new RE(varS);
-                allowable = new RE("^" + partS + "(\\." + partS + ")*$", RE.MATCH_SINGLELINE);
-                }
-            catch(RESyntaxException rese)
-                { throw new RuntimeException("Can't initialize ClassInfo.separatorRE: " + rese); }
         
         if(parts == null)
             {
@@ -88,10 +77,26 @@ return false;
                 pos = hasAnotherVar ? var.getParenEnd(0) : -1;
                 }
             }
+//System.out.println("parts = " + parts);
 
         if(regex == null || prevContext != context) // prob shouldn't be ==
             {
-            // ...........
+            StringBuffer builtRegexStr = new StringBuffer();
+            for(Iterator i = parts.iterator(); i.hasNext(); )
+                {
+                Part part = (Part) i.next();
+                if(part instanceof VarPart)
+                    builtRegexStr.append(
+                        context.getVariableValue(
+                            ((VarPart) part).varName));
+                else if(part instanceof ExpPart)
+                    builtRegexStr.append(
+                        ((ExpPart) part).exp);
+                }
+//System.out.println("builtRegexStr = " + builtRegexStr);
+            try { regex = new RE(builtRegexStr.toString()); }
+            catch(RESyntaxException rese)
+                { throw new RegexPatternSyntaxException(regexStr, rese); }
             }
         }
 
@@ -99,6 +104,7 @@ return false;
         {
         if(allowable == null)
             try {
+//System.out.println("building static patterns");
                 star = new RE("\\*");
                 matchWithin = new RE("@");
                 matchAcross = new RE("@@");
@@ -143,3 +149,4 @@ return false;
     public String toString()
         { return '"' + regexStr + '"'; }
     }
+

@@ -12,5 +12,6 @@ public abstract class Pattern
             public String toString() { return "Pattern.ALL"; }
             };
     
-    public abstract boolean matches(EvaluationContext context, ClassInfo classInfo);
+    public abstract boolean matches(EvaluationContext context, ClassInfo classInfo)
+        throws RulesException;
     }

@@ -40,6 +40,9 @@ public class RuleSet
         patterns.put(name, pattern);
         }
     
+    public Collection getAllPatterns()
+        { return patterns.values(); }
+    
     public void clearPattern(String name)
         { patterns.remove(name); }
     

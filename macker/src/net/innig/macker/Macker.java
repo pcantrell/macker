@@ -1,8 +1,9 @@
 package net.innig.macker;
 
-import net.innig.macker.structure.ClassManager;
-import net.innig.macker.structure.ClassInfo;
-import net.innig.macker.rule.RuleSetBuilder;
+import net.innig.macker.structure.*;
+import net.innig.macker.rule.*;
+
+import net.innig.collect.*;
 
 import java.io.File;
 import java.util.*;
@@ -20,7 +21,8 @@ public class Macker
         for(int arg = 0; arg < args.length; arg++)
             cm.addClass(new ClassInfo(new File(args[arg])));
         
-        for(Iterator i = cm.getReferences().keySet().iterator(); i.hasNext(); )
+        Set allClasses = cm.getReferences().keySet();
+        for(Iterator i = allClasses.iterator(); i.hasNext(); )
             {
             String className = (String) i.next();
             System.out.println("Classes used by " + className + ":");
@@ -34,5 +36,22 @@ public class Macker
         System.out.println(cm.getReferences().size() + " total references");
         
         Collection ruleSets = new RuleSetBuilder().build("macker-sample.xml");
+        for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
+            {
+            RuleSet rs = (RuleSet) rsIter.next();
+            for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
+                {
+                final Pattern pat = (Pattern) patIter.next();
+                final EvaluationContext ctx = new EvaluationContext(rs);
+                System.out.println("matching " + pat);
+                for(Iterator i = allClasses.iterator(); i.hasNext(); )
+                    {
+                    ClassInfo classInfo = cm.getClassInfo((String) i.next());
+                    if(pat.matches(ctx, classInfo))
+                        System.out.println("    " + classInfo);
+                    }
+                System.out.println();
+                }
+            }
         }
     }
