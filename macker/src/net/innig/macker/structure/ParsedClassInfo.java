@@ -212,7 +212,7 @@ public class ParsedClassInfo
                 new Reference(
                     getClassName(),
                     (String) types.get(0),
-                    ReferenceType.FIELD,
+                    ReferenceType.FIELD_API,
                     field.getName(),
                     translateAccess(field.getAccessFlags())));
             }

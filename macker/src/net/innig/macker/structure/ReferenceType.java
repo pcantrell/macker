@@ -26,13 +26,13 @@ public class ReferenceType
     extends GraphType
     {
     public static final ReferenceType
-        SIGNATURE                  = new ReferenceType("api"),
-            MEMBER                 = new ReferenceType("member", SIGNATURE),
-                METHOD             = new ReferenceType("method", MEMBER),
-                    METHOD_PARAM   = new ReferenceType("method-param", METHOD),
-                    METHOD_RETURNS = new ReferenceType("method-returns", METHOD),
-                    METHOD_THROWS  = new ReferenceType("method-throws", METHOD),
-                FIELD              = new ReferenceType("field", MEMBER),
+        API                        = new ReferenceType("api"),
+            MEMBER_API             = new ReferenceType("member-api", API),
+                METHOD_API         = new ReferenceType("method-api", MEMBER_API),
+                    METHOD_PARAM   = new ReferenceType("method-param", METHOD_API),
+                    METHOD_RETURNS = new ReferenceType("method-returns", METHOD_API),
+                    METHOD_THROWS  = new ReferenceType("method-throws", METHOD_API),
+                FIELD_API          = new ReferenceType("field-api", MEMBER_API),
             SUPER                  = new ReferenceType("super"),
                 EXTENDS            = new ReferenceType("extends", SUPER),
                 IMPLEMENTS         = new ReferenceType("implements", SUPER),

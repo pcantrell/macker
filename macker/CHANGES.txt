@@ -1,4 +1,10 @@
-    - added filtering capability
+version 0.4 (future):
+  remaning:
+    - solidify filter syntax
+    - add reference type filters for access rules (including accessed method name)
+    - complete basic filters
+  done:
+    - added customer filtering capability for patterns
     - parsing for superclass, interfaces, access modifiers
     - parsing differentiates signature-level reference types
     - ForEach now checks more than just the primary classes
@@ -38,5 +44,5 @@ Sketch of future versions:
 
 0.4 filtering on attributes other than name
 0.5 forall / exists rules
-0.6 method-based matching
-0.? META-INF
+0.6 method patterns
+0.7 standard for rules export in META-INF
