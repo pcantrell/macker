@@ -29,7 +29,15 @@ public interface Pattern
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 { return true; }
-            public String toString() { return "Pattern.ALL"; }
+            public String toString() { return "<all>"; }
+            };
+    
+    public static final Pattern NONE =
+        new Pattern()
+            {
+            public boolean matches(EvaluationContext context, ClassInfo classInfo)
+                { return false; }
+            public String toString() { return "<none>"; }
             };
     
     public boolean matches(EvaluationContext context, ClassInfo classInfo)

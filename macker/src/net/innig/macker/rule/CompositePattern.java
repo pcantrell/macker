@@ -24,27 +24,36 @@ import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
 
-public class CompositePattern
+public final class CompositePattern
     implements Pattern
     {
     //--------------------------------------------------------------------------
     // Constructors
     //--------------------------------------------------------------------------
 
-    public CompositePattern()
-        { this(CompositePatternType.INCLUDE, Pattern.ALL); }
-    
-    public CompositePattern(CompositePatternType type, Pattern head)
+    public static Pattern create(CompositePatternType type, Pattern head, Pattern child, Pattern next)
         {
-        setType(type);
-        setHead(head);
+        if(type == null)
+            throw new NullPointerException("type parameter cannot be null");
+
+        if(head == null && child == null && next == null)
+            return (type == CompositePatternType.INCLUDE) ? Pattern.ALL : Pattern.NONE;
+        if(head == null && child == null)
+            return create(type, next, null, null);
+        if(head == null)
+            return create(type, child, null, next);
+        if(type == CompositePatternType.INCLUDE && child == null && next == null)
+            return head;
+
+        return new CompositePattern(type, head, child, next);
         }
     
-    public CompositePattern(CompositePatternType type, Pattern head, CompositePattern child)
+    private CompositePattern(CompositePatternType type, Pattern head, Pattern child, Pattern next)
         {
-        setType(type);
-        setHead(head);
-        setChild(child);
+        this.type = type;
+        this.head = head;
+        this.child = child;
+        this.next = next;
         }
     
     //--------------------------------------------------------------------------
@@ -54,34 +63,17 @@ public class CompositePattern
     public CompositePatternType getType()
         { return type; }
 
-    public void setType(CompositePatternType type)
-        {
-        if(type == null)
-            throw new NullPointerException("type parameter cannot be null");
-        this.type = type;
-        }
-    
     public Pattern getHead()
         { return head; }
 
-    public void setHead(Pattern head)
-        { this.head = head; }
-    
-    public CompositePattern getChild()
+    public Pattern getChild()
         { return child; }
     
-    public void setChild(CompositePattern child)
-        { this.child = child; }
-    
-    public CompositePattern getNext()
+    public Pattern getNext()
         { return next; }
     
-    public void setNext(CompositePattern next)
-        { this.next = next; }
-    
-    private CompositePatternType type;
-    private Pattern head;
-    private CompositePattern child, next;
+    private final CompositePatternType type;
+    private final Pattern head, child, next;
 
     //--------------------------------------------------------------------------
     // Evaluation
@@ -92,29 +84,48 @@ public class CompositePattern
         { return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, classInfo)); }
     
     private static IncludeExcludeNode makeIncludeExcludeNode(
-            final CompositePattern pat,
+            final Pattern pat,
             final EvaluationContext context,
             final ClassInfo classInfo)
         {
-        return (pat == null)
-            ? null
-            : new IncludeExcludeNode()
-                {
-                public boolean isInclude()
-                    { return pat.getType() == CompositePatternType.INCLUDE; }
+        if(pat == null)
+            return null;
         
-                public boolean matches()
-                    throws RulesException
-                    { return pat.getHead().matches(context, classInfo); }
-                
-                public IncludeExcludeNode getChild()
-                    { return makeIncludeExcludeNode(pat.getChild(), context, classInfo); }
-                
-                public IncludeExcludeNode getNext()
-                    { return makeIncludeExcludeNode(pat.getNext(), context, classInfo); }
-                };
-        }
+        final boolean include;
+        final Pattern head, child, next;
+        
+        if(pat instanceof CompositePattern)
+            {
+            CompositePattern compositePat = (CompositePattern) pat;
+            include = (compositePat.getType() == CompositePatternType.INCLUDE);
+            head = compositePat.getHead();
+            child = compositePat.getChild();
+            next = compositePat.getNext();
+            }
+        else
+            {
+            include = true;
+            head = pat;
+            child = next = null;
+            }
+            
+        return new IncludeExcludeNode()
+            {
+            public boolean isInclude()
+                { return include; }
     
+            public boolean matches()
+                throws RulesException
+                { return head.matches(context, classInfo); }
+            
+            public IncludeExcludeNode getChild()
+                { return makeIncludeExcludeNode(child, context, classInfo); }
+            
+            public IncludeExcludeNode getNext()
+                { return makeIncludeExcludeNode(next, context, classInfo); }
+            };
+        }
+
     //--------------------------------------------------------------------------
     // Object
     //--------------------------------------------------------------------------
@@ -122,7 +133,7 @@ public class CompositePattern
     public String toString()
         {
         return "(" + type + ' ' + head
-            + (child == null ? "" : ", " + child) + ')'
+            + (child == null ? "" : " + " + child) + ')'
             + ( next == null ? "" : ", " +  next);
         }
     }

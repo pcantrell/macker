@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <pattern name="java-api" class="java*.**" />
+
+            <pattern name="all" />
+            <pattern name="none">
+                <exclude/>
+            </pattern>
+            <pattern name="all2">
+                <exclude><exclude/></exclude>
+            </pattern>
+            
+            <pattern name="A" class="*A*" />
+            <pattern name="B" class="*B*" />
+            <pattern name="C" class="*C*" />
+            
+            <pattern name="A-or-B-or-C">
+                <include pattern="A" />
+                <include pattern="B" />
+                <include pattern="C" />
+            </pattern>
+            
+            <pattern name="A-and-B-and-C">
+                <include pattern="A">
+                    <include pattern="B">
+                        <include pattern="C" />
+                    </include>
+                </include>
+            </pattern>
+        
+            <pattern name="A-alias" pattern="A" />
+
+            <pattern name="A-alias2">
+                <include pattern="A" />
+            </pattern>
+
+            <pattern name="not-A">
+                <exclude pattern="A" />
+            </pattern>
+            
+            <pattern name="not-not-A">
+                <exclude pattern="not-A" />
+            </pattern>
+
+            <pattern name="A-and-not-C">
+                <include pattern="A" />
+                <exclude pattern="C" />
+            </pattern>
+            
+            <pattern name="neither-A-nor-C">
+                <exclude pattern="A" />
+                <exclude pattern="C" />
+            </pattern>
+            
+            <pattern name="B-or-C">
+                <include pattern="B" />
+                <include pattern="C" />
+            </pattern>
+
+            <pattern name="B-and-C">
+                <include pattern="B">
+                    <include pattern="C" />
+                </include>
+            </pattern>
+
+            <pattern name="B-xor-C">
+                <include pattern="B-or-C" />
+                <exclude pattern="B-and-C" />
+            </pattern>
+            
+            <pattern name="B-xor-C2">
+                <include pattern="B">
+                    <exclude pattern="C" />
+                </include>
+                <include pattern="C">
+                    <exclude pattern="B" />
+                </include>
+            </pattern>
+            
+            <pattern name="no-B-without-C">
+                <exclude pattern="B">
+                    <include pattern="C" />
+                </exclude>
+            </pattern>
+            
+            <access-rule> <message>all</message> <deny><from pattern="all" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>none</message> <deny><from pattern="none" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>all2</message> <deny><from pattern="all" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A</message> <deny><from pattern="A" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>B</message> <deny><from pattern="B" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>C</message> <deny><from pattern="C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A-or-B-or-C</message> <deny><from pattern="A-or-B-or-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A-and-B-and-C</message> <deny><from pattern="A-and-B-and-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A-alias</message> <deny><from pattern="A-alias" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A-alias2</message> <deny><from pattern="A-alias2" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>not-A</message> <deny><from pattern="not-A" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>not-not-A</message> <deny><from pattern="not-not-A" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>A-and-not-C</message> <deny><from pattern="A-and-not-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>neither-A-nor-C</message> <deny><from pattern="neither-A-nor-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>B-or-C</message> <deny><from pattern="B-or-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>B-and-C</message> <deny><from pattern="B-and-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>B-xor-C</message> <deny><from pattern="B-xor-C" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>B-xor-C2</message> <deny><from pattern="B-xor-C2" /><to pattern="java-api" /></deny></access-rule>
+            <access-rule> <message>no-B-without-C</message> <deny><from pattern="no-B-without-C" /><to pattern="java-api" /></deny></access-rule>
+        </ruleset>
+    </rules-file>
+
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="all">
+            <event from="X" />
+            <event from="A" />
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="BC" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="all2">
+            <event from="X" />
+            <event from="A" />
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="BC" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A">
+            <event from="A" />
+            <event from="AB" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="B">
+            <event from="B" />
+            <event from="AB" />
+            <event from="BC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="C">
+            <event from="C" />
+            <event from="AC" />
+            <event from="BC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A-or-B-or-C">
+            <event from="A" />
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="BC" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A-and-B-and-C">
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A-alias">
+            <event from="A" />
+            <event from="AB" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A-alias2">
+            <event from="A" />
+            <event from="AB" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="not-A">
+            <event from="X" />
+            <event from="B" />
+            <event from="C" />
+            <event from="BC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="not-not-A">
+            <event from="A" />
+            <event from="AB" />
+            <event from="AC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="A-and-not-C">
+            <event from="A" />
+            <event from="AB" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="neither-A-nor-C">
+            <event from="X" />
+            <event from="B" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="B-or-C">
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="AC" />
+            <event from="BC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="B-and-C">
+            <event from="BC" />
+            <event from="ABC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="B-xor-C">
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="AC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="B-xor-C2">
+            <event from="B" />
+            <event from="C" />
+            <event from="AB" />
+            <event from="AC" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object" message0="no-B-without-C">
+            <event from="X" />
+            <event from="A" />
+            <event from="C" />
+            <event from="AC" />
+            <event from="BC" />
+            <event from="ABC" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source package="" class="X">
+            public class X { }
+        </source>
+        <source package="" class="A">
+            public class A { }
+        </source>
+        <source package="" class="B">
+            public class B { }
+        </source>
+        <source package="" class="C">
+            public class C { }
+        </source>
+        <source package="" class="AB">
+            public class AB { }
+        </source>
+        <source package="" class="BC">
+            public class BC { }
+        </source>
+        <source package="" class="AC">
+            public class AC { }
+        </source>
+        <source package="" class="ABC">
+            public class ABC { }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

@@ -152,7 +152,7 @@ public class RuleSetBuilder
                         subElem,
                         "Pattern named \"" + patternName + "\" is already defined in this context");
 
-                ruleSet.setPattern(patternName, buildPattern(subElem, ruleSet, true));
+                ruleSet.setPattern(patternName, buildPattern(subElem, ruleSet));
                 }
             else if(subElemName.equals("subset"))
                 {
@@ -160,7 +160,7 @@ public class RuleSetBuilder
                     throw new RulesDocumentException(
                         subElem,
                         "<ruleset> may only contain a single <subset> element");
-                ruleSet.setSubsetPattern(buildPattern(subElem, ruleSet, true));
+                ruleSet.setSubsetPattern(buildPattern(subElem, ruleSet));
                 }
             else if(subElemName.equals("access-rule"))
                 ruleSet.addRule(buildAccessRule(subElem, ruleSet));
@@ -177,10 +177,15 @@ public class RuleSetBuilder
         return ruleSet;
         }
 
+    public Pattern buildPattern(Element patternElem, RuleSet ruleSet)
+        throws RulesException
+        { return buildPattern(patternElem, ruleSet, true, null); }
+    
     public Pattern buildPattern(
             Element patternElem,
             RuleSet ruleSet,
-            boolean isTopElem)
+            boolean isTopElem,
+            Pattern nextPat)
         throws RulesException
         {
         // handle options
@@ -223,23 +228,19 @@ public class RuleSetBuilder
         
         // build up children
         
-        CompositePattern firstChildPat = null, prevChildPat = null;        
-        for(Iterator childIter = patternElem.getChildren().iterator(); childIter.hasNext(); )
+        Pattern childrenPat = null;
+        List children = new ArrayList(patternElem.getChildren()); //! workaround for bug in JUnit
+        //List children = patternElem.getChildren(); // this should work instead when JUnit bug is fixed
+        for(ListIterator childIter = children.listIterator(children.size()); childIter.hasPrevious(); )
             {
-            Element subElem = (Element) childIter.next();
+            Element subElem = (Element) childIter.previous();
             if(subElem.getName().equals("message"))
                 continue;
             
-            CompositePattern pat = forceCompositePattern(buildPattern(subElem, ruleSet, false));
-            
-            if(firstChildPat == null)
-                firstChildPat = pat;
-            else
-                prevChildPat.setNext(pat);
-            prevChildPat = pat;
+            childrenPat = buildPattern(subElem, ruleSet, false, childrenPat);
             }
         
-        // wrap it in a filter if necessary
+        // wrap head in a filter if necessary
         
         if(filterName != null)
             {
@@ -263,39 +264,12 @@ public class RuleSetBuilder
                 options);
                 
             if(patternElem.getName().equals("exclude"))
-                head = new CompositePattern(CompositePatternType.EXCLUDE, head, null);
+                head = CompositePattern.create(CompositePatternType.EXCLUDE, head, null, null);
             }
         
         // pull together composite
-        
-        Pattern result = null;
-        if(head != null || firstChildPat != null)
-            {
-            if(head == null)
-                result = firstChildPat;
-            else if(firstChildPat == null && patType == CompositePatternType.INCLUDE)
-                result = head;
-            else
-                result = new CompositePattern(patType, head, firstChildPat);
-            }
-        
-        // did we get something out of all that nonsense?
-        
-        if(result == null)
-            throw new RulesDocumentException(
-                patternElem,
-                '<' + patternElem.getName() + "> element must have"
-                + " a \"class\", \"pattern\", or \"filter\" attribute, or"
-                + " contain at least one <include> or <exclude>");
-        
-        return result;
-        }
-    
-    private CompositePattern forceCompositePattern(Pattern pat)
-        {
-        return (pat instanceof CompositePattern)
-            ? (CompositePattern) pat
-            : new CompositePattern(CompositePatternType.INCLUDE, pat);
+
+        return CompositePattern.create(patType, head, childrenPat, nextPat);
         }
     
     public Variable buildVariable(Element forEachElem, RuleSet parent)
@@ -371,11 +345,11 @@ public class RuleSetBuilder
             
             Element fromElem = subElem.getChild("from");
             if(fromElem != null)
-                accRule.setFrom(buildPattern(fromElem, ruleSet, true));
+                accRule.setFrom(buildPattern(fromElem, ruleSet));
             
             Element toElem = subElem.getChild("to");
             if(toElem != null)
-                accRule.setTo(buildPattern(toElem, ruleSet, true));
+                accRule.setTo(buildPattern(toElem, ruleSet));
 
             if(!subElem.getChildren().isEmpty())
                 accRule.setChild(buildAccessRule(subElem, ruleSet));

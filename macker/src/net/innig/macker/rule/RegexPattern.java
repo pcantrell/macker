@@ -27,7 +27,7 @@ import java.util.*;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 
-public class RegexPattern
+public final class RegexPattern
     implements Pattern
     {
     //--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public class RegexPattern
     public MackerRegex getRegex()
         { return regex; }
     
-    private MackerRegex regex;
+    private final MackerRegex regex;
 
     //--------------------------------------------------------------------------
     // Evaluation
