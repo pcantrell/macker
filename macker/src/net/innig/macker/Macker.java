@@ -205,6 +205,7 @@ public class Macker
                 }
             }
 
+        ThrowingListener throwing = new ThrowingListener(false, false);
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
@@ -223,13 +224,13 @@ public class Macker
                         }
                     System.out.println();
                     }
-            
             EvaluationContext context = new EvaluationContext(rs);
             context.setVariables(vars);
+            context.addListener(throwing);
             context.addListener(new PrintingListener(System.out));
-            context.addListener(new ThrowingListener(false));
             rs.check(context, cm);
             }
+        throwing.timeToGetMad();
         }
 
     private ClassManager cm;

@@ -43,7 +43,7 @@ public class PrintingListener
         if(ruleSet.getParent() == null || ruleSet.hasName())
             {
             out.println();
-            out.println("Checking ruleset: " + ruleSet.getName() + " ...");
+            out.println("(Checking ruleset: " + ruleSet.getName() + " ...)");
             first = true;
             }
         }

@@ -88,7 +88,7 @@ public class ClassManager
                             + " depend on attributes of these classes other than their names will"
                             + " fail.  Check your classpath.");
                         }
-                    System.out.println("Cannot load class " + className);
+                    System.out.println("(Cannot load class " + className + ')');
                     classInfo = new IncompleteClassInfo(className);
                     }
                 }

@@ -27,24 +27,32 @@ import java.util.*;
 public class ThrowingListener
     implements MackerEventListener
     {
-    public ThrowingListener(boolean throwOnFirst)
-        { this.throwOnFirst = throwOnFirst; }
+    public ThrowingListener(boolean throwOnFirst, boolean throwOnFinish)
+        {
+        this.throwOnFirst = throwOnFirst;
+        this.throwOnFinish = throwOnFinish;
+        }
     
     public void mackerStarted(RuleSet ruleSet)
         {
         if(ruleSet.getParent() == null)
             {
-            if(events != null)
+            if(inUse)
                 throw new IllegalStateException("This ThrowingListener is already in use");
             events = new LinkedList();
+            inUse = true;
             }
         }
     
     public void mackerFinished(RuleSet ruleSet)
         throws MackerIsMadException
         {
-        if(ruleSet.getParent() == null && !events.isEmpty())
-            throw new MackerIsMadException(events);
+        if(ruleSet.getParent() == null)
+            {
+            inUse = false;
+            if(throwOnFinish)
+                timeToGetMad();
+            }
         }
 
     public void mackerAborted(RuleSet ruleSet)
@@ -57,7 +65,15 @@ public class ThrowingListener
             throw new MackerIsMadException(event);
         events.add(event);
         }
+
+    public void timeToGetMad()
+        throws MackerIsMadException
+        {
+        if(!events.isEmpty())
+            throw new MackerIsMadException(events);
+        }
     
+    private boolean throwOnFirst, throwOnFinish;
     private List events;
-    private boolean throwOnFirst;
+    private boolean inUse;
     }

@@ -27,6 +27,23 @@ import org.apache.regexp.RESyntaxException;
 
 public class ClassNameTranslator
     {
+    static public Collection signatureToClassNames(String signature)
+        {
+        Collection names = new ArrayList();
+        for(int pos = 0; pos < signature.length(); )
+            {
+            String remaining = signature.substring(pos);
+            if(!sigExtractorRE.match(remaining))
+                throw new IllegalArgumentException("Unable to extract type info from: " + remaining);
+            if(sigExtractorRE.getParen(2) != null)
+                names.add((String) primitiveTypeMap.get(sigExtractorRE.getParen(2)));
+            if(sigExtractorRE.getParen(3) != null)
+                names.add(resourceToClassName(sigExtractorRE.getParen(3)));
+            pos += sigExtractorRE.getParenEnd(0);
+            }
+        return names;
+        }
+    
     static public String typeConstantToClassName(String typeName)
         {
         if(arrayExtractorRE.match(typeName))
@@ -45,7 +62,7 @@ public class ClassNameTranslator
     static public String classToResourceName(String resourceName)
         { return (dotRE.subst(resourceName, "/") + ".class").intern(); }
     
-    static private RE classSuffixRE, slashRE, dotRE, arrayExtractorRE;
+    static private RE classSuffixRE, slashRE, dotRE, arrayExtractorRE, sigExtractorRE;
     static private Map/*<String,String>*/ primitiveTypeMap;
     static
         {
@@ -53,7 +70,8 @@ public class ClassNameTranslator
             classSuffixRE = new RE("\\.class$");
             slashRE = new RE("/");
             dotRE = new RE("\\.");
-            arrayExtractorRE = new RE("^(\\[+([BSIJCFDZ])|\\[+L(.*);)$");
+            arrayExtractorRE = new RE(        "^(\\[+([BSIJCFDZV])|\\[+L([^;]*);)$");
+            sigExtractorRE   = new RE("^\\(?\\)?(\\[*([BSIJCFDZV])|\\[*L([^;]*);)");
             }
         catch(RESyntaxException rese)
             { throw new RuntimeException("Can't initialize ClassNameTranslator: " + rese); } 
@@ -67,5 +85,6 @@ public class ClassNameTranslator
         primitiveTypeMap.put("F", "float");
         primitiveTypeMap.put("D", "double");
         primitiveTypeMap.put("Z", "boolean");
+        primitiveTypeMap.put("V", "void");
         }
     }

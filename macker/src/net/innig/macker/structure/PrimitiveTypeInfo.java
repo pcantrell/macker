@@ -40,6 +40,7 @@ public class PrimitiveTypeInfo
         nameToTypeMap.put("boolean", new PrimitiveTypeInfo("boolean"));
         nameToTypeMap.put("float",   new PrimitiveTypeInfo("float"));
         nameToTypeMap.put("double",  new PrimitiveTypeInfo("double"));
+        nameToTypeMap.put("void",    new PrimitiveTypeInfo("void"));
         }
     
     private PrimitiveTypeInfo(String className)

@@ -27,11 +27,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.*;
 
-import org.gjt.jclasslib.structures.ClassFile;
-import org.gjt.jclasslib.structures.CPInfo;
+import org.gjt.jclasslib.structures.*;
 import org.gjt.jclasslib.structures.constants.ConstantClassInfo;
 import org.gjt.jclasslib.io.ClassFileReader;
-import org.gjt.jclasslib.structures.InvalidByteCodeException;
 
 public class ParsedClassInfo
     extends ClassInfo
@@ -61,11 +59,27 @@ public class ParsedClassInfo
                 ClassNameTranslator.typeConstantToClassName(
                     ((ConstantClassInfo) constantPool[classFile.getThisClass()]).getName());
             references = new TreeSet();
+            
+            // Add accessed classes from constant pool entries
             for(int n = 1; n < constantPool.length; n++)
                 if(constantPool[n] instanceof ConstantClassInfo)
                     references.add(
                         ClassNameTranslator.typeConstantToClassName(
                             ((ConstantClassInfo) constantPool[n]).getName()));
+            
+            // Add yet more accessed classes from method & field signatures
+            Collection members = new ArrayList(50);
+            members.addAll(Arrays.asList(classFile.getMethods()));
+            members.addAll(Arrays.asList(classFile.getFields()));
+            for(Iterator i = members.iterator(); i.hasNext(); )
+                {
+                ClassMember member = (ClassMember) i.next();
+                references.addAll(
+                    ClassNameTranslator.signatureToClassNames(
+                        classFile.getConstantPoolUtf8Entry(member.getDescriptorIndex())
+                                 .getString()));
+                }
+            
             references = Collections.unmodifiableSet(references);
             }
         catch(InvalidByteCodeException ibce)
