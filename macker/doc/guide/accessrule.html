@@ -23,6 +23,7 @@
 <h2>Access Rules</h2>
 <ul class="pagecontents">
 <li> <a href="#allowdeny">Allow / Deny</a>
+<li> <a href="#severity">Rule Severity</a>
 <li> <a href="#subset">Input Classes and Subsets</a>
 <li> <a href="#limitations">Limitations</a>
 </ul>
@@ -79,8 +80,14 @@ Nesting allow/deny tags works just as nesting include/exclude does: the inner ru
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
-<a name="severity"></a>
-Not all access rules need be hard and fast.  The <code>severity</code> attribute, whose value is <code>error</code> by default for access rules, may also be <code>warning</code>, <code>info</code>, or <code>debug</code>.  (The last of these is hidden from output by default; you can control this through the <a href="ant.html">Ant task</a>.)  Here, for example, is a warning from <a href="http://java.sun.com/docs/books/effective/">Effective Java</a> expressed in Mackerese:
+<a name="fromtopats"></a>
+Macker defines two special patterns, named <code>from</code> and <code>to</code>, which match the two ends of a reference in an access rule.  You can use these in combination with filters to make self-referential rules such as "a class may not reference its own subclasses".
+</p>
+
+
+<h3><a name="severity">Rule Severity</a></h3>
+<p>
+Not all access rules need be hard and fast -- some rules can generate a warning, but still leave Macker considering rules checking to have passed.  Here, for example, is a warning from <a href="http://java.sun.com/docs/books/effective/">Effective Java</a> expressed in Mackerese:
 </p>
 <pre>&lt;access-rule <b>severity="warning"</b>&gt;
     &lt;deny&gt;
@@ -88,9 +95,25 @@ Not all access rules need be hard and fast.  The <code>severity</code> attribute
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>
-<a name="fromtopats"></a>
-Macker defines two special patterns, named <code>from</code> and <code>to</code>, which match the two ends of a reference in an access rule.  You can use these in combination with filters to make self-referential rules such as "a class may not reference its own subclasses".
+The <code>severity</code> attribute takes the following values:
+<table class="example-table" cellspacing=0>
+<tr><th>Severity</th><th>Print<br>message?</th><th>Fail rule<br>checking?</th><th>Default for...</th></tr>
+<tr valign="top">
+<td class="example">error</td><td align="center">yes</td><td align="center">yes</td><td><code>&lt;access-rule&gt;</code></td>
+</tr>
+<tr valign="top">
+<td class="example">warning</td><td align="center">yes</td><td align="center">no</td><td></td>
+</tr>
+<tr valign="top">
+<td class="example">info</td><td align="center">yes</td><td align="center">no</td><td><code>&lt;message&gt;</code></td>
+</tr>
+<tr valign="top">
+<td class="example">debug</td><td align="center">no</td><td align="center">no</td><td></td>
+</tr>
+</table>
+You can override the printing and failing behavior of the differnt severities -- to treat warnings as errors, for example, or print debug messages.  For more information, read about the <a href="ant.html">Ant task</a>.
 </p>
+
 
 <h3><a name="subset">Input Classes and Subsets</a></h3>
 <p>
