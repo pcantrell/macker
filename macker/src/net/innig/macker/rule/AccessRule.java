@@ -1,14 +1,29 @@
 package net.innig.macker.rule;
 
+import net.innig.macker.structure.ClassManager;
+import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.util.IncludeExcludeLogic;
+import net.innig.macker.util.IncludeExcludeNode;
+
+import java.util.*;
+
 public class AccessRule
     extends Rule
     {
+    //--------------------------------------------------------------------------
+    // Constructors
+    //--------------------------------------------------------------------------
+
     public AccessRule()
         {
         type = AccessRuleType.DENY;
         from = to = Pattern.ALL;
         }
     
+    //--------------------------------------------------------------------------
+    // Properties
+    //--------------------------------------------------------------------------
+
     public AccessRuleType getType()
         { return type; }
     
@@ -49,18 +64,66 @@ public class AccessRule
     public void setChild(AccessRule child)
         { this.child = child; }
     
-    public Rule getNext()
+    public AccessRule getNext()
         { return next; }
     
-    public void setNext(Rule next)
+    public void setNext(AccessRule next)
         { this.next = next; }
     
     private AccessRuleType type;
     private Pattern from, to;
     private String fromMessage, toMessage;
     private boolean bound;
-    private AccessRule child;
-    private Rule next;
+    private AccessRule child, next;
+
+    //--------------------------------------------------------------------------
+    // Evaluation
+    //--------------------------------------------------------------------------
+
+    public void check(EvaluationContext context, ClassManager classes)
+        throws RulesException
+        {
+        for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
+            {
+            Map.Entry entry = (Map.Entry) refIter.next();
+            checkAccess(
+                context,
+                classes.getClassInfo((String) entry.getKey()),
+                classes.getClassInfo((String) entry.getValue()));
+            }
+        }
+    
+    public boolean checkAccess(EvaluationContext context, ClassInfo fromClass, ClassInfo toClass)
+        throws RulesException
+        { return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, fromClass, toClass)); }
+    
+    private static IncludeExcludeNode makeIncludeExcludeNode(
+            final AccessRule rule,
+            final EvaluationContext context,
+            final ClassInfo fromClass,
+            final ClassInfo toClass)
+        {
+        return (rule == null)
+            ? null
+            : new IncludeExcludeNode()
+                {
+                public boolean isInclude()
+                    { return rule.getType() == AccessRuleType.ALLOW; }
+        
+                public boolean matches()
+                    throws RulesException
+                    {
+                    return rule.getFrom().matches(context, fromClass)
+                        && rule.  getTo().matches(context, toClass);
+                    }
+                
+                public IncludeExcludeNode getChild()
+                    { return makeIncludeExcludeNode(rule.getChild(), context, fromClass, toClass); }
+                
+                public IncludeExcludeNode getNext()
+                    { return makeIncludeExcludeNode(rule.getNext(), context, fromClass, toClass); }
+                };
+        }
     }
 
 

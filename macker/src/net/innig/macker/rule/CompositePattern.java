@@ -1,6 +1,8 @@
 package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.util.IncludeExcludeLogic;
+import net.innig.macker.util.IncludeExcludeNode;
 
 public class CompositePattern
     extends Pattern
@@ -38,10 +40,10 @@ public class CompositePattern
     public void setHead(Pattern head)
         { this.head = head; }
     
-    public Pattern getChild()
+    public CompositePattern getChild()
         { return child; }
     
-    public void setChild(Pattern child)
+    public void setChild(CompositePattern child)
         { this.child = child; }
     
     public CompositePattern getNext()
@@ -52,8 +54,7 @@ public class CompositePattern
     
     private CompositePatternType type;
     private Pattern head;
-    private Pattern child;
-    private CompositePattern next;
+    private CompositePattern child, next;
 
     //--------------------------------------------------------------------------
     // Evaluation
@@ -61,30 +62,30 @@ public class CompositePattern
 
     public boolean matches(EvaluationContext context, ClassInfo classInfo)
         throws RulesException
+        { return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, classInfo)); }
+    
+    private static IncludeExcludeNode makeIncludeExcludeNode(
+            final CompositePattern pat,
+            final EvaluationContext context,
+            final ClassInfo classInfo)
         {
-        return matchesAsNext(
-            context,
-            classInfo,
-            (type == CompositePatternType.INCLUDE)
-                ? false  // include starts with all excluded, and
-                : true); // exclude starts with all included
-        }
-
-    private boolean matchesAsNext(
-            EvaluationContext context,
-            ClassInfo classInfo,
-            boolean prevMatches)
-        throws RulesException
-        {
-        boolean headMatches = getHead().matches(context, classInfo);
-        boolean matchesSoFar =
-            (type == CompositePatternType.INCLUDE)
-                ? prevMatches || ( headMatches && (getChild() == null || getChild().matches(context, classInfo)))
-                : prevMatches && (!headMatches || (getChild() != null && getChild().matches(context, classInfo)));
-        return
-            (getNext() == null)
-                ? matchesSoFar
-                : getNext().matchesAsNext(context, classInfo, matchesSoFar);
+        return (pat == null)
+            ? null
+            : new IncludeExcludeNode()
+                {
+                public boolean isInclude()
+                    { return pat.getType() == CompositePatternType.INCLUDE; }
+        
+                public boolean matches()
+                    throws RulesException
+                    { return pat.getHead().matches(context, classInfo); }
+                
+                public IncludeExcludeNode getChild()
+                    { return makeIncludeExcludeNode(pat.getChild(), context, classInfo); }
+                
+                public IncludeExcludeNode getNext()
+                    { return makeIncludeExcludeNode(pat.getNext(), context, classInfo); }
+                };
         }
     
     //--------------------------------------------------------------------------
