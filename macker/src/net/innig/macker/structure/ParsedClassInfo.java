@@ -59,6 +59,7 @@ public class ParsedClassInfo
         {
         parseClassName(classFile);
         parseFlags(classFile);
+        parseAccess(classFile);
         parseExtends(classFile);
         parseImplements(classFile);
         parseReferences(classFile);
@@ -79,7 +80,36 @@ public class ParsedClassInfo
         isInterface = classFile.isInterface();
         isAbstract  = classFile.isAbstract();
         isFinal     = classFile.isFinal();
-        accessModifier = translateAccess(classFile);
+        }
+
+    private void parseAccess(JavaClass classFile)
+        throws ClassParseException
+        {
+        if(getFullName().indexOf('$') == -1) //! will break many synthetic classes!
+            accessModifier = translateAccess(classFile);
+        else
+            {
+            Attribute[] attributes = classFile.getAttributes();
+            String classNameRaw = classFile.getClassName().replace('.', '/');
+            for(int a = 0; a < attributes.length; a++)
+                if(attributes[a] instanceof InnerClasses)
+                    {
+                    InnerClass[] inners = ((InnerClasses) attributes[a]).getInnerClasses();
+                    for(int i = 0; i < inners.length; i++)
+                        {
+                        String innerClassNameRaw = classFile.getConstantPool().getConstantString(
+                            inners[i].getInnerClassIndex(), org.apache.bcel.Constants.CONSTANT_Class);
+                        if(innerClassNameRaw.equals(classNameRaw))
+                            {
+                            if(accessModifier != null)
+                                throw new ClassParseException("Found multiple inner class attributes for " + this, classFile);
+                            accessModifier = translateAccess(new AccessFlags(inners[i].getInnerAccessFlags()) { });
+                            }
+                        }
+                    }
+            if(accessModifier == null)
+                throw new ClassParseException("Could not find any class attributes for " + this, classFile);
+            }
         }
         
     public boolean isInterface() { return isInterface; }
@@ -152,7 +182,7 @@ public class ParsedClassInfo
                     method.getSignature());
             if(paramsAndReturn.isEmpty())
                 throw new ClassParseException(
-                    "unable to read types for method " + fullClassName + '.' + method.getName());
+                    "unable to read types for method " + fullClassName + '.' + method.getName(), classFile);
             
             for(Iterator i = paramsAndReturn.iterator(); i.hasNext(); )
                 {
@@ -195,7 +225,8 @@ public class ParsedClassInfo
             if(types.size() != 1)
                 throw new ClassParseException(
                     "expected one type for field " + fullClassName + '.' + field.getName()
-                    + "; got: " + types + " (signature is \"" + field.getSignature() + '"');
+                    + "; got: " + types + " (signature is \"" + field.getSignature() + "\")",
+                    classFile);
 
             addReference(
                 new Reference(

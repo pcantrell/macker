@@ -33,6 +33,9 @@ public class ClassParseException
     public ClassParseException(String message)
         { super(message); }
         
+    public ClassParseException(String message, JavaClass classFile)
+        { super(message + "\n" + classFile); }
+        
     public ClassParseException(ClassFormatError cfe)
         { super(cfe); }
     }

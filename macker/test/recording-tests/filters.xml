@@ -1,0 +1,263 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <access-rule>
+                <message>primary-class</message>
+                <deny>
+                    <from class="RefPrimary" />
+                    <to filter="primary-class" />
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>primitive-type</message>
+                <deny>
+                    <from class="RefPrimitives" />
+                    <to filter="primitive-type" />
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>interface</message>
+                <deny>
+                    <from class="RefMany" />
+                	<to filter="interface" />
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>abstract-class</message>
+                <deny>
+                    <from class="RefMany" />
+                	<to filter="abstract-class" />
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>final-class</message>
+                <deny>
+                    <from class="RefMany" />
+                	<to filter="final-class" />
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>public-</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" min="public">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>-private</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" max="private">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>package-</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" min="package">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>-protected</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" max="protected">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>package-protected</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" min="package" max="protected">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>package-package</message>
+                <deny>
+                    <from class="Access" />
+                	<to filter="class-access" min="package" max="package">
+                        <include filter="primary-class" />
+                    </to>
+                </deny>
+            </access-rule>
+
+            <access-rule>
+                <message>subtype-of Interface</message>
+                <deny>
+                    <from class="RefMany" />
+                	<to filter="subtype-of" class="Interface" />
+                </deny>
+            </access-rule>
+            <access-rule>
+                <message>subtype-of InterfaceImpl</message>
+                <deny>
+                    <from class="RefMany" />
+                	<to filter="subtype-of" class="InterfaceImpl" />
+                </deny>
+            </access-rule>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error" message0="primary-class" from="RefPrimary">
+            <event to="Primary" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="primitive-type" from="RefPrimitives">
+            <event to="void" />
+            <event to="boolean" />
+            <event to="byte" />
+            <event to="short" />
+            <event to="char" />
+            <event to="int" />
+            <event to="long" />
+            <event to="double" />
+            <event to="float" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="interface" from="RefMany">
+            <event to="Interface" />
+            <event to="SubInterface" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="abstract-class" from="RefMany">
+            <event to="AbstractClass" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="final-class" from="RefMany">
+            <event to="FinalClass" />
+        </rule>
+
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="public-">
+            <event to="Access$Public" />
+            <event to="OuterPublic" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="-private">
+            <event to="Access$Private" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="package-">
+            <event to="Access$Public" />
+            <event to="Access$Protected" />
+            <event to="Access$Package" />
+            <event to="OuterPublic" />
+            <event to="OuterPackage" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="-protected">
+            <event to="Access$Protected" />
+            <event to="Access$Package" />
+            <event to="Access$Private" />
+            <event to="OuterPackage" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="package-protected">
+            <event to="Access$Protected" />
+            <event to="Access$Package" />
+            <event to="OuterPackage" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" from="Access" message0="package-package">
+            <event to="Access$Package" />
+            <event to="OuterPackage" />
+        </rule>
+
+        <rule type="AccessRuleViolation" severity="error" message0="subtype-of Interface" from="RefMany">
+            <event to="Interface" />
+            <event to="SubInterface" />
+            <event to="InterfaceImpl" />
+            <event to="InterfaceImpl2" />
+            <event to="SubClass" />
+            <event to="SubSubClass" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error" message0="subtype-of InterfaceImpl" from="RefMany">
+            <event to="InterfaceImpl" />
+            <event to="SubClass" />
+            <event to="SubSubClass" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source class="Primary">
+            public class Primary { }
+        </source>
+        <source class="RefPrimary">
+            public class RefPrimary { private Primary p; private String s; }
+        </source>
+
+        <source class="RefPrimitives">
+            public class RefPrimitives
+                { public void f(boolean a, byte b, short c, char d, int e, long f, float g, double h, String i, Object j) { } }
+        </source>
+
+        <source class="RefMany">
+            public class RefMany
+                {
+                public void f(Primary p, Interface i, AbstractClass ac, FinalClass fc,
+                              InterfaceImpl ii, InterfaceImpl2 ii2, SubInterface si, SubClass sc, SubSubClass ssc) { }
+                }
+        </source>
+        <source class="Interface">
+            public interface Interface { }
+        </source>
+        <source class="AbstractClass">
+            public abstract class AbstractClass { }
+        </source>
+        <source class="FinalClass">
+            public final class FinalClass { }
+        </source>
+        <source class="InterfaceImpl">
+            public class InterfaceImpl implements Interface { }
+        </source>
+        <source class="InterfaceImpl2">
+            public class InterfaceImpl2 implements Interface { }
+        </source>
+        <source class="SubInterface">
+            public interface SubInterface extends Interface { }
+        </source>
+        <source class="SubClass">
+            public class SubClass extends InterfaceImpl { }
+        </source>
+        <source class="SubSubClass">
+            public class SubSubClass extends SubClass { }
+        </source>
+
+        <source class="Access">
+            public class Access
+                {
+                public void f(Public a, Protected b, Package c, Private d, OuterPublic e, OuterPackage f) { }
+                public class Public { }
+                protected class Protected { }
+                class Package { }
+                private class Private { }
+                }
+            class OuterPackage { }
+        </source>
+        <source class="OuterPublic">
+            public class OuterPublic { }
+        </source>
+
+        <source package="foo.bar" class="Access">
+            package foo.bar;
+            public class Access
+                {
+                public void f(Public a, Public.Protected b, Public.Protected.Package c, Public.Protected.Package.Private d) { }
+                public class Public {
+                    protected class Protected {
+                        class Package {
+                            private class Private { }}}}
+                }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

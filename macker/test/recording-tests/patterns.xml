@@ -227,28 +227,28 @@
     </expected-events>
     
     <test-classes>
-        <source package="" class="X">
+        <source class="X">
             public class X { }
         </source>
-        <source package="" class="A">
+        <source class="A">
             public class A { }
         </source>
-        <source package="" class="B">
+        <source class="B">
             public class B { }
         </source>
-        <source package="" class="C">
+        <source class="C">
             public class C { }
         </source>
-        <source package="" class="AB">
+        <source class="AB">
             public class AB { }
         </source>
-        <source package="" class="BC">
+        <source class="BC">
             public class BC { }
         </source>
-        <source package="" class="AC">
+        <source class="AC">
             public class AC { }
         </source>
-        <source package="" class="ABC">
+        <source class="ABC">
             public class ABC { }
         </source>
     </test-classes>

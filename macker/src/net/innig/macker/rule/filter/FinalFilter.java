@@ -22,6 +22,7 @@ package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.*;
 import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.structure.PrimitiveTypeInfo;
 import java.util.Map;
 import java.util.List;
 
@@ -46,6 +47,6 @@ public class FinalFilter
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 throws RulesException
-                { return classInfo.isFinal(); }
+                { return classInfo.isFinal() && !(classInfo instanceof PrimitiveTypeInfo); }
             };
     }

@@ -1,7 +1,7 @@
 VERSION HISTORY
 
-version 0.4 (in beta):
-    - filters allows patterns to match on supertypes and basic class attributes
+version 0.4:
+    - filters allow patterns to match on supertypes and basic class attributes
     - severity levels allow rules to generate warnings instead of errors
     - XML reporting
     - message rules

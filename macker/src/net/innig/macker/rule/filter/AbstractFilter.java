@@ -46,6 +46,6 @@ public class AbstractFilter
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 throws RulesException
-                { return classInfo.isAbstract(); }
+                { return classInfo.isAbstract() && !classInfo.isInterface(); }
             };
     }

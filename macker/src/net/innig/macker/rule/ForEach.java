@@ -62,10 +62,17 @@ public class ForEach
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
         
         Set varValues = new TreeSet();
-        Set pool = new HashSet(classes.getPrimaryClasses());
+        Set pool = new HashSet();
         for(Iterator p = classes.getPrimaryClasses().iterator(); p.hasNext(); )
-            for(Iterator r = ((ClassInfo) p.next()).getReferences().keySet().iterator(); r.hasNext(); )
-                pool.add(r.next());
+            {
+            ClassInfo curClass = (ClassInfo) p.next();
+            if(getParent().isInSubset(context, curClass))
+                {
+                pool.add(curClass);
+                for(Iterator r = curClass.getReferences().keySet().iterator(); r.hasNext(); )
+                    pool.add(r.next());
+                }
+            }
         
         for(Iterator i = pool.iterator(); i.hasNext(); )
             {
@@ -81,7 +88,6 @@ public class ForEach
             String varValue = (String) i.next();
             context.broadcastEvent(new ForEachIterationStarted(this, varValue));
             
-//            System.out.println('(' + getVariableName() + ": " + varValue + ')');
             context.setVariableValue(getVariableName(), varValue);
             ruleSet.check(context, classes);
 

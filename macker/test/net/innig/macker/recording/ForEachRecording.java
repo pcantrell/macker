@@ -100,7 +100,7 @@ public class ForEachRecording
         for(Iterator i = diff.getSame().iterator(); i.hasNext(); )
             {
             String varValue = (String) i.next();
-            out.println("(" + var + "=" + varValue + ")");
+//            out.println("(comparing " + var + "=" + varValue + ")");
             RuleSetRecording iterExpected = (RuleSetRecording) iterations.get(varValue);
             RuleSetRecording iterActual   = (RuleSetRecording) actualForEach.iterations.get(varValue);
             match = iterExpected.compare(iterActual, out) && match;

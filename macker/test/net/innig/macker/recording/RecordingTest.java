@@ -221,7 +221,7 @@ public final class RecordingTest
             javacArgs.add(sourceFile.getPath());
             }
 
-        int compilerResult = com.sun.tools.javac.Main.compile(
+        int compilerResult = new com.sun.tools.javac.Main().compile(  //! can be static ref in 1.4
             (String[]) javacArgs.toArray(new String[0]));
         if(compilerResult != 0)
             throw new Exception("compile failed (result code " + compilerResult + ")");

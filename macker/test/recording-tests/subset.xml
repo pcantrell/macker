@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset>
+            <pattern name="A" class="test.*A*" />
+            <pattern name="B" class="test.*B*" />
+            <pattern name="C" class="test.*C*" />
+            <pattern name="A-and-B" pattern="A">
+                <include pattern="B" />
+            </pattern>
+    
+            <access-rule> <deny><to class="java.lang.Object" /></deny> </access-rule>
+            <foreach var="all" class="*.(*)" />
+    
+            <ruleset>
+                <subset pattern="A-and-B" />
+                
+                <access-rule> <deny><to class="java.lang.Object" /></deny> </access-rule>
+                <foreach var="A-and-B" class="*.(*)" />
+            </ruleset>
+    
+            <ruleset>
+                <subset>
+                    <include pattern="C" />
+                    <exclude pattern="B" />
+                </subset>
+                
+                <access-rule> <deny><to class="java.lang.Object" /></deny> </access-rule>
+                <foreach var="C-but-not-B" class="*.(*)" />
+    
+                <ruleset>
+                    <subset pattern="A" />
+                    
+                    <access-rule> <deny><to class="java.lang.Object" /></deny> </access-rule>
+                    <foreach var="A-and-C-but-not-B" class="*.(*)" />
+                </ruleset>
+            </ruleset>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object">
+            <event from="test.A" />
+            <event from="test.B" />
+            <event from="test.C" />
+            <event from="test.AB" />
+            <event from="test.BC" />
+            <event from="test.AC" />
+            <event from="test.ABC" />
+        </rule>
+        <foreach var="all">
+            <iteration value="void" />
+            <iteration value="A" />
+            <iteration value="B" />
+            <iteration value="C" />
+            <iteration value="AB" />
+            <iteration value="BC" />
+            <iteration value="AC" />
+            <iteration value="ABC" />
+        </foreach>
+
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object">
+            <event from="test.AB" />
+            <event from="test.ABC" />
+        </rule>
+        <foreach var="A-and-B">
+            <iteration value="void" />
+            <iteration value="AB" />
+            <iteration value="ABC" />
+        </foreach>
+
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object">
+            <event from="test.C" />
+            <event from="test.AC" />
+        </rule>
+        <foreach var="C-but-not-B">
+            <iteration value="void" />
+            <iteration value="C" />
+            <iteration value="AC" />
+        </foreach>
+
+        <rule type="AccessRuleViolation" severity="error" to="java.lang.Object">
+            <event from="test.AC" />
+        </rule>
+        <foreach var="A-and-C-but-not-B">
+            <iteration value="void" />
+            <iteration value="AC" />
+        </foreach>
+    </expected-events>
+    
+    <test-classes>
+        <source package="test" class="A">
+            package test;
+            public class A { }
+        </source>
+        <source package="test" class="B">
+            package test;
+            public class B { }
+        </source>
+        <source package="test" class="C">
+            package test;
+            public class C { }
+        </source>
+        <source package="test" class="AB">
+            package test;
+            public class AB { }
+        </source>
+        <source package="test" class="BC">
+            package test;
+            public class BC { }
+        </source>
+        <source package="test" class="AC">
+            package test;
+            public class AC { }
+        </source>
+        <source package="test" class="ABC">
+            package test;
+            public class ABC { }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>
