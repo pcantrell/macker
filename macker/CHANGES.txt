@@ -1,7 +1,7 @@
 VERSION HISTORY
 
-version 0.4.x:
-    - (planned) HTML report formatting with supporting Ant task
+version 0.4.2:
+    - HTML report formatting with supporting Ant task
 
 version 0.4.1:
     - bug fix for 794536
