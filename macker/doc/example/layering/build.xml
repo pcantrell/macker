@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+
+<project name="layering" default="macker" basedir="../../..">
+    &stdbuild;
+
+    <target name="explain">
+        <echo>
+________________________________________________________________________________
+
+This example shows how Macker might check a layered/n-tier architecture.  The
+code contains a program with UI, model, and persistence layers.  Each is
+supposed to talk to the next layer down; in addition, anybody on the outside can
+talk to the model.
+
+The example code contains a problem: the thoughtless author of the model layer
+is passing through exceptions from the persistence layer, forcing the GUI to
+illegally reference PersistenceException.
+
+You can fool around with the various ways one might fix this problem, namely:
+
+  * Declare a new model-level exception, and wrap PersistenceException in it.
+  * Make PersistenceException extend RuntimeException, and stop checking it.
+  * Declare a special exception to Macker's rules for exceptions.
+
+I don't necessarily endorse any of these as aesthetically valid options, but
+Macker can deal with them all!
+
+If, for some absurd reason, you want to run this example, you need to edit
+conf/db.properties and then put the conf directory in your classpath.  You also
+need to create a table named "thinger" with one varchar(255) column, "name".
+________________________________________________________________________________
+        </echo>
+    </target>
+</project>

@@ -179,6 +179,15 @@ pre {
     background : #003;
 }
 
+.example-nav {
+    font-family : Verdana,Monaco,Courier,Courier New;
+    font-size : 11px;
+    list-style-type : circle;
+}
+.example-nav li {
+    margin : 0em 0em .3em 0cm;
+}
+
 .moreinfo {
     font-family : Verdana,Geneva,Helvetica;
     font-size : 9px;

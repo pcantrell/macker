@@ -1,0 +1,54 @@
+Searching for build.xml ...
+Buildfile: /Users/paul/macker/doc/example/modularity/build.xml
+
+prepare:
+
+compile:
+
+explain:
+
+________________________________________________________________________________
+
+This example demonstrates how to use Macker to enforce modularity rules between
+a collection of functionally separate peers with a parallel structre.
+
+The example code is a game simulation program with several different computer
+players which can play one of two games (Prisoner's Dilemma or Rochambeau).  The
+games don't know about the various players, and the players don't know about the
+game; the two modules communicate through APIs, and hide their implementations
+in "impl" packages.
+
+The macker rules file (src/macker.xml) looks for modules using a <foreach>, and
+the checks that other classes are using each module through its API.  The class
+BrokenMain breaks this rule by instantiating impl classes directly, so it will
+give some errors.
+________________________________________________________________________________
+        
+
+macker:
+
+(Checking ruleset: Modularity rules ...)
+(module: game)
+
+BrokenMain must access the game module through its API
+Illegal reference
+  from net.innig.macker.example.modularity.BrokenMain
+    to net.innig.macker.example.modularity.game.impl.RochambeauGame
+
+(module: player)
+BrokenMain must access the player module through its API
+Illegal reference
+  from net.innig.macker.example.modularity.BrokenMain
+    to net.innig.macker.example.modularity.player.impl.CyclicPlayer
+
+BrokenMain must access the player module through its API
+Illegal reference
+  from net.innig.macker.example.modularity.BrokenMain
+    to net.innig.macker.example.modularity.player.impl.RandomPlayer
+
+Macker rules checking failed (3 errors)
+
+BUILD FAILED
+file:/Users/paul/macker/doc/example/build-shared.xml:37: Macker rules checking failed
+
+Total time: 5 seconds

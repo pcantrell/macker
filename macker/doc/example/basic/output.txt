@@ -1,12 +1,12 @@
-<?xml version="1.0"?>
+Searching for build.xml ...
+Buildfile: /Users/paul/macker/doc/example/basic/build.xml
 
-<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+prepare:
 
-<project name="basic" default="macker" basedir="../../..">
-    &stdbuild;
+compile:
 
-    <target name="explain">
-        <echo>
+explain:
+
 ________________________________________________________________________________
 
 This stupidly simple example disallows references from classes whose names
@@ -22,6 +22,31 @@ With all of these examples, you can:
   
 Enjoy!
 ________________________________________________________________________________
-        </echo>
-    </target>
-</project>
+        
+
+macker:
+
+(Checking ruleset: Simple example ...)
+
+Illegal reference
+  from PrintHelloWorld
+    to java.io.PrintStream
+
+Illegal reference
+  from PrintHelloWorld
+    to java.lang.Object
+
+Illegal reference
+  from PrintHelloWorld
+    to java.lang.String
+
+Illegal reference
+  from PrintHelloWorld
+    to java.lang.System
+
+Macker rules checking failed (4 errors)
+
+BUILD FAILED
+file:/Users/paul/macker/doc/example/build-shared.xml:37: Macker rules checking failed
+
+Total time: 5 seconds

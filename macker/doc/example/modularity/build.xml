@@ -2,7 +2,7 @@
 
 <!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
 
-<project name="Macker example" default="macker" basedir=".">
+<project name="modularity" default="macker" basedir="../../..">
     &stdbuild;
 
     <target name="explain">

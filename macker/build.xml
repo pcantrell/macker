@@ -15,7 +15,8 @@
     <property name="lib.dir"              location="${basedir}/lib" />
     <property name="conf.dir"             location="${basedir}/conf" />
     <property name="doc.dir"              location="${basedir}/doc" />
-    <property name="build.lib.dir"        location="${basedir}/lib/build-only" />
+    <property name="build.lib.dir"        location="${lib.dir}/build-only" />
+    <property name="example.dir"          location="${doc.dir}/example" />
     
     <property file="${conf.dir}/build.properties" />
 

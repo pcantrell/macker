@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<macker>    
+    <ruleset name="Layering rules">
+        <var name="base" value="net.innig.macker.example.layering" />
+        <pattern name="gui"     regex="${base}.gui.**" />
+        <pattern name="model"   regex="${base}.model.**" />
+        <pattern name="persist" regex="${base}.persistence.**" />
+        
+        <access-rule>
+            <message>Only the model can talk to the persistence layer</message>
+            <deny>
+                <to pattern="persist" />
+                <allow> <from pattern="persist"/> </allow>
+                <allow> <from pattern="model"/> </allow>
+            </deny>
+        </access-rule>
+        
+        <access-rule>
+            <message>The persistence layer can't access the model</message>
+            <deny>
+                <to   pattern="model" />
+                <from pattern="persist" />
+            </deny>
+        </access-rule>
+        
+        <access-rule>
+            <message>The model and persistence layers can't access the GUI</message>
+            <deny>
+                <to   pattern="gui" />
+                <from>
+                    <include pattern="model" />
+                    <include pattern="persist" />
+                </from>
+            </deny>
+        </access-rule>
+        
+        <access-rule>
+            <message>Persistence belongs in the persistence layer</message>
+            <deny>
+                <to>
+                    <include regex="java.sql.**" />
+                    <include regex="javax.sql.**" />
+                    <include regex="javax.jdo.**" />
+                </to>
+            </deny>
+            <allow> <from pattern="persist" /> </allow>
+        </access-rule>
+        
+        <access-rule>
+            <message>Swing and AWT calls belong in the GUI layer</message>
+            <deny>
+                <to>
+                    <include regex="java.awt.**" />
+                    <include regex="javax.swing.**" />
+                </to>
+            </deny>
+            <allow> <from pattern="gui" /> </allow>
+        </access-rule>
+        
+    </ruleset>
+</macker>

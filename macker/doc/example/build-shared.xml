@@ -1,8 +1,8 @@
-    <property name="src.dir"              location="${basedir}/src" />
-    <property name="lib.dir"              location="${basedir}/../../../lib" />
-    <property name="macker.jar.file"      location="${basedir}/../../../build/macker.jar" />
+    <property name="src.dir"              location="${basedir}/doc/example/${ant.project.name}/src" />
+    <property name="lib.dir"              location="${basedir}/lib" />
+    <property name="macker.jar.file"      location="${basedir}/build/macker.jar" />
 
-    <property name="build.dir"            location="${basedir}/build" />
+    <property name="build.dir"            location="${basedir}/build/example/${ant.project.name}" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
     
     <target name="prepare">

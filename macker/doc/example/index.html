@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>Macker</title>
+<style>@import "../macker.css";</style>
+</head>
+<body>
+
+<h1>Macker</h1>
+
+<div class="navbar">
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="../guide/index.html">Guide&nbsp;&amp;&nbsp;Examples</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge</a> |
+<a href="../contact.html">Contact</a>
+</div>
+
+<h2>Examples</h2>
+<p>
+These examples demonstrate a few simple Macker rules files.  They include code and working Ant scripts, so you can futz with them as you like; they're under <code>doc/example/</code>.  You will need <a href="http://jakarta.apache.org/ant/index.html">get Ant</a> version 1.5.
+<p>
+To try an example:
+<ul>
+<li> Change into the example's directory.
+<li> Type "<code>ant</code>" (presuming you <a href="http://jakarta.apache.org/ant/index.html">have it</a>).
+<li> The ant task prints out an explanation of the example.
+<li> The examples all generate error messages (Macker rules are least interesting when they pass!) Study the example's rules file (in <code><i>exampledir</i>/src/macker.xml</code>) and the source files.  Fool around.
+</ul>
+<p>
+The examples all share some Ant targets from the file <a href="build-shared.xml"><code>doc/example/build-shared.xml</code></a>, which you can adapt for your own projects.
+
+<h3>Basic</h3>
+<p>
+Contains the simple and pointless basic example from the <a href="../guide/basic.html">first section</a> of the user's guide.  Not a bad place to get started if you just want a working configuration to play with.
+<p>
+<ul class="example-nav">
+<li> <a href="basic/src/macker.xml">View the rules file</a>
+<li> <a href="basic/output.txt">View Macker's output</a>
+<li> <a href="basic/src">Browse the source</a>
+</ul>
+
+<h3>Layering</h3>
+<p>
+Demonstrates some rules for a layered (a.k.a. n-tiered, if you're into the business-speak) architecture.  The sample code is split into GUI, model, and persistence classes with specific roles.
+<p>
+<ul class="example-nav">
+<li> <a href="layering/src/macker.xml">View the rules file</a>
+<li> <a href="layering/output.txt">View Macker's output</a>
+<li> <a href="layering/src/net/innig/macker/example/layering">Browse the source</a>
+</ul>
+
+<h3>Modularity</h3>
+<p>
+Demonstrates rules for componentized architecture in which two different pieces with parallel structures talk to one another through an API.  Demonstrates how to use the <code>&lt;foreach&gt;</code> tag.
+<p>
+<ul class="example-nav">
+<li> <a href="modularity/src/macker.xml">View the rules file</a>
+<li> <a href="modularity/output.txt">View Macker's output</a>
+<li> <a href="modularity/src/net/innig/macker/example/modularity">Browse the source</a>
+</ul>
+
+<div class="footer">
+<div class="navbar">
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="../guide/index.html">Guide&nbsp;&amp;&nbsp;Examples</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge</a> |
+<a href="../contact.html">Contact</a>
+</div>
+</div>
+
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img border=0 src="http://innig.net/images/innig_3C0000.gif"></a>
+
+</body>
+</html>
+
