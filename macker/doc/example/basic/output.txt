@@ -3,6 +3,8 @@ Buildfile: /Users/paul/macker/doc/example/basic/build.xml
 
 prepare:
 
+build-macker-jar:
+
 compile:
 
 explain:
@@ -19,6 +21,8 @@ With all of these examples, you can:
   * Type "ant" to see macker apply the rules
   * Type "ant -Dmacker.verbose=true" to see some details of what's going on
   * Edit "src/macker.xml" to fool with different rules
+  * View an XML report in:
+    /Users/paul/macker/build/example/basic/macker-report.xml
   
 Enjoy!
 ________________________________________________________________________________
@@ -44,9 +48,11 @@ Illegal reference
   from PrintHelloWorld
     to java.lang.System
 
-Macker rules checking failed (4 errors)
+(4 errors)
+
+Macker rules checking failed
 
 BUILD FAILED
-file:/Users/paul/macker/doc/example/build-shared.xml:37: Macker rules checking failed
+file:/Users/paul/macker/doc/example/build-shared.xml:45: Macker rules checking failed
 
-Total time: 5 seconds
+Total time: 7 seconds

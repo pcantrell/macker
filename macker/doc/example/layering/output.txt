@@ -3,6 +3,8 @@ Buildfile: /Users/paul/macker/doc/example/layering/build.xml
 
 prepare:
 
+build-macker-jar:
+
 compile:
 
 explain:
@@ -24,7 +26,7 @@ You can fool around with the various ways one might fix this problem, namely:
   * Make PersistenceException extend RuntimeException, and stop checking it.
   * Declare a special exception to Macker's rules for exceptions.
 
-I don't necessarily endorse any of these as aesthetically valid options, but
+I don't necessarily endorse all of these as aesthetically valid options, but
 Macker can deal with them all!
 
 If, for some absurd reason, you want to run this example, you need to edit
@@ -42,9 +44,11 @@ Illegal reference
   from net.innig.macker.example.layering.gui.ThingerUI
     to net.innig.macker.example.layering.persistence.PersistenceException
 
-Macker rules checking failed (1 error)
+(1 error)
+
+Macker rules checking failed
 
 BUILD FAILED
-file:/Users/paul/macker/doc/example/build-shared.xml:37: Macker rules checking failed
+file:/Users/paul/macker/doc/example/build-shared.xml:45: Macker rules checking failed
 
-Total time: 6 seconds
+Total time: 8 seconds

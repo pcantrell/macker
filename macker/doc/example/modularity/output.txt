@@ -3,6 +3,8 @@ Buildfile: /Users/paul/macker/doc/example/modularity/build.xml
 
 prepare:
 
+build-macker-jar:
+
 compile:
 
 explain:
@@ -19,7 +21,7 @@ game; the two modules communicate through APIs, and hide their implementations
 in "impl" packages.
 
 The macker rules file (src/macker.xml) looks for modules using a <foreach>, and
-the checks that other classes are using each module through its API.  The class
+checks that external classes are using each module through its API.  The class
 BrokenMain breaks this rule by instantiating impl classes directly, so it will
 give some errors.
 ________________________________________________________________________________
@@ -46,9 +48,11 @@ Illegal reference
   from net.innig.macker.example.modularity.BrokenMain
     to net.innig.macker.example.modularity.player.impl.RandomPlayer
 
-Macker rules checking failed (3 errors)
+(3 errors)
+
+Macker rules checking failed
 
 BUILD FAILED
-file:/Users/paul/macker/doc/example/build-shared.xml:37: Macker rules checking failed
+file:/Users/paul/macker/doc/example/build-shared.xml:45: Macker rules checking failed
 
-Total time: 5 seconds
+Total time: 8 seconds
