@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<title>Macker Guide: Generating Reports</title>
+<style type="text/css">@import "../macker.css";</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<h1>Macker Guide</h1>
+
+<div class="navbar">
+<span class="next">Next:</span> <a href="../example/index.html">Examples</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+
+<h2>Generating Reports</h2>
+<ul class="pagecontents">
+<li> <a href="#using">Using the Macker Report Ant Task</a>
+<li> <a href="#paramters">Parameters</a>
+<li> <a href="#congrats">Congratulations!</a>
+</ul>
+
+<h3><a name="using">Using the Macker Report Ant Task</a></h3>
+<p>
+In addition to providing feedback directly to the console, Macker can generate nice-looking HTML reports like <a href="report-example/macker-report.html">this one</a>.  This happens in two steps:
+<ul>
+<li> The regular Macker task generates an XML report (like <a href="report-example/macker-report.xml">this one</a>).
+<li> A second Ant task, the Macker report task, converts the XML to HTML (or to some other form using custom XSLT you provide). 
+</ul>
+<p>
+To generate the XML report, pass the xmlReportFile option to the Macker Ant task. (You'll probably also want to set the failOnError to false, or the build won't actually make it up to the point of formatting the report.)  
+<pre>&lt;property name="macker.report.dir" location="${build.dir}/report" /&gt;
+&lt;property name="macker.report.xml" location="${macker.report.dir}/macker-report.xml" /&gt;
+&lt;property name="macker.report.html" location="${macker.report.dir}/macker-report.html" /&gt;
+
+&lt;macker xmlReportFile="${macker.report.xml}" failOnError="false"&gt;
+    ...
+&lt;/macker&gt;</pre>
+<p>
+You're now ready to format the report.  As with the other Ant task, you must declare it before you can use it:
+<pre>&lt;taskdef name="macker-report"
+    classname="net.innig.macker.ant.MackerReportAntTask"
+    classpathref="build.classpath"/&gt;</pre>
+<p>
+The actual report formatting call looks something like this:
+<pre>&lt;macker-report
+    xmlReportfile="${macker.report.xml}"
+    outputFile="${macker.report.html}" /&gt;</pre>
+<p>
+Take a look at the <a href="../example/build-shared.xml">example build file</a> for a complete example of the two Macker tasks working together.
+
+<h3>Parameters</h3>
+<p>
+These options appear on the &lt;macker&gt; tag itself.  They are all optional.
+<table class="example-table" cellspacing=0>
+    <tr><th>Attribute</th><th>Description</th><th>Default</th></tr>
+    <tr valign="top">
+        <td class="example">xmlReportFile<br>xmlReportUrl</td>
+        <td>The XML output of the Macker Ant task.  One of these two is required.</td>
+        <td><i>none</i></td>
+    </tr>
+    <tr valign="top">
+        <td class="example">outputFile</td>
+        <td>The file to which Macker should output the formatted HTML report.</td>
+        <td><i>none</i></td>
+    </tr>
+    <tr valign="top">
+        <td class="example">format<br>formatFile<br>formatUrl</td>
+        <td>An XSLT file to format the report.  The <b>format</b> option specifies one of Macker's built-in formats (current only "html-basic" is available).  The other two options specify custom XSLT instead, as a file or a URL.</td>
+        <td>html-basic</td>
+    </tr>
+    <tr valign="top">
+        <td class="example">skin<br>skinFile<br>skinUrl</td>
+        <td>A CSS file to control the report's appearance.  The <b>skin</b> option specifies one of Macker's built-in skins (current "vanilla" and "maroon" are available).  The other two options specify custom CSS instead, as a file or a URL.</td>
+        <td>vanilla</td>
+    </tr>
+</table>
+<p>
+Submissions of custom formats and skins are welcome.  You can use the built-ins as starting points -- they're in the Macker distribution, under <code>res/net/innig/macker/report</code>.
+
+<p>
+<h3><a name="congrats">Congratulations!</a></h3>
+<p>
+You have now completed the Macker Online Training Course.  If you wish, you may print this page as evidence of your accomplishment and post it on your wall.  Feel free to <a href="../contact.html">contact me</a> with questions -- I'd love to know that people are interested in the project!  There are even some open tasks....
+
+
+<div class="next">
+Next: <a href="../example/index.html">Examples</a>
+</div>
+
+<div class="footer">
+<div class="navbar">
+<span class="next">Next:</span> <a href="../example/index.html">Examples</a> |
+<a href="index.html">Table of Contents</a>
+<br>
+<a href="../index.html">Home</a> | 
+<a href="../faq.html">FAQ</a> |
+<a href="http://sourceforge.net/project/showfiles.php?group_id=55296">Download</a> |
+<a href="http://sourceforge.net/projects/macker">Sourceforge page</a> |
+<a href="../contact.html">Contact</a>
+</div>
+</div>
+<p align="right">
+<A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=55296&src=macker/doc/guide/ant.html" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://innig.net/?logo"><img border=0 src="http://innig.net/images/innig_3C0000.gif" alt="innig"></a>
+
+</body>
+</html>
+

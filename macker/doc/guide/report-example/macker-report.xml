@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<macker-report>
+    <timestamp>Wed Oct 22 14:55:45 CDT 2003</timestamp>
+    <ruleset name="Modularity rules">
+        <foreach var="module">
+            <iteration value="game">
+                <access-rule-violation severity="error">
+                    <message>BrokenMain must access the game module through its API</message>
+                    <from>
+                        <full-name>net.innig.macker.example.modularity.BrokenMain</full-name>
+                        <class>BrokenMain</class>
+                        <package>net.innig.macker.example.modularity</package>
+                    </from>
+                    <to>
+                        <full-name>net.innig.macker.example.modularity.game.impl.RochambeauGame</full-name>
+                        <class>RochambeauGame</class>
+                        <package>net.innig.macker.example.modularity.game.impl</package>
+                    </to>
+                </access-rule-violation>
+            </iteration>
+            <iteration value="player">
+                <access-rule-violation severity="error">
+                    <message>BrokenMain must access the player module through its API</message>
+                    <from>
+                        <full-name>net.innig.macker.example.modularity.BrokenMain</full-name>
+                        <class>BrokenMain</class>
+                        <package>net.innig.macker.example.modularity</package>
+                    </from>
+                    <to>
+                        <full-name>net.innig.macker.example.modularity.player.impl.CyclicPlayer</full-name>
+                        <class>CyclicPlayer</class>
+                        <package>net.innig.macker.example.modularity.player.impl</package>
+                    </to>
+                </access-rule-violation>
+                <access-rule-violation severity="error">
+                    <message>BrokenMain must access the player module through its API</message>
+                    <from>
+                        <full-name>net.innig.macker.example.modularity.BrokenMain</full-name>
+                        <class>BrokenMain</class>
+                        <package>net.innig.macker.example.modularity</package>
+                    </from>
+                    <to>
+                        <full-name>net.innig.macker.example.modularity.player.impl.RandomPlayer</full-name>
+                        <class>RandomPlayer</class>
+                        <package>net.innig.macker.example.modularity.player.impl</package>
+                    </to>
+                </access-rule-violation>
+            </iteration>
+        </foreach>
+    </ruleset>
+</macker-report>
+

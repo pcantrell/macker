@@ -1,0 +1,90 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Macker report</title>
+<style type="text/css">@import "macker-report.css";</style>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+</head>
+<body>
+<div class="title">
+<div class="event-severity-error">error</div>
+        Macker Report
+    </div>
+    
+    
+<div class="ruleset">
+<div class="ruleset-header">Modularity rules</div>
+<div class="ruleset-body">
+        
+            
+<div class="foreach">
+<div class="foreach-header">
+<span class="var">module: </span><span class="value">game</span>
+</div>
+<div class="foreach-body">
+                
+<div class="event">
+<div class="event-severity-error">error</div>
+<div class="event-header">BrokenMain must access the game module through its API</div>
+<div class="event-body">
+<table>
+<tr>
+<th>From:</th><td><span class="package-name">net.innig.macker.example.modularity.</span><span class="class-name">BrokenMain</span></td>
+</tr>
+<tr>
+<th>To:</th><td><span class="package-name">net.innig.macker.example.modularity.game.impl.</span><span class="class-name">RochambeauGame</span></td>
+</tr>
+</table>
+</div>
+</div>
+            
+</div>
+</div>
+            
+<div class="foreach">
+<div class="foreach-header">
+<span class="var">module: </span><span class="value">player</span>
+</div>
+<div class="foreach-body">
+                
+<div class="event">
+<div class="event-severity-error">error</div>
+<div class="event-header">BrokenMain must access the player module through its API</div>
+<div class="event-body">
+<table>
+<tr>
+<th>From:</th><td><span class="package-name">net.innig.macker.example.modularity.</span><span class="class-name">BrokenMain</span></td>
+</tr>
+<tr>
+<th>To:</th><td><span class="package-name">net.innig.macker.example.modularity.player.impl.</span><span class="class-name">CyclicPlayer</span></td>
+</tr>
+</table>
+</div>
+</div>
+                
+<div class="event">
+<div class="event-severity-error">error</div>
+<div class="event-header">BrokenMain must access the player module through its API</div>
+<div class="event-body">
+<table>
+<tr>
+<th>From:</th><td><span class="package-name">net.innig.macker.example.modularity.</span><span class="class-name">BrokenMain</span></td>
+</tr>
+<tr>
+<th>To:</th><td><span class="package-name">net.innig.macker.example.modularity.player.impl.</span><span class="class-name">RandomPlayer</span></td>
+</tr>
+</table>
+</div>
+</div>
+            
+</div>
+</div>
+        
+    
+</div>
+</div>
+
+<div class="bottom">
+<a href="http://innig.net/macker/">Macker</a> report generated Wed Oct 22 14:55:45 CDT 2003</div>
+</body>
+</html>
