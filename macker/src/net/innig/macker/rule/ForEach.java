@@ -51,8 +51,8 @@ public class ForEach
             {
             String varValue = (String) i.next();
             for(RuleSet rs = ruleSet.getParent(); rs != null; rs = rs.getParent())
-                System.out.print("  ");
-            System.out.println(getVariableName() + " = \"" + varValue + "\"");
+                System.out.print("--");
+            System.out.println(' ' + getVariableName() + ": " + varValue);
             context.setVariableValue(getVariableName(), varValue);
             ruleSet.check(context, classes);
             }

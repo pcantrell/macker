@@ -29,13 +29,13 @@ public class ParsedClassInfo
         {
         CPInfo[] constantPool = classFile.getConstantPool();
         className =
-            ClassNameTranslator.resourceToClassName(
+            ClassNameTranslator.typeConstantToClassName(
                 ((ConstantClassInfo) constantPool[classFile.getThisClass()]).getName());
         references = new TreeSet();
         for(int n = 1; n < constantPool.length; n++)
             if(constantPool[n] instanceof ConstantClassInfo)
                 references.add(
-                    ClassNameTranslator.resourceToClassName(
+                    ClassNameTranslator.typeConstantToClassName(
                         ((ConstantClassInfo) constantPool[n]).getName()));
         references = Collections.unmodifiableSet(references);
         }

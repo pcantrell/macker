@@ -23,6 +23,7 @@
 
     <property name="build.dir"            location="${basedir}/build" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
+    <property name="build.test.dir"       location="${build.dir}/test" />
     
     <property name="jar.file"             location="${build.dir}/${name}.jar" />
     <property name="jar.manifest"         location="${src.dir}/manifest.mf" />

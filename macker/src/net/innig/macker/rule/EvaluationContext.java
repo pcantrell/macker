@@ -19,9 +19,10 @@ public class EvaluationContext
         {
         this(ruleSet);
         this.parent = parent;
-        if(getParent().getRuleSet() != getRuleSet().getParent())
-            throw new IllegalArgumentException(
-                "Parent EvaluationContext must be associated with parent RuleSet");
+// Relaxed to allow ForEach to have its own context; should ForEach extend RuleSet?
+//        if(getParent().getRuleSet() != getRuleSet().getParent())
+//            throw new IllegalArgumentException(
+//                "Parent EvaluationContext must be associated with parent RuleSet");
         }
     
     public EvaluationContext getParent()

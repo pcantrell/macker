@@ -45,28 +45,32 @@ public class ClassManager
         ClassInfo classInfo = (ClassInfo) classNameToInfo.get(className);
         if(classInfo == null)
             {
-            String resourceName = ClassNameTranslator.classToResourceName(className);
-            InputStream classStream =
-                Thread.currentThread()
-                      .getContextClassLoader()
-                      .getResourceAsStream(resourceName);
-            
-            try {
-                classInfo = new ParsedClassInfo(classStream);
-                classStream.close();
-                }
-            catch(Exception e)
+            classInfo = PrimitiveTypeInfo.getPrimitiveTypeInfo(className);
+            if(classInfo == null)
                 {
-                if(!incompleteClassWarning)
-                    {
-                    incompleteClassWarning = true;
-                    System.err.println("WARNING: Macker is unable to find some of the classes"
-                        + " accessed by the input classes (see messages below).  Rules which"
-                        + " depend on attributes of these classes other than their names will"
-                        + " fail.  Check your classpath.");
+                String resourceName = ClassNameTranslator.classToResourceName(className);
+                InputStream classStream =
+                    Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream(resourceName);
+                
+                try {
+                    classInfo = new ParsedClassInfo(classStream);
+                    classStream.close();
                     }
-                System.err.println("Cannot load class " + className);
-                classInfo = new IncompleteClassInfo(className);
+                catch(Exception e)
+                    {
+                    if(!incompleteClassWarning)
+                        {
+                        incompleteClassWarning = true;
+                        System.out.println("WARNING: Macker is unable to find some of the classes"
+                            + " accessed by the input classes (see messages below).  Rules which"
+                            + " depend on attributes of these classes other than their names will"
+                            + " fail.  Check your classpath.");
+                        }
+                    System.out.println("Cannot load class " + className);
+                    classInfo = new IncompleteClassInfo(className);
+                    }
                 }
             
             addClass(classInfo, false);

@@ -13,7 +13,7 @@ public class RegexPatternSyntaxException
     public RegexPatternSyntaxException(String regexp, RESyntaxException root)
         {
         this(regexp, root.toString());
-        root.printStackTrace(System.err);
+        root.printStackTrace(System.out);
         }
     
     public RegexPatternSyntaxException(String regexp, String message)

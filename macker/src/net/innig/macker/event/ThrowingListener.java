@@ -23,7 +23,7 @@ public class ThrowingListener
     public void mackerFinished(RuleSet ruleSet)
         throws MackerIsMadException
         {
-        if(!events.isEmpty())
+        if(ruleSet.getParent() == null && !events.isEmpty())
             throw new MackerIsMadException(events);
         }
 

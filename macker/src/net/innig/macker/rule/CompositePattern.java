@@ -20,6 +20,13 @@ public class CompositePattern
         setHead(head);
         }
     
+    public CompositePattern(CompositePatternType type, Pattern head, CompositePattern child)
+        {
+        setType(type);
+        setHead(head);
+        setChild(child);
+        }
+    
     //--------------------------------------------------------------------------
     // Properties
     //--------------------------------------------------------------------------

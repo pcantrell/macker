@@ -47,9 +47,9 @@ public class Macker
                     cm.addClass(new ParsedClassInfo(new File(args[arg])), true);
                 else
                     {
-                    System.err.println();
-                    System.err.println("macker: Unknown file type: " + args[arg]);
-                    System.err.println("(expected .class or .xml)");
+                    System.out.println();
+                    System.out.println("macker: Unknown file type: " + args[arg]);
+                    System.out.println("(expected .class or .xml)");
                     usage();
                     return;
                     }
@@ -57,14 +57,14 @@ public class Macker
             
             if(rulesFiles.isEmpty())
                 {
-                System.err.println("WARNING: No rules files specified");
+                System.out.println("WARNING: No rules files specified");
                 usage();
                 return;
                 }
             
             if(cm.getPrimaryClasses().isEmpty())
                 {
-                System.err.println("WARNING: No class files specified");
+                System.out.println("WARNING: No class files specified");
                 usage();
                 return;
                 }
@@ -72,6 +72,11 @@ public class Macker
             // Parsing class file
             
             if(verbose)
+                {
+                System.out.println(cm.getPrimaryClasses().size() + " primary classes");
+                System.out.println(cm.getAllClassNames().size() + " total classes");
+                System.out.println(cm.getReferences().size() + " references");
+                
                 for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
                     {
                     ClassInfo classInfo = (ClassInfo) i.next();
@@ -80,16 +85,13 @@ public class Macker
                         System.out.println("    " + usedIter.next());
                     System.out.println();
                     }
-            
-            System.out.println(cm.getPrimaryClasses().size() + " primary classes");
-            System.out.println(cm.getAllClassNames().size() + " total classes");
-            System.out.println(cm.getReferences().size() + " references");
+                }
             
             for(Iterator rfIter = rulesFiles.iterator(); rfIter.hasNext(); )
                 {
                 File rulesFile = (File) rfIter.next();
                 if(verbose)
-                    System.err.println("Reading " + rulesFile + " ...");
+                    System.out.println("Reading " + rulesFile + " ...");
                 Collection ruleSets = new RuleSetBuilder().build(rulesFile);
                 for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
                     {
@@ -121,16 +123,16 @@ public class Macker
             { System.exit(2); }
         catch(Exception e)
             {
-            e.printStackTrace(System.err);
+            e.printStackTrace(System.out);
             throw e;
             }
         }
         
         public static void usage()
             {
-            System.err.println("usage:");
-            System.err.println("    macker [-v] [<rules-file>.xml|-r <rules-file>]+ [<javaclass>.class]+");
-            System.err.println("    macker [<javalib>.jar]+");
+            System.out.println("usage:");
+            System.out.println("    macker [-v] [<rules-file>.xml|-r <rules-file>]+ [<javaclass>.class]+");
+            System.out.println("    macker [<javalib>.jar]+");
             }
     }
 

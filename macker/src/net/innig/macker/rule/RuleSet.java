@@ -73,9 +73,12 @@ public class RuleSet
     public String toString()
         { return getClass().getName() + '[' + name + ", parent=" + getParent() + ']'; }
 
-    public void check(EvaluationContext context, ClassManager classes)
+    public void check(
+            EvaluationContext parentContext,
+            ClassManager classes)
         throws RulesException, MackerIsMadException
         {
+        EvaluationContext context = new EvaluationContext(this, parentContext);
         context.broadcastStarted();
         boolean finished = false;
         try

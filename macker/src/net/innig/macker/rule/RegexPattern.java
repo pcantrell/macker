@@ -89,7 +89,7 @@ public class RegexPattern
 
         if(regex == null || prevContext != context) // prob shouldn't be ==
             {
-            StringBuffer builtRegexStr = new StringBuffer();
+            StringBuffer builtRegexStr = new StringBuffer('^');
             for(Iterator i = parts.iterator(); i.hasNext(); )
                 {
                 Part part = (Part) i.next();
@@ -101,6 +101,7 @@ public class RegexPattern
                     builtRegexStr.append(
                         ((ExpPart) part).exp);
                 }
+            builtRegexStr.append('$');
             
             try { regex = new RE(builtRegexStr.toString()); }
             catch(RESyntaxException rese)
@@ -128,7 +129,7 @@ public class RegexPattern
                 }
             catch(RESyntaxException rese)
                 {
-                rese.printStackTrace(System.err);
+                rese.printStackTrace(System.out);
                 throw new RuntimeException("Can't initialize RegexPattern: " + rese);
                 }
         }
