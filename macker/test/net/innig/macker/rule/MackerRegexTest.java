@@ -202,7 +202,7 @@ public final class MackerRegexTest
             "#", "@", "^", "|", "!",
 //!            "()()", "(())", "(a)(b)", "((a))"
             "\n", "\r", "a\nb", "a\rb",
-            ".a", "a.", ".", ""
+            "a.", ".", "" // and ".a" ... except we need that to grab top-level parts, as in .(*).**
             };
         for(int n = 0; n < illegal.length; n++)
             try {

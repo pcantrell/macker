@@ -1,0 +1,333 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset name="Layering rules">
+            <var name="base" value="net.innig.macker.example.layering" />
+            <pattern name="gui"     class="${base}.gui.**" />
+            <pattern name="model"   class="${base}.model.**" />
+            <pattern name="persist" class="${base}.persistence.**" />
+            
+            <access-rule>
+                <message>Only the model can talk to the persistence layer</message>
+                <deny>
+                    <to pattern="persist" />
+                    <allow> <from pattern="persist"/> </allow>
+                    <allow> <from pattern="model"/> </allow>
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>The persistence layer can't access the model</message>
+                <deny>
+                    <to   pattern="model" />
+                    <from pattern="persist" />
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>The model and persistence layers can't access the GUI</message>
+                <deny>
+                    <to   pattern="gui" />
+                    <from>
+                        <include pattern="model" />
+                        <include pattern="persist" />
+                    </from>
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>Persistence belongs in the persistence layer</message>
+                <deny>
+                    <to>
+                        <include class="java.sql.**" />
+                        <include class="javax.sql.**" />
+                        <include class="javax.jdo.**" />
+                    </to>
+                </deny>
+                <allow> <from pattern="persist" /> </allow>
+            </access-rule>
+            
+            <access-rule>
+                <message>Swing and AWT calls belong in the GUI layer</message>
+                <deny>
+                    <to>
+                        <include class="java.awt.**" />
+                        <include class="javax.swing.**" />
+                    </to>
+                </deny>
+                <allow> <from pattern="gui" /> </allow>
+            </access-rule>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error">
+            <event message0="Only the model can talk to the persistence layer"
+                   from="net.innig.macker.example.layering.gui.ThingerUI"
+                     to="net.innig.macker.example.layering.persistence.PersistenceException" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source package="net.innig.macker.example.layering.gui" class="ThingerUI">
+            package net.innig.macker.example.layering.gui;
+            
+            import net.innig.macker.example.layering.model.*;
+            import net.innig.macker.example.layering.persistence.*;
+            
+            import javax.swing.*;
+            import java.awt.*;
+            import java.awt.event.*;
+            import java.util.*;
+            
+            public class ThingerUI
+                {
+                public static void main(String[] args)
+                    throws PersistenceException
+                    { new ThingerUI(); }
+                
+                public ThingerUI()
+                    throws PersistenceException
+                    {
+                    JFrame f = new JFrame();
+                    JPanel panel = new JPanel(new FlowLayout());
+                    f.getContentPane().add(panel);
+                    
+                    list = new JList();
+                    list.setPreferredSize(new Dimension(300, 400));
+                    refresh();
+                    panel.add(list);
+                    
+                    JButton refresh = new JButton("Refresh");
+                    refresh.addActionListener(
+                        new ActionListener()
+                            {
+                            public void actionPerformed(ActionEvent e)
+                                { refresh(); }
+                            });
+                    panel.add(refresh);
+                    
+                    newName = new JTextField();
+                    newName.setPreferredSize(new Dimension(150, 24));
+                    panel.add(newName);
+                    
+                    JButton add = new JButton("Add Thinger");
+                    add.addActionListener(
+                        new ActionListener()
+                            {
+                            public void actionPerformed(ActionEvent e)
+                                { add(newName.getText()); }
+                            });
+                    panel.add(add);
+                    
+                    f.pack();
+                    f.show();
+                    }
+                
+                public void refresh()
+                    {
+                    try { list.setListData(Thinger.getAll().toArray()); }
+                    catch(PersistenceException pe)
+                        { pe.printStackTrace(); }
+                    }
+                
+                public void add(String name)
+                    {
+                    try
+                        {
+                        new Thinger(name).store();
+                        refresh();
+                        }
+                    catch(PersistenceException pe)
+                        { pe.printStackTrace(); }
+                    }
+                
+                private JTextField newName;
+                private JList list;
+                }
+        </source>
+        <source package="net.innig.macker.example.layering.model" class="Thinger">
+            package net.innig.macker.example.layering.model;
+            
+            import net.innig.macker.example.layering.persistence.*;
+            
+            import java.util.*;
+            
+            public class Thinger
+                {
+                private static ThingerPersistence getPersist()
+                    throws PersistenceException
+                    {
+                    if(persist == null)
+                        persist = new ThingerPersistence();
+                    return persist;
+                    }
+                private static ThingerPersistence persist;
+            
+                public static Set getAll()
+                    throws PersistenceException
+                    {
+                    Set allNames = getPersist().selectAll();
+                    Set allThingers = new HashSet();
+                    for(Iterator i = allNames.iterator(); i.hasNext(); )
+                        allThingers.add(new Thinger((String) i.next(), true));
+                    return allThingers;
+                    }
+                
+                public Thinger(String name)
+                    { this(name, false); }
+                
+                private Thinger(String name, boolean stored)
+                    {
+                    this.name = name;
+                    this.stored = stored;
+                    }
+                
+                public String getName()
+                    { return name; }
+                
+                public void store()
+                    throws PersistenceException
+                    {
+                    if(!stored)
+                        getPersist().insert(name);
+                    stored = true;
+                    }
+                
+                public void delete()
+                    throws PersistenceException
+                    {
+                    getPersist().delete(name);
+                    stored = false;
+                    }
+                
+                public String toString()
+                    { return name; }
+                
+                private boolean stored = false;
+                private final String name;
+                }
+        </source>
+        <source package="net.innig.macker.example.layering.persistence" class="PersistenceException">
+            package net.innig.macker.example.layering.persistence;
+            
+            public class PersistenceException
+                extends Exception
+                {
+                public PersistenceException(String message)
+                    { super(message); }
+            
+                public PersistenceException(String message, Exception e)
+                    { super(message + ": " + e.toString()); }
+                }
+        </source>
+        <source package="net.innig.macker.example.layering.persistence" class="ThingerPersistence">
+            package net.innig.macker.example.layering.persistence;
+            
+            import java.sql.*;
+            import java.util.*;
+            
+            public class ThingerPersistence
+                {
+                public ThingerPersistence()
+                    throws PersistenceException
+                    {
+                    Properties connProps = new Properties();
+                    try
+                        { connProps.load(getClass().getClassLoader().getResourceAsStream("db.properties")); }
+                    catch(Exception e)
+                        { throw new PersistenceException("Unable to load db.properties", e); }
+                    
+                    try
+                        { Class.forName(connProps.getProperty("db.driver")); }
+                    catch(ClassNotFoundException cnfe)
+                        { throw new PersistenceException("Unable to load DB driver", cnfe); }
+                    
+                    try
+                        {
+                        conn = DriverManager.getConnection(
+                            connProps.getProperty("db.url"),
+                            connProps.getProperty("db.user"),
+                            connProps.getProperty("db.pass"));
+                        conn.setAutoCommit(false);
+                        }
+                    catch(SQLException sqle)
+                        { throw new PersistenceException("Unable to connect to database", sqle); }
+                        
+                    try
+                        {
+                        selStmt = conn.prepareStatement("select name from thinger");
+                        insStmt = conn.prepareStatement("insert into thinger (name) values (?)");
+                        delStmt = conn.prepareStatement("delete from thinger where name = ?");
+                        }
+                    catch(SQLException sqle)
+                        { throw new PersistenceException("Unable to prepare statements", sqle); }
+                    }
+                
+                public Set selectAll()
+                    throws PersistenceException
+                    {
+                    Set thingers = new HashSet();
+                    try
+                        {
+                        ResultSet rs = selStmt.executeQuery();
+                        while(rs.next())
+                            thingers.add(rs.getString(1));
+                        rs.close();
+                        }
+                    catch(SQLException sqle)
+                        { throw new PersistenceException("Unable to select thingers", sqle); }
+                    return thingers;
+                    }
+                
+                public void insert(String name)
+                    throws PersistenceException
+                    {
+                    boolean done = false;
+                    try
+                        {
+                        insStmt.clearParameters();
+                        insStmt.setString(1, name);
+                        insStmt.execute();
+                        conn.commit();
+                        done = true;
+                        }
+                    catch(SQLException sqle)
+                        { throw new PersistenceException("Unable to insert thinger", sqle); }
+                    finally
+                        { quietRollback(done); }
+                    }
+                
+                public void delete(String name)
+                    throws PersistenceException
+                    {
+                    boolean done = false;
+                    try
+                        {
+                        if(delStmt.executeUpdate(name) == 0)
+                            throw new PersistenceException("No such thinger: \"" + name + '"');
+                        conn.commit();
+                        done = true;
+                        }
+                    catch(SQLException sqle)
+                        { throw new PersistenceException("Unable to delete thinger", sqle); }
+                    finally
+                        { quietRollback(done); }
+                    }
+                
+                private void quietRollback(boolean doit)
+                    {
+                    if(doit)
+                        try { conn.rollback(); }
+                        catch(Exception e) { }
+                    }
+                
+                private Connection conn;
+                private PreparedStatement selStmt, insStmt, delStmt;
+                }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

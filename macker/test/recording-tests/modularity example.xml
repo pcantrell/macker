@@ -1,0 +1,408 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset name="Modularity rules">
+            <var name="module-base" value="net.innig.macker.example.modularity" />
+            
+            <foreach var="module" class="${module-base}.(**).impl.**">
+    
+                <pattern name="inside" class="${module-base}.${module}.impl.**" />
+                <pattern name="factory" class="${module-base}.${module}.*Factory" />
+                
+                <access-rule>
+                    <message>${from} must access the ${module} module through its API</message>
+                    <deny> <to pattern="inside" /> </deny>
+                    <allow><from pattern="inside" /></allow>
+                    <allow><from pattern="factory" /></allow>
+                </access-rule>
+                
+            </foreach>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <foreach var="module">
+            <iteration value="game">
+                <rule type="AccessRuleViolation" severity="error" message0="BrokenMain must access the game module through its API">
+                    <event from="net.innig.macker.example.modularity.BrokenMain"
+                             to="net.innig.macker.example.modularity.game.impl.RochambeauGame"/>
+                </rule>
+            </iteration>
+            <iteration value="player">
+                <rule type="AccessRuleViolation" severity="error" message0="BrokenMain must access the player module through its API">
+                    <event from="net.innig.macker.example.modularity.BrokenMain"
+                             to="net.innig.macker.example.modularity.player.impl.CyclicPlayer"/>
+                    <event from="net.innig.macker.example.modularity.BrokenMain"
+                             to="net.innig.macker.example.modularity.player.impl.RandomPlayer"/>
+                </rule>
+            </iteration>
+        </foreach>
+    </expected-events>
+    
+    <test-classes>
+        <source package="net.innig.macker.example.modularity" class="BrokenMain">
+            package net.innig.macker.example.modularity;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import net.innig.macker.example.modularity.game.impl.*;
+            import net.innig.macker.example.modularity.player.*;
+            import net.innig.macker.example.modularity.player.impl.*;
+            import java.util.*;
+            
+            public class BrokenMain
+                {
+                public static void main(String[] args)
+                    {
+                    Game g = new RochambeauGame();
+                    g.setPlayer(0, new RandomPlayer());
+                    g.setPlayer(1, new CyclicPlayer());
+                    
+                    while(true)
+                        {
+                        System.out.println(
+                            g.getPreviousMove(0) + " / " + g.getPreviousMove(1)
+                            + " (score: " + g.getScore(0) + " to " + g.getScore(1) + ")");
+                        g.move();
+                        }
+                    }
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game" class="Game">
+            package net.innig.macker.example.modularity.game;
+            
+            import net.innig.macker.example.modularity.player.*;
+            import java.util.*;
+            
+            /**
+                A very simple two-player game in normal form.
+            */
+            public interface Game
+                {
+                public Set getLegalMoves();
+                
+                public void setPlayer(int playerNum, Player player);
+                public Player getPlayer(int playerNum);
+                
+                public int getScore(int playerNum);
+                public Move getPreviousMove(int playerNum);
+                public void move();
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game" class="GameFactory">
+            package net.innig.macker.example.modularity.game;
+            
+            import net.innig.macker.example.modularity.game.impl.*;
+            import java.util.*;
+            
+            public class GameFactory
+                {
+                public static Set getGameNames()
+                    {
+                    Set games = new TreeSet();
+                    games.add("(R)ochambeau");
+                    games.add("(P)risoner's Dilemma");
+                    return Collections.unmodifiableSet(games);
+                    }
+                
+                public static Game createGame(String name)
+                    {
+                    name = name.trim().toLowerCase();
+                    if("rochambeau".startsWith(name))
+                        return new RochambeauGame();
+                    if("prisoner's dilemma".startsWith(name))
+                        return new PrisonersDilemmaGame();
+                    throw new IllegalArgumentException("Unknown game: " + name);
+                    }
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game.impl" class="AbstractGame">
+            package net.innig.macker.example.modularity.game.impl;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import net.innig.macker.example.modularity.player.*;
+            import java.util.*;
+            
+            public abstract class AbstractGame
+                implements Game
+                {
+                public AbstractGame()
+                    {
+                    player = new Player[2];
+                    score = new int[2];
+                    prevMove = new Move[2];
+                    }
+                
+                public void setPlayer(int playerNum, Player player)
+                    { this.player[playerNum] = player; }
+                
+                public Player getPlayer(int playerNum)
+                    { return player[playerNum]; }
+                
+                public int getScore(int playerNum)
+                    { return score[playerNum]; }
+                
+                public Move getPreviousMove(int playerNum)
+                    { return prevMove[playerNum]; }
+                
+                public void move()
+                    {
+                    Move move0 = player[0].nextMove(getLegalMoves(), prevMove[1]);
+                    Move move1 = player[1].nextMove(getLegalMoves(), prevMove[0]);
+                    prevMove[0] = move0;
+                    prevMove[1] = move1;
+                    score[0] += move0.getScoreFor(move1);
+                    score[1] += move1.getScoreFor(move0);
+                    }
+            
+                private Player[] player;
+                private int[] score;
+                private Move[] prevMove;
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game.impl" class="PrisonersDilemmaGame">
+            package net.innig.macker.example.modularity.game.impl;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public class PrisonersDilemmaGame
+                extends AbstractGame
+                {
+                public Set getLegalMoves()
+                    { return PrisonersDilemmaMove.ALL; }
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game.impl" class="PrisonersDilemmaMove">
+          <![CDATA[
+            package net.innig.macker.example.modularity.game.impl;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public final class PrisonersDilemmaMove
+                implements Move
+                {
+                static final Move
+                    COOPERATE = new PrisonersDilemmaMove("cooperate"),
+                    DEFECT    = new PrisonersDilemmaMove("defect");
+                
+                static final Set ALL = Collections.unmodifiableSet(new HashSet(Arrays.asList(
+                    new Move[] { COOPERATE, DEFECT } )));
+                
+                private PrisonersDilemmaMove(String name)
+                    { this.name = name; }
+                
+                public String getName()
+                    { return name; }
+            
+                public int getScoreFor(Move other)
+                    {
+                    if(this == COOPERATE && other == COOPERATE)
+                        return 5;
+                    if(this == DEFECT && other == COOPERATE)
+                        return 10;
+                    if(this == COOPERATE && other == DEFECT)
+                        return 0;
+                    if(this == DEFECT && other == DEFECT)
+                        return 2;
+                    throw new Error("unknown move");
+                    }
+            
+                private int num;
+                private String name;
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.modularity.game.impl" class="RochambeauGame">
+            package net.innig.macker.example.modularity.game.impl;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import net.innig.macker.example.modularity.player.*;
+            import java.util.*;
+            
+            public class RochambeauGame
+                extends AbstractGame
+                {
+                public Set getLegalMoves()
+                    { return RochambeauMove.ALL; }
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game.impl" class="RochambeauMove">
+            package net.innig.macker.example.modularity.game.impl;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public final class RochambeauMove
+                implements Move
+                {
+                static final Move
+                    SCISSORS = new RochambeauMove("scissors", 0),
+                    PAPER    = new RochambeauMove("paper", 1),
+                    STONE    = new RochambeauMove("stone", 2);
+                
+                static final Set ALL = Collections.unmodifiableSet(new HashSet(Arrays.asList(
+                    new Move[] { SCISSORS, PAPER, STONE } )));
+                
+                private RochambeauMove(String name, int num)
+                    {
+                    this.name = name;
+                    this.num = num;
+                    }
+            
+                public String getName()
+                    { return name; }
+            
+                public int getScoreFor(Move other)
+                    { return ((num + 1) % 3 == ((RochambeauMove) other).num) ? 1 : 0; }
+            
+                private int num;
+                private String name;
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.game" class="Move">
+            package net.innig.macker.example.modularity.game;
+            
+            public interface Move
+                {
+                public String getName();
+                public int getScoreFor(Move otherPlayersMove);
+                }
+        </source>
+        <source package="net.innig.macker.example.modularity" class="Main">
+            package net.innig.macker.example.modularity;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import net.innig.macker.example.modularity.player.*;
+            import java.util.*;
+            
+            public class Main
+                {
+                public static void main(String[] args)
+                    {
+                    Game g = GameFactory.createGame(args[0]);
+                    g.setPlayer(0, PlayerFactory.createPlayer(args[1]));
+                    g.setPlayer(1, PlayerFactory.createPlayer(args[2]));
+                    
+                    while(true)
+                        {
+                        System.out.println(
+                            g.getPreviousMove(0) + " / " + g.getPreviousMove(1)
+                            + " (score: " + g.getScore(0) + " to " + g.getScore(1) + ")");
+                        g.move();
+                        }
+                    }
+                }
+
+        </source>
+        <source package="net.innig.macker.example.modularity.player.impl" class="CyclicPlayer">
+            package net.innig.macker.example.modularity.player.impl;
+            
+            import net.innig.macker.example.modularity.player.*;
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public class CyclicPlayer
+                implements Player
+                {
+                public Move nextMove(Set legalMoves, Move otherPreviousMove)
+                    {
+                    List legalMovesL = new ArrayList(legalMoves);
+                    return (Move) legalMovesL.get(++state % legalMovesL.size());
+                    }
+                
+                private int state = hashCode();
+                }
+        </source>
+        <source package="net.innig.macker.example.modularity.player.impl" class="RandomPlayer">
+            package net.innig.macker.example.modularity.player.impl;
+            
+            import net.innig.macker.example.modularity.player.*;
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public class RandomPlayer
+                implements Player
+                {
+                public Move nextMove(Set legalMoves, Move otherPreviousMove)
+                    {
+                    List legalMovesL = new ArrayList(legalMoves);
+                    return (Move) legalMovesL.get(rand.nextInt(legalMovesL.size()));
+                    }
+                
+                private Random rand = new Random(System.currentTimeMillis() + hashCode());
+                }
+        </source>
+        <source package="net.innig.macker.example.modularity.player.impl" class="TitForTatPlayer">
+            package net.innig.macker.example.modularity.player.impl;
+            
+            import net.innig.macker.example.modularity.player.*;
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public class TitForTatPlayer
+                implements Player
+                {
+                public Move nextMove(Set legalMoves, Move otherPreviousMove)
+                    {
+                    return (otherPreviousMove != null)
+                        ? otherPreviousMove
+                        : fallback.nextMove(legalMoves, otherPreviousMove);
+                    }
+                
+                private RandomPlayer fallback = new RandomPlayer();
+                }
+        </source>
+        <source package="net.innig.macker.example.modularity.player" class="Player">
+            package net.innig.macker.example.modularity.player;
+            
+            import net.innig.macker.example.modularity.game.*;
+            import java.util.*;
+            
+            public interface Player
+                {
+                public Move nextMove(Set legalMoves, Move otherPreviousMove);
+                }
+        </source>
+        <source package="net.innig.macker.example.modularity.player" class="PlayerFactory">
+            package net.innig.macker.example.modularity.player;
+            
+            import net.innig.macker.example.modularity.player.impl.*;
+            import java.util.*;
+            
+            public class PlayerFactory
+                {
+                public static Set getPlayerNames()
+                    {
+                    Set games = new TreeSet();
+                    games.add("(R)andom");
+                    games.add("(T)it for Tat");
+                    return Collections.unmodifiableSet(games);
+                    }
+                
+                public static Player createPlayer(String name)
+                    {
+                    name = name.trim().toLowerCase();
+                    if("random".startsWith(name))
+                        return new RandomPlayer();
+                    if("tit for tat".startsWith(name))
+                        return new TitForTatPlayer();
+                    if("cyclic".startsWith(name))
+                        return new CyclicPlayer();
+                    throw new IllegalArgumentException("Unknown player: " + name);
+                    }
+                }
+
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

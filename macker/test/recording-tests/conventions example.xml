@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset name="Coding conventions demo">
+            <var name="base" value="net.innig.macker.example.conventions" />
+            
+            <pattern name="api">
+                <!-- "api" includes public/protected interfaces from this project -->
+                <include filter="primary-class">
+                    <include filter="interface">
+                        <include filter="class-access" min="protected" />
+                    </include>
+                </include>
+            </pattern>
+            
+            <pattern name="api-impl">
+                <include filter="subtype-of" pattern="api">
+                    <exclude pattern="api" />
+                </include>
+            </pattern>
+            
+            <pattern name="util">
+                <include filter="primary-class">
+                    <exclude pattern="api" />
+                    <exclude pattern="api-impl" />
+                </include>
+            </pattern>
+            
+            <pattern name="collections-iface">
+                <include filter="interface">
+                    <include filter="subtype-of" class="java.util.Collection" />
+                    <include filter="subtype-of" class="java.util.Map" />
+                </include>
+            </pattern>
+            
+            <pattern name="collections-impl">
+                <include filter="subtype-of" pattern="collections-iface">
+                    <exclude filter="interface" />
+                </include>
+            </pattern>
+            
+            <access-rule>
+                <message>APIs may not reference API implementations</message>
+                <deny>
+                    <from pattern="api" />
+                    <to pattern="api-impl" />
+                </deny>
+            </access-rule>
+            
+            <access-rule severity="warning">
+                <message>API ${from} should use a collections interface instead of ${to}</message>
+                <deny>
+                    <from pattern="api" />
+                    <to pattern="collections-impl" />
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>${from} may not reference ${to}, which is another impl, unless it extends it</message>
+                <deny>
+                    <from pattern="api-impl" />
+                    <to pattern="api-impl" />
+                    <allow>
+                        <from filter="subtype-of" pattern="to" />
+                    </allow>
+                </deny>
+            </access-rule>
+            
+            <access-rule>
+                <message>Util class ${from} may not reference API impl ${to}</message>
+                <deny>
+                    <from pattern="util" />
+                    <to pattern="api-impl" />
+                </deny>
+            </access-rule>
+            
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error">
+            <event message0="APIs may not reference API implementations"
+                   from="net.innig.macker.example.conventions.BrokenApi"
+                   to="net.innig.macker.example.conventions.AlphaTree" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="warning">
+            <event message0="API Tree should use a collections interface instead of HashSet"
+                   from="net.innig.macker.example.conventions.Tree"
+                     to="java.util.HashSet" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error">
+            <event message0="FileTree may not reference StringTree, which is another impl, unless it extends it"
+                   from="net.innig.macker.example.conventions.FileTree"
+                     to="net.innig.macker.example.conventions.StringTree" />
+        </rule>
+        <rule type="AccessRuleViolation" severity="error">
+            <event message0="Util class Main may not reference API impl AlphaTree"
+                   from="net.innig.macker.example.conventions.Main"
+                     to="net.innig.macker.example.conventions.AlphaTree" />
+            <event message0="Util class Main may not reference API impl FactorialTree"
+                   from="net.innig.macker.example.conventions.Main"
+                     to="net.innig.macker.example.conventions.FactorialTree" />
+            <event message0="Util class Main may not reference API impl FileTree"
+                   from="net.innig.macker.example.conventions.Main"
+                     to="net.innig.macker.example.conventions.FileTree" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source package="net.innig.macker.example.conventions" class="AlphaTree">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            import java.io.*;
+            
+            public final class AlphaTree
+                extends StringTree
+                {
+                public AlphaTree(AlphaTree parent, String word)
+                    { super(parent, word); }
+                
+                protected Set/*<String>*/ getChildSuffixes()
+                    {
+                    if(lettersAsStrings == null)
+                        {
+                        lettersAsStrings = new TreeSet();
+                        for(char c = 'a'; c <= 'z'; c++)
+                            lettersAsStrings.add(String.valueOf(c));
+                        }
+                    return lettersAsStrings;
+                    }
+                
+                protected StringTree makeChild(String childWord)
+                    { return new AlphaTree(this, childWord); }
+                
+                private static Set lettersAsStrings;
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="BrokenApi">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            public interface BrokenApi
+                {
+                public void foo(AlphaTree tree);
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="DepthFirstDump">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            
+            public class DepthFirstDump
+                {
+                public static void dump(Tree tree, int levels, int maxChildren, String prefix)
+                    {
+                    if(levels == 0)
+                        {
+                        System.out.println(prefix + tree + " ...");
+                        return;
+                        }
+                    
+                    System.out.println(prefix + tree);
+                    prefix = prefix + "   ";
+                    int childCount = 0;
+                    for(Iterator childIter = tree.getChildren().iterator(); childIter.hasNext(); )
+                        {
+                        childCount++;
+                        if(childCount > maxChildren)
+                            {
+                            System.out.println(prefix + "...");
+                            break;
+                            }
+                        
+                        Tree child = (Tree) childIter.next();
+                        dump(child, levels-1, maxChildren, prefix);
+                        }
+                    }
+                
+                private DepthFirstDump() { }
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="FactorialTree">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            import java.io.*;
+            
+            public class FactorialTree
+                extends StringTree
+                {
+                public FactorialTree()
+                    {
+                    super(null, "");
+                    n = 1;
+                    }
+                
+                public FactorialTree(FactorialTree parent, String word, int n)
+                    {
+                    super(parent, word);
+                    this.n = n;
+                    }
+            
+                protected Set/*<String>*/ getChildSuffixes()
+                    {
+                    Set suffixes = new TreeSet();
+                    for(int j = n; j > 0; j--)
+                        suffixes.add('.' + String.valueOf(j));
+                    return suffixes;
+                    }
+                
+                protected StringTree makeChild(String childWord)
+                    { return new FactorialTree(this, childWord, n+1); }
+                
+                private int n;
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="FileTree">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            import java.io.*;
+            
+            public class FileTree
+                implements Tree
+                {
+                public FileTree(File file)
+                    { this.file = file; }
+                
+                public Tree getParent()
+                    {
+                    File parentFile = file.getParentFile();
+                    return (parentFile == null) ? null : new FileTree(parentFile);
+                    }
+                
+                public HashSet getChildren()
+                    {
+                    HashSet children = new HashSet();
+                    File[] childFiles = file.listFiles();
+                    if(childFiles != null)
+                        for(int f = 0; f < childFiles.length; f++)
+                            children.add(new FileTree(childFiles[f]));
+                    return children;
+                    }
+                
+                public String toString()
+                    { return StringTree.quote(file.getPath()); }
+                
+                private File file;
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="Main">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.io.File;
+            
+            public final class Main
+                {
+                public static void main(String[] args)
+                    {
+                    AlphaTree alpha = new AlphaTree(null, "");
+                    FactorialTree fact = new FactorialTree();
+                    FileTree file = new FileTree(File.listRoots()[0]);
+                    
+                    System.out.println("Alpha dump:");
+                    DepthFirstDump.dump(alpha, 4, 3, "    ");
+                    System.out.println();
+                    
+                    System.out.println("Factorial dump:");
+                    DepthFirstDump.dump(fact, 4, 999, "    ");
+                    System.out.println();
+                    
+                    System.out.println("File dump:");
+                    DepthFirstDump.dump(file, 4, 4, "    ");
+                    System.out.println();
+                    
+                    System.out.println("Alpha walk:");
+                    RandomWalk.walk(alpha, 30);
+                    System.out.println();
+                    
+                    System.out.println("Factorial walk:");
+                    RandomWalk.walk(fact, 30);
+                    System.out.println();
+                    
+                    System.out.println("File walk:");
+                    RandomWalk.walk(file, 30);
+                    System.out.println();
+                    }
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="RandomWalk">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            
+            public final class RandomWalk
+                {
+                public static void walk(Tree tree, int hops)
+                    {
+                    while(hops-- > 0)
+                        {
+                        System.out.println("hop: " + tree);
+                        if(tree.getParent() != null && rand.nextInt(4) == 0)
+                            tree = tree.getParent();
+                        else
+                            {
+                            List children = new ArrayList(tree.getChildren());
+                            if(children.isEmpty())
+                                tree = tree.getParent();
+                            else
+                                tree = (Tree) children.get(rand.nextInt(children.size()));
+                            }
+                        if(tree == null)
+                            return;
+                        }
+                    }
+                
+                private static Random rand = new Random();
+                
+                private RandomWalk() { } // In the future, Macker will be able to require this, too
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="StringTree">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            import java.io.*;
+            
+            public abstract class StringTree
+                implements Tree
+                {
+                public StringTree(StringTree parent, String word)
+                    {
+                    this.parent = parent;
+                    this.word = word;
+                    }
+                
+                public Tree getParent()
+                    { return parent; }
+                
+                public HashSet/*<Tree>*/ getChildren()
+                    {
+                    HashSet children = new HashSet();
+                    StringBuffer newWord = new StringBuffer(word);
+                    for(Iterator i = getChildSuffixes().iterator(); i.hasNext();)
+                        {
+                        String suffix = (String) i.next();
+                        newWord.setLength(word.length());
+                        newWord.append(suffix);
+                        children.add(makeChild(newWord.toString()));
+                        }
+                    return children;
+                    }
+                
+                protected abstract Set/*<String>*/ getChildSuffixes();
+                
+                protected abstract StringTree makeChild(String childWord);
+                    
+                public String toString()
+                    { return quote(word); }
+                
+                static String quote(String word)
+                    { return '"' + word + '"'; }
+                
+                private StringTree parent;
+                private String word;
+                }
+          ]]>
+        </source>
+        <source package="net.innig.macker.example.conventions" class="Tree">
+          <![CDATA[
+            package net.innig.macker.example.conventions;
+            
+            import java.util.*;
+            
+            public interface Tree
+                {
+                public Tree getParent();
+                public HashSet/*<Tree>*/ getChildren(); // WRONG: should return Set
+                }
+          ]]>
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>

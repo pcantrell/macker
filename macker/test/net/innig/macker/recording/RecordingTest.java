@@ -43,12 +43,12 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
 
-public final class RulesFileTest
+public final class RecordingTest
     implements Test
     {
     public static final String
-        TEST_DIR_PROP  = "Macker.RulesFileTest.testDir",
-        BUILD_DIR_PROP = "Macker.RulesFileTest.buildDir";
+        TEST_DIR_PROP  = "Macker.RecordingTest.testDir",
+        BUILD_DIR_PROP = "Macker.RecordingTest.buildDir";
     
     public static TestSuite suite()
         {
@@ -70,12 +70,12 @@ public final class RulesFileTest
         File[] testFiles = testDir.listFiles();
         for(int f = 0; f < testFiles.length; f++)
             if(testFiles[f].getName().endsWith(".xml"))
-                suite.addTest(new RulesFileTest(testFiles[f], buildDir));
+                suite.addTest(new RecordingTest(testFiles[f], buildDir));
                 
         return suite;
         }
     
-    public RulesFileTest(File testFile, File buildDir)
+    public RecordingTest(File testFile, File buildDir)
         {
         if(!buildDir.isDirectory())
             throw new IllegalArgumentException(buildDir + " is not a directory");
@@ -129,13 +129,12 @@ public final class RulesFileTest
         out.println("Mismatched events:");
         if(!expected.compare(actual, out))
             {
-            out.println();
-            out.println("Excepted:");
-            expected.dump(out, 4);
-            out.println();
-            out.println("Actual:");
-            actual.dump(out, 4);
-            out.flush();
+            System.out.println();
+            System.out.println("Excepted:");
+            expected.dump(System.out, 4);
+            System.out.println();
+            System.out.println("Actual:");
+            actual.dump(System.out, 4);
             throw new AssertionFailedError(mismatches.toString());
             }
         }
@@ -146,8 +145,11 @@ public final class RulesFileTest
             System.out.println("   " + i.next());
         }
     
+    public String getName()
+        { return "RecordingTest \"" + name + '"'; }
+    
     public String toString()
-        { return name; }
+        { return getName(); }
     
     // -----------------------------------------------------------------
     
@@ -167,7 +169,7 @@ public final class RulesFileTest
     private void buildTestClasses(Element testClassesElem)
         throws Exception
         {
-        File baseDir = new File(buildDir, name + "-" + System.currentTimeMillis());
+        File baseDir = new File(buildDir, name);
         File srcDir = new File(baseDir, "src");
         File classesDir = new File(baseDir, "classes");
         

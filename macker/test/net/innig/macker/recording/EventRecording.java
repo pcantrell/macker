@@ -24,6 +24,7 @@ import net.innig.macker.event.*;
 import net.innig.macker.rule.Rule;
 import net.innig.macker.rule.RuleSet;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import org.jdom.Element;
 import net.innig.collect.CollectionDiff;
@@ -51,6 +52,13 @@ public abstract class EventRecording
         return true;
         }
     
+    public void dump(PrintStream out, int indent)
+        {
+        PrintWriter outWriter = new PrintWriter(out);
+        dump(outWriter, indent);
+        outWriter.flush();
+        }
+        
     public void dump(PrintWriter out, int indent)
         {
         for(int n = 0; n < indent; n++)

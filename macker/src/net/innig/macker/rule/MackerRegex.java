@@ -186,7 +186,7 @@ public final class MackerRegex
                 String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")"
                                + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";
                 var = new RE(varS);
-                allowable = new RE("^" + partS + "([\\$\\./]" + partS + ")*$", RE.MATCH_SINGLELINE);
+                allowable = new RE("^([\\$\\./]?" + partS + ")+$", RE.MATCH_SINGLELINE);
                 allowableNoParts = new RE("^" + partS + "$", RE.MATCH_SINGLELINE);
                 }
             catch(RESyntaxException rese)

@@ -14,6 +14,16 @@
 
             <!-- Test match folding -->
             <foreach var="zab" class="(**).*Stream" />
+
+            <!-- Test empty value -->
+            <foreach var="sometimesEmpty" class="**.(*)InputStream" />
+            
+            <!-- Test nesting (and variable inheritence) -->
+            <foreach var="a" class=".(*).**">
+                <foreach var="b" class="*.(*g).**">
+                    <message>${a}${b}</message>
+                </foreach>
+            </foreach>
         </ruleset>
     </rules-file>
     
@@ -39,6 +49,33 @@
         <foreach var="zab">
             <iteration value="java.io" />
             <iteration value="java.util.jar" />
+        </foreach>
+        <foreach var="sometimesEmpty">
+            <iteration value="" />
+            <iteration value="Jar" />
+            <iteration value="File" />
+        </foreach>
+        <foreach var="a">
+            <iteration value="java">
+                <foreach var="b">
+                    <iteration value="lang">
+                        <rule> <event type="MessageEvent" severity="info" message0="javalang" /> </rule>
+                    </iteration>
+                    <iteration value="nog">
+                        <rule> <event type="MessageEvent" severity="info" message0="javanog" /> </rule>
+                    </iteration>
+                </foreach>
+            </iteration>
+            <iteration value="fruz">
+                <foreach var="b">
+                    <iteration value="lang">
+                        <rule> <event type="MessageEvent" severity="info" message0="fruzlang" /> </rule>
+                    </iteration>
+                    <iteration value="nog">
+                        <rule> <event type="MessageEvent" severity="info" message0="fruznog" /> </rule>
+                    </iteration>
+                </foreach>
+            </iteration>
         </foreach>
     </expected-events>
 

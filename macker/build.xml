@@ -191,6 +191,10 @@
         depends="compile-tests"
         description="Runs JUnit test suites">
         
+        <property name="test.build.recording.dir" location="${build.test.dir}/recording-tests" />
+        <delete dir="${test.build.recording.dir}" />
+        <mkdir  dir="${test.build.recording.dir}" />
+        
         <taskdef name="junit"
             classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
             classpath="${test.junit.lib}"/>
@@ -205,8 +209,8 @@
             
             <formatter type="plain" usefile="no" />
             <classpath refid="test.classpath" />
-            <sysproperty key="Macker.RulesFileTest.testDir" value="${test.dir}/recording-tests"/>
-            <sysproperty key="Macker.RulesFileTest.buildDir" value="${build.test.dir}"/>
+            <sysproperty key="Macker.RecordingTest.testDir" value="${test.dir}/recording-tests" />
+            <sysproperty key="Macker.RecordingTest.buildDir" value="${test.build.recording.dir}" />
 
             <batchtest>
                 <fileset dir="${test.dir}">

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <rules-file>
+        <ruleset name="Simple example">
+            <access-rule>
+                <deny>
+                    <from class="**Print*" />
+                    <to class="java.**" />
+                </deny>
+            </access-rule>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" severity="error">
+            <event from="PrintHelloWorld" to="java.io.PrintStream" />
+            <event from="PrintHelloWorld" to="java.lang.Object" />
+            <event from="PrintHelloWorld" to="java.lang.String" />
+            <event from="PrintHelloWorld" to="java.lang.System" />
+        </rule>
+    </expected-events>
+    
+    <test-classes>
+        <source package="" class="PrintHelloWorld">
+            public class PrintHelloWorld
+                {
+                public static void main(String[] args)
+                    { System.out.println("Hello world, as they say!".length()); }
+                }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>
