@@ -160,7 +160,6 @@ public class RuleSetBuilder
     public AccessRule buildAccessRule(Element ruleElem, RuleSet ruleSet)
         throws RulesException
         {
-System.out.println("building AccessRule");
         AccessRule prevRule = null, topRule = null;
         for(Iterator childIter = ruleElem.getChildren().iterator(); childIter.hasNext(); )
             {
