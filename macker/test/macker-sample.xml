@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
-<!DOCTYPE macker SYSTEM "file:///Users/paul/macker/test/macker.dtd">
+<!DOCTYPE macker SYSTEM "file:///Users/paul/macker/src/macker.dtd">
 
 <macker>
     
     <ruleset name="Macker internal rules">
     
-        <pattern name="macker">
-            <include regex="net.innig.macker.**" />
-        </pattern>
+        <pattern name="macker" regex="net.innig.macker.**" />
         
         <pattern name="structure">
             <include pattern="macker">
@@ -23,7 +21,7 @@
         
         <pattern name="event">
             <include pattern="macker">
-                <include regex="*.rule.**" />
+                <include regex="*.event.**" />
             </include>
         </pattern>
         

@@ -131,8 +131,8 @@ public class Macker
         public static void usage()
             {
             System.out.println("usage:");
-            System.out.println("    macker [-v] [<rules-file>.xml|-r <rules-file>]+ [<javaclass>.class]+");
-            System.out.println("    macker [<javalib>.jar]+");
+            System.out.println("    macker [-v] [rulesfile.xml | -r rulesfile | javaclass.class]+");
+//            System.out.println("    macker [javalib.jar]+");
             }
     }
 
