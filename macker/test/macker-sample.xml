@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE macker SYSTEM "file:///Users/paul/macker/macker.dtd">
+
+<macker>
+    
+    <ruleset name="Macker internal rules">
+    
+        <pattern name="macker">
+            <include regex="net.innig.macker.**" />
+        </pattern>
+        
+        <pattern name="structure">
+            <include pattern="macker">
+                <include regex="*.structure.**" />
+            </include>
+        </pattern>
+
+        <pattern name="rule">
+            <include pattern="macker">
+                <include regex="*.rule.**" />
+            </include>
+        </pattern>
+        
+        <pattern name="event">
+            <include pattern="macker">
+                <include regex="*.rule.**" />
+            </include>
+        </pattern>
+        
+        <pattern name="main">
+            <include pattern="macker">
+                <exclude regex="net.innig.macker.*.**" />
+            </include>
+        </pattern>
+        
+        <pattern name="exception">
+            <include regex="**Exception" />
+        </pattern>
+        
+        <access-rule>
+            <deny>
+                <from>
+                    <include pattern="structure" />
+                </from>
+                <to>
+                    <include pattern="rule" />
+                    <include pattern="event" />
+                </to>
+            </deny>
+        </access-rule>
+
+        <foreach var="foo" regex="(**Type)">
+            <access-rule>
+                <deny>
+                    <from regex="${foo}" />
+                    <to regex="**" />
+                    
+                    <allow><to regex="java.**" /></allow>
+                    <allow><to regex="javax.**" /></allow>
+                    <allow><to regex="net.innig.util.EnumeratedType" /></allow>
+                </deny>
+            </access-rule>
+        </foreach>
+
+    </ruleset>
+        
+</macker>
+
+

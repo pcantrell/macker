@@ -1,0 +1,11 @@
+#!/bin/sh
+
+java -cp build/classes:\
+lib/innig-util.jar:\
+lib/jakarta-regexp-1.2.jar:\
+lib/jaxp.jar:\
+lib/jclasslib.jar:\
+lib/jdom.jar:\
+lib/xerces.jar \
+net.innig.macker.Macker \
+"$@"
