@@ -29,12 +29,12 @@
     
     <expected-events>
         <foreach var="foo">
-            <iteration value=".fruz.nog.TestX">
+            <iteration value=".fruz.nog.TestX"> <!-- see bug 793678 -->
                 <rule type="MessageEvent" severity="info">
                     <event message0="foo=.fruz.nog.TestX" />
                 </rule>
             </iteration>
-            <iteration value=".fruz.TestY">
+            <iteration value=".fruz.TestY"> <!-- see bug 793678 -->
                 <rule type="MessageEvent" severity="info">
                     <event message0="foo=.fruz.TestY" />
                 </rule>

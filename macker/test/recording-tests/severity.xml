@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+
+<macker-ruleset-test>
+
+    <!-- check all combinations (OK, pathological, I know...) -->
+    <rules-file>
+        <ruleset>
+            <access-rule> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="error"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="warning"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="info"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="debug"> <deny><to class="void" /></deny> </access-rule>
+            
+            <message>hi</message>
+            <message severity="error">hi</message>
+            <message severity="warning">hi</message>
+            <message severity="info">hi</message>
+            <message severity="debug">hi</message>
+        </ruleset>
+        <ruleset severity="error">
+            <access-rule> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="error"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="warning"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="info"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="debug"> <deny><to class="void" /></deny> </access-rule>
+            
+            <message>hi</message>
+            <message severity="error">hi</message>
+            <message severity="warning">hi</message>
+            <message severity="info">hi</message>
+            <message severity="debug">hi</message>
+        </ruleset>
+        <ruleset severity="warning">
+            <access-rule> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="error"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="warning"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="info"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="debug"> <deny><to class="void" /></deny> </access-rule>
+            
+            <message>hi</message>
+            <message severity="error">hi</message>
+            <message severity="warning">hi</message>
+            <message severity="info">hi</message>
+            <message severity="debug">hi</message>
+        </ruleset>
+        <ruleset severity="info">
+            <access-rule> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="error"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="warning"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="info"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="debug"> <deny><to class="void" /></deny> </access-rule>
+            
+            <message>hi</message>
+            <message severity="error">hi</message>
+            <message severity="warning">hi</message>
+            <message severity="info">hi</message>
+            <message severity="debug">hi</message>
+        </ruleset>
+        <ruleset severity="debug">
+            <access-rule> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="error"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="warning"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="info"> <deny><to class="void" /></deny> </access-rule>
+            <access-rule severity="debug"> <deny><to class="void" /></deny> </access-rule>
+            
+            <message>hi</message>
+            <message severity="error">hi</message>
+            <message severity="warning">hi</message>
+            <message severity="info">hi</message>
+            <message severity="debug">hi</message>
+        </ruleset>
+
+        <ruleset severity="debug">
+            <ruleset name="Nested">
+                <foreach var="foo" class="X">
+                    <access-rule> <deny><to class="void" /></deny> </access-rule>
+                    <message>hi</message>
+                    <ruleset name="Even more nested">
+                        <access-rule> <deny><to class="void" /></deny> </access-rule>
+                        <message>hi</message>
+                    </ruleset>
+                </foreach>
+            </ruleset>
+        </ruleset>
+    </rules-file>
+        
+    <expected-events>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="error" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="warning" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="debug" /> </rule>
+
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="error" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="warning" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="debug" /> </rule>
+
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="error" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="warning" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="debug" /> </rule>
+
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="error" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="warning" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="debug" /> </rule>
+
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="error" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="warning" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="info" /> </rule>
+        <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="error" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="warning" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+        <rule type="MessageEvent" message0="hi"> <event severity="debug" /> </rule>
+
+        <foreach var="foo">
+            <iteration value=".X"> <!-- see bug 793678 -->
+                <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+                <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+                <rule type="AccessRuleViolation" from="X" to="void"> <event severity="debug" /> </rule>
+                <rule type="MessageEvent" message0="hi"> <event severity="info" /> </rule>
+            </iteration>
+        </foreach>
+    </expected-events>
+    
+    <test-classes>
+        <source package="" class="X">
+            public class X { }
+        </source>
+    </test-classes>
+    
+</macker-ruleset-test>
