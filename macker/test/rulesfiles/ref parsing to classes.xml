@@ -26,9 +26,13 @@
             <event from="MethodReturnsX" />
             <event from="CtorTakesX" />
             <event from="CastToX" />
+            <event from="CastToArrayOfX" />
+            <event from="CastToDoubleArrayOfX" />
             <event from="AccessXMethod" />
             <event from="XField" />
             <event from="XArrayField" />
+            <event from="NewX" />
+            <event from="NewArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="Y">
             <event from="X" />
@@ -94,6 +98,20 @@
                     { return (X) x; }
                 }
         </source>
+        <source class="CastToArrayOfX">
+            public class CastToArrayOfX
+                {
+                public Object f(Object x)
+                    { return (X[]) x; }
+                }
+        </source>
+        <source class="CastToDoubleArrayOfX">
+            public class CastToDoubleArrayOfX
+                {
+                public Object f(Object x)
+                    { return (X[][]) x; }
+                }
+        </source>
         <source class="AccessXMethod">
             public class AccessXMethod
                 {
@@ -108,6 +126,14 @@
         <source class="XArrayField">
             public class XArrayField
                 { private X[][] xarray; }
+        </source>
+        <source class="NewX">
+            public class NewX
+                { private Object x = new X(); }
+        </source>
+        <source class="NewArrayOfX">
+            public class NewArrayOfX
+                { private Object x = new X[3][2]; }
         </source>
     </test-classes>
 

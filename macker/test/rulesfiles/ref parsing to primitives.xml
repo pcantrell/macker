@@ -23,6 +23,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <event from="NewArrayOfX" />
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="byte">
             <event from="MethodTakesX" />
@@ -30,6 +32,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="short">
             <event from="MethodTakesX" />
@@ -37,6 +41,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="int">
             <event from="MethodTakesX" />
@@ -44,6 +50,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="long">
             <event from="MethodTakesX" />
@@ -51,6 +59,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="char">
             <event from="MethodTakesX" />
@@ -58,6 +68,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="boolean">
             <event from="MethodTakesX" />
@@ -65,6 +77,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="float">
             <event from="MethodTakesX" />
@@ -72,6 +86,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
         <eventset type="AccessRuleViolation" severity="error" to="double">
             <event from="MethodTakesX" />
@@ -79,6 +95,8 @@
             <event from="CtorTakesX" />
             <event from="XField" />
             <event from="XArrayField" />
+            <!-- <event from="NewArrayOfX" /> -->
+            <event from="NewDoubleArrayOfX" />
         </eventset>
     </expected-events>
 
@@ -121,6 +139,32 @@
                 {
                 byte[] b; short[] s; int[] i; long[] l;
                 char[] c; boolean[] bool; float[] f; double[] d;
+                }
+        </source>
+        <source class="NewArrayOfX">
+            public class NewArrayOfX
+                {
+                private Object b = new byte[3];
+                private Object s = new short[3];
+                private Object i = new int[3];
+                private Object l = new long[3];
+                private Object c = new char[] {'x', 'y', 'z'};
+                private Object bl = new boolean[0];
+                private Object f = new float[3];
+                private Object d = new double[3];
+                }
+        </source>
+        <source class="NewDoubleArrayOfX">
+            public class NewDoubleArrayOfX
+                {
+                private Object b = new byte[3][2];
+                private Object s = new short[3][2];
+                private Object i = new int[3][2];
+                private Object l = new long[3][2];
+                private Object c = new char[3][2];
+                private Object bl = new boolean[0][0][0][0];
+                private Object f = new float[3][2][3][2][3][2];
+                private Object d = new double[3][2][3][2][3][2][3][2];
                 }
         </source>
     </test-classes>

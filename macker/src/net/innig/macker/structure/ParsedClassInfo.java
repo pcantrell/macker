@@ -2,7 +2,7 @@
  *
  * Macker   http://innig.net/macker/
  *
- * Copyright 2003 Paul Cantrell
+ * Copyright 2002-2003 Paul Cantrell
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2, as published by the
@@ -91,7 +91,7 @@ public class ParsedClassInfo
 
     private void parseExtends(JavaClass classFile)
         throws ClassParseException
-        { extendsClass = getClassManager().getClassInfo(classFile.getSuperclassName()); }
+        { extendsClass = getSafeClassInfo(classFile.getSuperclassName()); }
     
     public ClassInfo getExtends()
         { return extendsClass; }
@@ -102,7 +102,7 @@ public class ParsedClassInfo
         implementsClasses = new TreeSet();
         String[] names = classFile.getInterfaceNames();
         for(int n = 0; n < names.length; n++)
-            implementsClasses.add(getClassManager().getClassInfo(names[n]));
+            implementsClasses.add(getSafeClassInfo(names[n]));
         implementsClasses = Collections.unmodifiableSet(implementsClasses);
         }
     
@@ -130,7 +130,7 @@ public class ParsedClassInfo
                 addReference(
                     new Reference(
                         this,
-                        getClassManager().getClassInfo(
+                        getSafeClassInfo(
                             constantPool.constantToString(constants[a])),
                         ReferenceType.CONSTANT_POOL,
                         null,
@@ -160,7 +160,7 @@ public class ParsedClassInfo
                 addReference(
                     new Reference(
                         this,
-                        getClassManager().getClassInfo(refTo),
+                        getSafeClassInfo(refTo, method.getSignature()),
                         i.hasNext() ? ReferenceType.METHOD_PARAM
                                     : ReferenceType.METHOD_RETURNS,
                         method.getName(),
@@ -174,8 +174,7 @@ public class ParsedClassInfo
                     addReference(
                         new Reference(
                             this,
-                            getClassManager().getClassInfo(
-                                exceptionNames[e]),
+                            getSafeClassInfo(exceptionNames[e]),
                             ReferenceType.METHOD_THROWS,
                             method.getName(),
                             methodAccess));
@@ -196,13 +195,12 @@ public class ParsedClassInfo
             if(types.size() != 1)
                 throw new ClassParseException(
                     "expected one type for field " + fullClassName + '.' + field.getName()
-                    + "; got: " + types);
+                    + "; got: " + types + " (signature is \"" + field.getSignature() + '"');
 
             addReference(
                 new Reference(
                     this,
-                    getClassManager().getClassInfo(
-                        (String) types.get(0)),
+                    getSafeClassInfo((String) types.get(0), field.getSignature()),
                     ReferenceType.FIELD_SIGNATURE,
                     field.getName(),
                     translateAccess(field)));
@@ -220,6 +218,18 @@ public class ParsedClassInfo
             return AccessModifier.PRIVATE;
         else
             return AccessModifier.PACKAGE;
+        }
+    
+    private ClassInfo getSafeClassInfo(String className)
+        throws ClassParseException
+        { return getSafeClassInfo(ClassNameTranslator.typeConstantToClassName(className), className); }
+    
+    private ClassInfo getSafeClassInfo(String className, String unparsedClassName)
+        throws ClassParseException
+        {
+        if(!ClassNameTranslator.isJavaIdentifier(className))
+            throw new ClassParseException("unable to parse class name / signature: \"" + unparsedClassName + "\" (got \"" + className + "\")");
+        return getClassManager().getClassInfo(className);
         }
     
     private void addReference(Reference ref)

@@ -69,6 +69,7 @@ public final class RulesFileTest
         for(int f = 0; f < testFiles.length; f++)
             if(testFiles[f].getName().endsWith(".xml"))
                 suite.addTest(new RulesFileTest(testFiles[f], buildDir));
+                
         return suite;
         }
     

@@ -2,7 +2,7 @@
  *
  * Macker   http://innig.net/macker/
  *
- * Copyright 2003 Paul Cantrell
+ * Copyright 2002-2003 Paul Cantrell
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2, as published by the
@@ -27,6 +27,9 @@ import org.apache.regexp.RESyntaxException;
 
 public class ClassNameTranslator
     {
+    static public boolean isJavaIdentifier(String className)
+        { return legalJavaIdentRE.match(className); }
+    
     static public List signatureToClassNames(String signature)
         {
         List names = new ArrayList();
@@ -62,7 +65,7 @@ public class ClassNameTranslator
     static public String classToResourceName(String resourceName)
         { return (dotRE.subst(resourceName, "/") + ".class").intern(); }
     
-    static private RE classSuffixRE, slashRE, dotRE, arrayExtractorRE, sigExtractorRE;
+    static private RE classSuffixRE, slashRE, dotRE, arrayExtractorRE, sigExtractorRE, legalJavaIdentRE;
     static private Map/*<String,String>*/ primitiveTypeMap;
     static
         {
@@ -72,6 +75,7 @@ public class ClassNameTranslator
             dotRE = new RE("\\.");
             arrayExtractorRE = new RE(        "^(\\[+([BSIJCFDZV])|\\[+L([^;]*);)$");
             sigExtractorRE   = new RE("^\\(?\\)?(\\[*([BSIJCFDZV])|\\[*L([^;]*);)");
+            legalJavaIdentRE = new RE("^([:javastart:][:javapart:]*)(\\.([:javastart:][:javapart:]*))*$");
             }
         catch(RESyntaxException rese)
             { throw new RuntimeException("Can't initialize ClassNameTranslator: " + rese); } 

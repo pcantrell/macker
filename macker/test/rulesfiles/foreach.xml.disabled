@@ -4,7 +4,7 @@
 
     <rules-file>
         <ruleset>
-            <!-- Test var gets set -->
+            <!-- Test that var gets set -->
             <foreach var="foo" class="*">
                 <message>foo=${foo}</message>
             </foreach>
@@ -19,6 +19,18 @@
     
     <expected-events>
         <eventset var="foo">
+            <event type="ForEachStarted" />
+            <event type="ForEachIterationStarted" value="X" />
+            <eventset>
+                <event type="MessageEvent" message0="foo=X" />
+            </eventset>
+            <event type="ForEachIterationFinished" value="X" />
+            <event type="ForEachIterationStarted" value="Y" />
+            <eventset>
+                <event type="MessageEvent" message0="foo=Y" />
+            </eventset>
+            <event type="ForEachIterationFinished" value="Y" />
+            <event type="ForEachFinished" />
         </eventset>
     </expected-events>
 
