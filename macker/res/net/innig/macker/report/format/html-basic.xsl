@@ -1,9 +1,6 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-    <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-    
     <xsl:template match="macker-report">
     <html>
     <head>
@@ -22,7 +19,7 @@
         </xsl:variable>
         <div>
             <xsl:attribute name="class">event-severity-<xsl:value-of select="$maxseverity"/></xsl:attribute>
-            <xsl:value-of select="translate($maxseverity, $lowercase, $uppercase)"/>
+            <xsl:value-of select="$maxseverity"/>
         </div>
         Macker Report
     </div>
@@ -65,7 +62,7 @@
         <div class="event">
             <div>
                 <xsl:attribute name="class">event-severity-<xsl:value-of select="@severity" /></xsl:attribute>
-                <xsl:value-of select="translate(@severity, $lowercase, $uppercase)"/>
+                <xsl:value-of select="$maxseverity"/>
             </div>
             <div class="event-header">
                 <xsl:choose>
