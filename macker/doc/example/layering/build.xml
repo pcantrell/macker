@@ -24,7 +24,7 @@ You can fool around with the various ways one might fix this problem, namely:
   * Make PersistenceException extend RuntimeException, and stop checking it.
   * Declare a special exception to Macker's rules for exceptions.
 
-I don't necessarily endorse any of these as aesthetically valid options, but
+I don't necessarily endorse all of these as aesthetically valid options, but
 Macker can deal with them all!
 
 If, for some absurd reason, you want to run this example, you need to edit
