@@ -1,6 +1,8 @@
 package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassManager;
+import net.innig.macker.structure.ClassInfo;
+import net.innig.macker.event.MackerIsMadException;
 
 import java.util.*;
 
@@ -14,10 +16,14 @@ public class ForEach
         { this.variableName = variableName; }
     
     public String getRegex()
-        { return regex; }
+        { return regexS; }
     
-    public void setRegex(String regex)
-        { this.regex = regex; }
+    public void setRegex(String regexS)
+        throws RegexPatternSyntaxException
+        {
+        this.regexS = regexS;
+        regexPat = new RegexPattern(regexS);
+        }
     
     public RuleSet getRuleSet()
         { return ruleSet; }
@@ -26,13 +32,26 @@ public class ForEach
          { this.ruleSet = ruleSet; }
 
     public void check(
-            EvaluationContext context,
+            EvaluationContext parentContext,
             ClassManager classes)
-        throws RulesException
+        throws RulesException, MackerIsMadException
         {
-        throw new UnsupportedOperationException();
+        EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
+
+        for(Iterator i = classes.getPrimaryClasses().iterator(); i.hasNext(); )
+            {
+            ClassInfo classInfo = (ClassInfo) i.next();
+            String varValue = regexPat.getParen(parentContext, classInfo);
+            if(varValue != null)	
+                {
+                System.out.println("Checking " + getVariableName() + " = \"" + varValue + "\" ...");
+                context.setVariableValue(getVariableName(), varValue);
+                ruleSet.check(context, classes);
+                }
+            }
         }
     
     private RuleSet ruleSet;
-    private String variableName, regex;
+    private String variableName, regexS;
+    private RegexPattern regexPat;
     }

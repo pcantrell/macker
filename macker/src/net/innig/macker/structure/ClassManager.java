@@ -13,7 +13,7 @@ public class ClassManager
     public ClassManager()
         {
         allClassNames = new TreeSet();
-        primaryClassNames = new TreeSet();
+        primaryClasses = new HashSet();
         classNameToInfo = new HashMap();
         references = new TreeMultiMap();
         }
@@ -24,19 +24,19 @@ public class ClassManager
         classNameToInfo.put (classInfo.getClassName(), classInfo);
         if(primary)
             {
-            primaryClassNames.add(classInfo.getClassName());
-            references.putAll    (classInfo.getClassName(), classInfo.getReferences());
-            allClassNames.addAll (classInfo.getReferences());
+            primaryClasses.add  (classInfo);
+            references.putAll   (classInfo.getClassName(), classInfo.getReferences());
+            allClassNames.addAll(classInfo.getReferences());
             }
         }
     
-    public Set getAllClassNames()
+    public Set/*<String>*/ getAllClassNames()
         { return Collections.unmodifiableSet(allClassNames); }
     
-    public Set getPrimaryClassNames()
-        { return Collections.unmodifiableSet(primaryClassNames); }
+    public Set/*<ClassInfo>*/ getPrimaryClasses()
+        { return Collections.unmodifiableSet(primaryClasses); }
     
-    public MultiMap getReferences()
+    public MultiMap/*<String,String>*/ getReferences()
         { return references; }
 //        { return InnigCollections.unmodifiableMultiMap(references); }
 
@@ -57,7 +57,15 @@ public class ClassManager
                 }
             catch(Exception e)
                 {
-                System.err.println("WARNING: Cannot load class " + className);
+                if(!incompleteClassWarning)
+                    {
+                    incompleteClassWarning = true;
+                    System.err.println("WARNING: Macker is unable to find some of the classes"
+                        + " accessed by the input classes (see messages below).  Rules which"
+                        + " depend on attributes of these classes other than their names will"
+                        + " fail.  Check your classpath.");
+                    }
+                System.err.println("Cannot load class " + className);
                 classInfo = new IncompleteClassInfo(className);
                 }
             
@@ -67,7 +75,8 @@ public class ClassManager
         return classInfo;
         }
     
-    private Set/*<String>*/ allClassNames, primaryClassNames;
+    private boolean incompleteClassWarning;
+    private Set/*<String>*/ allClassNames, primaryClasses;
     private Map/*<String,ClassInfo>*/ classNameToInfo;
     private MultiMap/*<String,String>*/ references;
     }

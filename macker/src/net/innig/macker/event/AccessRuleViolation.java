@@ -10,7 +10,9 @@ public class AccessRuleViolation
     {
     public AccessRuleViolation(AccessRule accessRule, ClassInfo from, ClassInfo to, List messages)
         {
-        super(accessRule, "Illegal reference\n  from " + from + "\n    to " + to, messages);
+        super(accessRule, "Illegal reference" + CR
+            + "  from " + from + CR
+            + "    to " + to, messages);
         this.accessRule = accessRule;
         this.from = from;
         this.to = to;
@@ -27,4 +29,5 @@ public class AccessRuleViolation
     
     private final AccessRule accessRule;
     private final ClassInfo from, to;
+    private static final String CR = System.getProperty("line.separator");
     }

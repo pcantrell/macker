@@ -49,6 +49,15 @@ public class RegexPattern
         return regex.match(classInfo.getClassName());
         }
     
+    public String getParen(EvaluationContext context, ClassInfo classInfo)
+        throws RulesException
+        {
+        if(matches(context,classInfo))
+            return regex.getParen(regex.getParenCount() - 1);
+        else
+            return null;
+        }
+    
     private void parseExpr(EvaluationContext context)
         throws UndeclaredVariableException, RegexPatternSyntaxException
         {
@@ -92,9 +101,13 @@ public class RegexPattern
                     builtRegexStr.append(
                         ((ExpPart) part).exp);
                 }
+            
             try { regex = new RE(builtRegexStr.toString()); }
             catch(RESyntaxException rese)
                 { throw new RegexPatternSyntaxException(regexStr, rese); }
+                
+            if(regex.getParenCount() > 1)
+                throw new RegexPatternSyntaxException(regexStr, "Too many parenthesized expressions");
             }
         }
 
@@ -108,8 +121,8 @@ public class RegexPattern
                 partBoundary = new RE("\\.");
 
                 String varS  = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
-                String partS = "(([:javastart:]|\\*|" + varS + ")"
-                               + "([:javapart:]|\\*|" + varS + ")*)";
+                String partS = "(([:javastart:]|[\\(\\)]|\\*|" + varS + ")"
+                               + "([:javapart:]|[\\(\\)]|\\*|" + varS + ")*)";
                 var = new RE(varS);
                 allowable = new RE("^" + partS + "(\\." + partS + ")*$", RE.MATCH_SINGLELINE);
                 }

@@ -91,6 +91,8 @@ public class AccessRule
             MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
             ClassInfo from = classes.getClassInfo((String) entry.getKey());
             ClassInfo to   = classes.getClassInfo((String) entry.getValue());
+            if(from == to)
+                continue;
 
             if(!checkAccess(context, from, to))
                 context.broadcastEvent(

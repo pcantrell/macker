@@ -178,14 +178,14 @@ public class RuleSetBuilder
             if(fromElem != null)
                 {
                 accRule.setFromMessage(fromElem.getChildText("message"));
-                accRule.setFrom(buildCompositePattern(fromElem, ruleSet));
+                accRule.setFrom(readFromToPattern(fromElem, ruleSet));
                 }
             
             Element toElem = subElem.getChild("to");
             if(toElem != null)
                 {
                 accRule.setToMessage(toElem.getChildText("message"));
-                accRule.setTo(buildCompositePattern(toElem, ruleSet));
+                accRule.setTo(readFromToPattern(toElem, ruleSet));
                 }
 
             if(!subElem.getChildren().isEmpty())
@@ -198,6 +198,37 @@ public class RuleSetBuilder
             prevRule = accRule;
             }
         return topRule;
+        }
+    
+    private Pattern readFromToPattern(Element fromToElem, RuleSet ruleSet)
+        throws RulesException
+        {
+        String pattern = fromToElem.getAttributeValue("pattern");
+        String regex   = fromToElem.getAttributeValue("regex");
+        if(pattern != null && regex != null)
+            throw new RulesDocumentException(
+                fromToElem,
+                "<from> and <to> elements cannot have both the pattern and regex attributes");
+        if(  (   pattern != null
+              ||   regex != null)
+          && (   fromToElem.getChild("include") != null
+              || fromToElem.getChild("exclude") != null))
+            throw new RulesDocumentException(
+                fromToElem,
+                "<from> and <to> elements cannot have both a pattern or regex attribute and"
+                + " nested <include> or <exclude> elements");
+        
+        if(regex != null)
+            return new RegexPattern(regex);
+        else if(pattern != null)
+            {
+            Pattern pat = ruleSet.getPattern(pattern);
+            if(pat == null)
+                throw new UndeclaredPatternException(pattern);
+            return pat;
+            }
+        else
+            return buildCompositePattern(fromToElem, ruleSet);
         }
     
     private SAXBuilder saxBuilder;

@@ -8,14 +8,18 @@ public class RegexPatternSyntaxException
     extends RulesException
     {
     public RegexPatternSyntaxException(String regexp)
-        { this(regexp, null); }
+        { this(regexp, ""); }
     
     public RegexPatternSyntaxException(String regexp, RESyntaxException root)
         {
-        super("\"" + regexp + "\" is not a valid Macker regexp pattern"
-            + (root == null ? "" : ": " + root.toString()));
-        this.regexp = regexp;
+        this(regexp, root.toString());
         root.printStackTrace(System.err);
+        }
+    
+    public RegexPatternSyntaxException(String regexp, String message)
+        {
+        super("\"" + regexp + "\" is not a valid Macker regexp pattern" + message);
+        this.regexp = regexp;
         }
     
     public final String getRegexp()

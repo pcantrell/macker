@@ -59,7 +59,6 @@ public class Macker
                 }
             */
             
-            System.out.println("Checking ruleset: " + rs);
             EvaluationContext context = new EvaluationContext(rs);
             context.addListener(new PrintingListener(System.out));
             rs.check(context, cm);
