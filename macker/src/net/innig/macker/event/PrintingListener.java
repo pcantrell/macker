@@ -45,6 +45,9 @@ public class PrintingListener
     public void setThreshold(RuleSeverity threshold)
         { this.threshold = threshold; }
         
+    public void setMaxMessages(int maxMessages)
+        { this.maxMessages = maxMessages; }
+        
     public void mackerStarted(RuleSet ruleSet)
         {
         if(ruleSet.getParent() == null || ruleSet.hasName())
@@ -83,13 +86,21 @@ public class PrintingListener
             eventsBySeverity.put(event.getRule().getSeverity(), event);
             if(event.getRule().getSeverity().compareTo(threshold) >= 0)
                 {
-                if(first)
+                if(messagesPrinted < maxMessages)
                     {
-                    out.println();
-                    first = false;
+                    if(first)
+                        {
+                        out.println();
+                        first = false;
+                        }
+                    out.println(event.toStringVerbose());
                     }
-                out.println(event.toStringVerbose());
+                if(messagesPrinted == maxMessages)
+                    out.println("WARNING: Exceeded the limit of " + maxMessages + " message"
+                            + (maxMessages==1 ? "" : "s") + "; further messages surpressed");
+                messagesPrinted++;
                 }
+            
             }
         }
     
@@ -126,6 +137,7 @@ public class PrintingListener
         
     private boolean first;
     private PrintWriter out;
+    private int maxMessages = Integer.MAX_VALUE, messagesPrinted = 0;
     private RuleSeverity threshold = RuleSeverity.INFO;
     private final MultiMap eventsBySeverity = new CompositeMultiMap(TreeMap.class, HashSet.class);
     }

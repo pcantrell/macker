@@ -129,6 +129,13 @@ public class MackerAntTask extends Task
     public void setFailOnError(boolean failOnError)
         { this.failOnError = failOnError; }
     
+    public void setMaxMessages(int printMaxMessages)
+        {
+        macker.setPrintMaxMessages(printMaxMessages);
+        jvmArgs.add("--print-max");
+        jvmArgs.add(String.valueOf(printMaxMessages));
+        }
+
     public void setPrintThreshold(String threshold)
         {
         macker.setPrintThreshold(RuleSeverity.fromName(threshold));

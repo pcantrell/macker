@@ -31,7 +31,7 @@
     <li> Macker can now generate XML reports.  (<a href="guide/ant.html#xmlReport">more</a>)
     <li> Message rules can print arbitrary messages, optionally with error or warning status.  (<a href="guide/var-foreach.html#message">more</a>)
 	<li> The special from/to variables are now available to patterns in an access rule, in addition to the message.  Two new variables give just the from/to package name.  (<a href="guide/var-foreach.html#var">more</a>)  Two new patterns match the from/to classes.  (<a href="guide/accessrule.html#fromtopats">more</a>)
-	<li> The Ant task can now set a property when rule checking fails.  (<a href="guide/ant.html">more</a>)
+	<li> The Ant task can now set a property when rule checking fails, and supports limiting the number of errors / messages printed to the console.  (<a href="guide/ant.html">more</a>)
 </ul>
 
 <h4>Changes to existing features</h4>
@@ -49,6 +49,7 @@
     <li> Class analysis now is vastly more detailed: it includes superclass, interfaces, and access modifiers, and internally distinguishes different types of signature-level references.  This richer analysis will manifest itself in richer patterns and rules in future versions of Macker.  (Right now, it probably just cancels out the speed benefits of BCEL.)
     <li> The internal event callback mechanism is better structured (inching closer to IDE integration).
     <li> Macker now forces validation against its internal DTD.
+    <li> There's a small but steadily growing regression test suite.
 </ul>
 
 <h4>Bug fixes</h4>
@@ -58,6 +59,7 @@
     <li> The Ant task now always honors the <code>failonerror</code> attribute.
     <li> Fixed a bug which caused certain internal pattern simplifications to incorrectly modify the definition of a pattern.
     <li> Fixed a bug in which a certain lazy loading sequence would incorrectly cause access rules to match the reference from a class to itself.
+    <li> Macker now detects array instantiations correctly, except the instantiation of single-dimensioned arrays of primitive.
 </ul>
 
 <div class="footer">

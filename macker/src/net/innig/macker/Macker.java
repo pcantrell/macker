@@ -91,6 +91,8 @@ public class Macker
                     }
                 else if(args[arg].equals("-o") || args[arg].equals("--output")) 
                     macker.setXmlReportFile(new File(args[++arg]));
+                else if(args[arg].equals("--print-max"))
+                    macker.setPrintMaxMessages(Integer.parseInt(args[++arg]));
                 else if(args[arg].equals("--print"))
                     macker.setPrintThreshold(RuleSeverity.fromName(args[++arg]));
                 else if(args[arg].equals("--anger"))
@@ -145,6 +147,7 @@ public class Macker
         System.out.println("          -D, --define <var>=<value>");
         System.out.println("              --print <threshold>");
         System.out.println("              --anger <threshold>");
+        System.out.println("              --print-max <max-messages>");
         System.out.println("          -v, --verbose");
         System.out.println("          -V, --version");
         }
@@ -249,6 +252,9 @@ public class Macker
     public void setClassLoader(ClassLoader classLoader)
         { cm.setClassLoader(classLoader); }
     
+    public void setPrintMaxMessages(int printMaxMessages)
+        { this.printMaxMessages = printMaxMessages; }
+    
     public void setPrintThreshold(RuleSeverity printThreshold)
         { this.printThreshold = printThreshold; }
     
@@ -292,6 +298,8 @@ public class Macker
             {
             printing = new PrintingListener(System.out);
             printing.setThreshold(printThreshold);
+            if(printMaxMessages > 0)
+                printing.setMaxMessages(printMaxMessages);
             addListener(printing);
             }
 
@@ -364,5 +372,6 @@ public class Macker
     private boolean verbose;
     private File xmlReportFile;
     private List/*<MackerEventListener>*/ listeners = new ArrayList();
+    private int printMaxMessages;
     private RuleSeverity printThreshold = RuleSeverity.INFO, angerThreshold = RuleSeverity.ERROR;
     }
