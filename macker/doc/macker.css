@@ -98,6 +98,7 @@ pre {
 .comment {
     color : #66B;
     font-style : italic;
+    font-weight : normal;
 }
 
 .navbar {
@@ -112,11 +113,11 @@ pre {
 .navbar A, .navbar A:link, .navbar A:visited {
     color : #FFF;
     text-decoration : none;
-    padding : 0em .4em 0em .4em;
+    padding : 0em .2em 0em .2em;
 }
 .navbar .next {
     color : #999;
-    padding : 0em .4em 0em .4em;
+    padding : 0em .1em 0em .2em;
 }
 .footer {
     margin-top : .6cm;

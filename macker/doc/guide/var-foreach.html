@@ -21,7 +21,6 @@
 <h2>Variables and For Each</h2>
 <ul class="pagecontents">
 <li> <a href="#var">Variables</a>
-<li> <a href="#var-vs-pattern">Why Aren't Patterns Variables?</a>
 <li> <a href="#foreach">For Each</a>
 </ul>
 
@@ -41,12 +40,125 @@ For example, you could define a variable for your application's base package, th
 <p>
 As with patterns, the scope of a variable is the ruleset or foreach element which contains it.
 
-<h3><a name="var-vs-pattern">Why Aren't Patterns Variables? </a></h3>
-<p>
-
-
 <h3><a name="foreach">For Each</a></h3>
 <p>
+Astute observers will note that, up to this point, patterns and rules always apply to "any X" -- it is possible to say things like "any logic class may access any data object", but not to say "any logic class may access <i>its own</i> data object".  The Macker foreach construct provides a way of doing this.
+<p>
+The <code>&lt;foreach&gt;</code> tag iterates a variable over all the matches of a given pattern in the input classes.  The tag takes a variable name and a regex, which may optionally contain a set of parentheses.
+</p>
+<pre>&lt;foreach var="<span class="comment">var-name</span>" regex="<span class="comment">var-value</span>)" /&gt;
+&lt;foreach var="<span class="comment">var-name</span>" regex="<span class="comment">...</span>(<span class="comment">var-value</span>)<span class="comment">...</span>" /&gt;</pre>
+<p>
+For the matching classes, the variable will iterate over the substrings falling inside the parentheses.  If the foreach matches several different classes for which the parentheses enclose the same substring, that substring only appears once.  If there are no parentheses, the variable will iterate over the full names of the matching classes.
+<p>
+Confusing?  Some examples should make it a bit clearer.
+<table class="example-table" cellspacing=0>
+<tr><th>A foreach with this regex...</th><th>...applied to these input classes...</th><th>...will iterate through these values.</th></tr>
+<tr valign="top">
+<td class="example">**Exception</td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.IllegalThingerException
+<br>com.vaporcorp.NoSuchThingerException</td>
+<td>com.vaporcorp.IllegalThingerException
+<br>com.vaporcorp.NoSuchThingerException</td>
+</tr>
+<tr valign="top">
+<td class="example">(**)Exception</td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.IllegalThingerException
+<br>com.vaporcorp.NoSuchThingerException</td>
+<td>com.vaporcorp.IllegalThinger
+<br>com.vaporcorp.NoSuchThinger</td>
+</tr>
+<tr valign="top">
+<td class="example">**.(*Exception)</td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.IllegalThingerException
+<br>com.vaporcorp.NoSuchThingerException</td>
+<td>IllegalThingerException
+<br>NoSuchThingerException</td>
+</tr>
+<tr valign="top">
+<td class="example">(**).*Thinger</td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.limb.ArmThinger
+<br>com.vaporcorp.limb.LegThinger
+<br>com.vaporcorp.limb.TentacleThinger
+<br>com.vaporcorp.mood.HappyThinger
+<br>com.vaporcorp.mood.SadThinger</td>
+<td>com.vaporcorp
+<br>com.vaporcorp.limb
+<br>com.vaporcorp.mood</td>
+</tr>
+</table>
+<p>
+Remember that a regex always matches <i>the entire name of the class</i>.  This can give confusing results -- be careful!
+
+<table class="example-table" cellspacing=0>
+<tr><th>A foreach with this regex...</th><th>...applied to these input classes...</th><th>...will iterate through these values.</th></tr>
+<tr valign="top">
+<td class="example">com.vaporcorp.*
+<br><span class="comment">(One might expect this pattern to match each subpackage of com.vaporcorp, but it doesn't -- it needs to match the <b>full</b> class names.)</span></td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.limb.ArmThinger
+<br>com.vaporcorp.limb.LegThinger
+<br>com.vaporcorp.limb.TentacleThinger
+<br>com.vaporcorp.mood.HappyThinger
+<br>com.vaporcorp.mood.SadThinger</td>
+<td>com.vaporcorp.Thinger</td>
+</tr>
+<tr valign="top">
+<td class="example">(com.vaporcorp**).*
+<br><span class="comment">(This pattern gives just the package names. It matches the full class names, but leaves the class part outside the parentheses.)</span></td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.limb.ArmThinger
+<br>com.vaporcorp.limb.LegThinger
+<br>com.vaporcorp.limb.TentacleThinger
+<br>com.vaporcorp.mood.HappyThinger
+<br>com.vaporcorp.mood.SadThinger</td>
+<td>com.vaporcorp
+<br>com.vaporcorp.limb
+<br>com.vaporcorp.mood</td>
+</tr>
+<tr valign="top">
+<td class="example">(com.vaporcorp.**).*
+<br><span class="comment">(The extra dot rules out com.vaporcorp.Thinger.)</span></td>
+<td>com.vaporcorp.Thinger
+<br>com.vaporcorp.limb.ArmThinger
+<br>com.vaporcorp.limb.LegThinger
+<br>com.vaporcorp.limb.TentacleThinger
+<br>com.vaporcorp.mood.HappyThinger
+<br>com.vaporcorp.mood.SadThinger</td>
+<td>com.vaporcorp.limb
+<br>com.vaporcorp.mood</td>
+</tr>
+</table>
+<p>
+Foreach is a powerful construct.  Here, for example, is one possible implementation of the example from the FAQ, "One functional module may access another only through its API."
+In this hypothetical situation, the application has a set of modules in packages named <code>com.vaporcorp.module.<i>xyz</i></code>, with implementation classes in subpackages.
+<pre>&lt;ruleset&gt;
+    &lt;foreach var="module" regex="(com.vaporcorp.module.*).**"&gt;
+
+        &lt;pattern name="api" regex="${module}.*" /&gt;
+        &lt;pattern name="inside" regex="${module}.**" /&gt;
+        &lt;pattern name="outside"&gt;
+            &lt;exclude pattern name="inside" /&gt;
+        &lt;/pattern&gt;
+
+        &lt;access-rule&gt;
+            &lt;deny&gt;
+                &lt;from pattern="outside" /&gt;
+                &lt;to pattern="inside" /&gt;
+                &lt;allow&gt;
+                    &lt;to pattern="api" /&gt;
+                &lt;/allow&gt;
+            &lt;/deny&gt;
+        &lt;/access-rule&gt;
+
+    &lt;/foreach&gt;
+&lt;/ruleset&gt;</pre>
+<p>
+If you understand this example, you have the mystery of the Macker rules file in hand.
 
 
 <div class="next">
