@@ -21,6 +21,7 @@
 package net.innig.macker.structure;
 
 import java.util.Set;
+import net.innig.collect.MultiMap;
 
 public class IncompleteClassInfo
     extends ClassInfo
@@ -31,19 +32,18 @@ public class IncompleteClassInfo
     public String getClassName()
         { return className; }
 
-    public boolean isInterface()               { throw newIncompleteException("get access flags"); }
-    public boolean isAbstract()                { throw newIncompleteException("get access flags"); }
-    public boolean isFinal()                   { throw newIncompleteException("get access flags"); }
-    public AccessModifier getAccessModifier()  { throw newIncompleteException("determine accessibility"); }
-    public String getExtends()                 { throw newIncompleteException("determine superclass"); }
-    public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces"); }
-    public Set/*<String>*/ getReferences()     { throw newIncompleteException("check refereces"); }
-    public Set/*<String>*/ getApiReferences()  { throw newIncompleteException("check refereces"); }
+    public boolean isInterface()               { throw newIncompleteException("get attributes of"); }
+    public boolean isAbstract()                { throw newIncompleteException("get attributes of"); }
+    public boolean isFinal()                   { throw newIncompleteException("get attributes of"); }
+    public AccessModifier getAccessModifier()  { throw newIncompleteException("determine accessibility of"); }
+    public String getExtends()                 { throw newIncompleteException("determine superclass of"); }
+    public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces implemented by"); }
+    public MultiMap getReferences()            { throw newIncompleteException("resolve references from"); }
     
     private IncompleteClassInfoException newIncompleteException(String action)
         {
         return new IncompleteClassInfoException(
-            "Unable to " + action + " for class " + className
+            "Unable to " + action + " class " + className
             + ", because the class file could not be loaded."
             + " Make sure it is in Macker's classpath.");
         }

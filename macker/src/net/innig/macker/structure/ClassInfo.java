@@ -21,6 +21,8 @@
 package net.innig.macker.structure;
 
 import java.util.Set;
+import net.innig.collect.InnigCollections;
+import net.innig.collect.MultiMap;
 
 public abstract class ClassInfo
     implements Comparable
@@ -36,6 +38,20 @@ public abstract class ClassInfo
     public int compareTo(Object that)
         { return getClassName().compareTo(((ClassInfo) that).getClassName()); }
     
+    public boolean equals(Object that)
+        {
+        if(this == that)
+            return true;
+        if(that == null)
+            return false;
+        if(this.getClass() != that.getClass())
+            return false;
+        return getClassName().equals(((ClassInfo) that).getClassName());
+        }
+    
+    public int hashCode()
+        { return getClassName().hashCode(); }
+    
     public abstract String getClassName();
     public abstract boolean isInterface();
     public abstract boolean isAbstract();
@@ -43,7 +59,6 @@ public abstract class ClassInfo
     public abstract AccessModifier getAccessModifier();
     public abstract String getExtends();
     public abstract Set/*<String>*/ getImplements();
-    public abstract Set/*<String>*/ getReferences();
-    public abstract Set/*<String>*/ getApiReferences();
+    public abstract MultiMap/*<String,Reference>*/ getReferences();
     }
 

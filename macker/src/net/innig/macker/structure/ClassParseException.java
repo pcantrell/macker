@@ -25,6 +25,9 @@ import org.gjt.jclasslib.structures.InvalidByteCodeException;
 public class ClassParseException
     extends Exception
     {
+    public ClassParseException(String message)
+        { super(message); }
+        
     public ClassParseException(InvalidByteCodeException ibce)
         { super(ibce.toString()); }
     }

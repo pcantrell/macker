@@ -21,6 +21,8 @@
 package net.innig.macker.structure;
 
 import java.util.*;
+import net.innig.collect.InnigCollections;
+import net.innig.collect.MultiMap;
 
 public class PrimitiveTypeInfo
     extends ClassInfo
@@ -53,8 +55,8 @@ public class PrimitiveTypeInfo
     public AccessModifier getAccessModifier() { return AccessModifier.PUBLIC; }
     public String getExtends() { return null; }
     public Set/*<String>*/ getImplements() { return Collections.EMPTY_SET; }
-    public Set/*<String>*/ getReferences() { return Collections.EMPTY_SET; }
-    public Set/*<String>*/ getApiReferences() { return Collections.EMPTY_SET; }
+    public MultiMap/*<String,Reference>*/ getReferences()
+        { return InnigCollections.EMPTY_MULTIMAP; }
     public String toString() { return getClassName(); }
     
     public String className;

@@ -27,9 +27,9 @@ import org.apache.regexp.RESyntaxException;
 
 public class ClassNameTranslator
     {
-    static public Collection signatureToClassNames(String signature)
+    static public List signatureToClassNames(String signature)
         {
-        Collection names = new ArrayList();
+        List names = new ArrayList();
         for(int pos = 0; pos < signature.length(); )
             {
             String remaining = signature.substring(pos);

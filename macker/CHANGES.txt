@@ -1,4 +1,5 @@
-    - parsing for superclass, interfaces, access modifiers, API refs
+    - parsing for superclass, interfaces, access modifiers
+    - parsing differentiates signature-level reference types
     - severity levels allow some rules to generate only warning instead of errors
     - verbose output shows classes in sorted order
 

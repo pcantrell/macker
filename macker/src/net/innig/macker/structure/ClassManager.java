@@ -23,10 +23,10 @@ package net.innig.macker.structure;
 import net.innig.macker.util.ClassNameTranslator;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.*;
 
-import net.innig.collect.MultiMap;
-import net.innig.collect.TreeMultiMap;
+import net.innig.collect.*;
 
 public class ClassManager
     {
@@ -57,8 +57,8 @@ public class ClassManager
         if(primary)
             {
             primaryClasses.add  (classInfo);
-            references.putAll   (classInfo.getClassName(), classInfo.getReferences());
-            allClassNames.addAll(classInfo.getReferences());
+            references.putAll   (classInfo.getClassName(), classInfo.getReferences().keySet());
+            allClassNames.addAll(classInfo.getReferences().keySet());
             }
         }
     
@@ -72,8 +72,7 @@ public class ClassManager
         { return Collections.unmodifiableSet(primaryClasses); }
     
     public MultiMap/*<String,String>*/ getReferences()
-        { return references; }
-//        { return InnigCollections.unmodifiableMultiMap(references); }
+        { return InnigCollections.unmodifiableMultiMap(references); }
 
     public ClassInfo getClassInfo(String className)
         {
@@ -86,30 +85,49 @@ public class ClassManager
                 String resourceName = ClassNameTranslator.classToResourceName(className);
                 InputStream classStream = classLoader.getResourceAsStream(resourceName);
                 
-                try {
-                    classInfo = new ParsedClassInfo(classStream);
-                    classStream.close();
-                    }
-                catch(Exception e)
+                if(classStream == null)
                     {
-                    if(!incompleteClassWarning)
-                        {
-                        incompleteClassWarning = true;
-                        System.out.println(
-                            "WARNING: Macker is unable to find some of the external classes"
-                            + " used by the primary classes (see warnings below).  Rules which"
-                            + " depend on attributes of these missing classes other than their"
-                            + " names will fail.  Check your classpath.");
-                        }
-                    System.out.println("WARNING: Cannot load class " + className);
-                    classInfo = new IncompleteClassInfo(className);
+                    showIncompleteWarning();
+                    System.out.println("WARNING: Unable to find class " + className + " in the classpath");
                     }
+                else
+                    try {
+                        classInfo = new ParsedClassInfo(classStream);
+                        }
+                    catch(Exception e)
+                        {
+                        if(e instanceof RuntimeException)
+                            throw (RuntimeException) e;
+                        showIncompleteWarning();
+                        System.out.println("WARNING: Unable to load class " + className + ": " + e);
+                        }
+                    finally
+                        {
+                        try { classStream.close(); }
+                        catch(IOException ioe) { } // nothing we can do
+                        }
+                    
+                if(classInfo == null)
+                    classInfo = new IncompleteClassInfo(className);
                 }
             
             addClass(classInfo, false);
             }
         
         return classInfo;
+        }
+    
+    private void showIncompleteWarning()
+        {
+        if(!incompleteClassWarning)
+            {
+            incompleteClassWarning = true;
+            System.out.println(
+                "WARNING: Macker is unable to load some of the external classes"
+                + " used by the primary classes (see warnings below).  Rules which"
+                + " depend on attributes of these missing classes other than their"
+                + " names will fail.");
+            }
         }
     
     private boolean incompleteClassWarning;

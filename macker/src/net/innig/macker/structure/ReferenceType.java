@@ -26,18 +26,18 @@ public class ReferenceType
     extends GraphType
     {
     public static final ReferenceType
-        SIGNATURE                 = new ReferenceType("api"),
-            MEMBER                = new ReferenceType("member", SIGNATURE),
-                METHOD            = new ReferenceType("method", MEMBER),
-                    METHOD_PARAM  = new ReferenceType("param", METHOD),
-                    METHOD_RETURN = new ReferenceType("returns", METHOD),
-                    METHOD_THROWS = new ReferenceType("throws", METHOD),
-                FIELD             = new ReferenceType("field", MEMBER),
-            SUPER                 = new ReferenceType("super"),
-                EXTENDS           = new ReferenceType("extends", SUPER),
-                IMPLEMENTS        = new ReferenceType("implements", SUPER),
-        INTERNAL                  = new ReferenceType("internal"),
-            CLASS_LOAD            = new ReferenceType("class-load", INTERNAL);
+        SIGNATURE                  = new ReferenceType("api"),
+            MEMBER                 = new ReferenceType("member", SIGNATURE),
+                METHOD             = new ReferenceType("method", MEMBER),
+                    METHOD_PARAM   = new ReferenceType("method-param", METHOD),
+                    METHOD_RETURNS = new ReferenceType("method-returns", METHOD),
+                    METHOD_THROWS  = new ReferenceType("method-throws", METHOD),
+                FIELD              = new ReferenceType("field", MEMBER),
+            SUPER                  = new ReferenceType("super"),
+                EXTENDS            = new ReferenceType("extends", SUPER),
+                IMPLEMENTS         = new ReferenceType("implements", SUPER),
+        INTERNAL                   = new ReferenceType("internal"),
+            CONSTANT_POOL          = new ReferenceType("constant-pool", INTERNAL);
     
     private ReferenceType(String name) { super(name); }
     private ReferenceType(String name, ReferenceType parent) { super(name, parent); }

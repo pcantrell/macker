@@ -192,7 +192,7 @@ public class Macker
                     String className = (String) node;
                     cm.makePrimary(className);
                     return InnigCollections.select(
-                        cm.getClassInfo(className).getReferences(),
+                        cm.getClassInfo(className).getReferences().keySet(),
                         new Selector()
                             {
                             public boolean select(Object className)
@@ -249,7 +249,7 @@ public class Macker
                 {
                 ClassInfo classInfo = (ClassInfo) i.next();
                 System.out.println("Classes used by " + classInfo + ":");
-                for(Iterator usedIter = classInfo.getReferences().iterator(); usedIter.hasNext(); )
+                for(Iterator usedIter = classInfo.getReferences().keySet().iterator(); usedIter.hasNext(); )
                     System.out.println("    " + usedIter.next());
                 System.out.println();
                 }

@@ -26,8 +26,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.*;
+import net.innig.collect.*;
 
 import org.gjt.jclasslib.structures.*;
+import org.gjt.jclasslib.structures.attributes.ExceptionsAttribute;
 import org.gjt.jclasslib.structures.constants.ConstantClassInfo;
 import org.gjt.jclasslib.io.ClassFileReader;
 
@@ -39,7 +41,7 @@ public class ParsedClassInfo
         {
         try { parse(ClassFileReader.readFromFile(classFile)); }
         catch(InvalidByteCodeException ibce)
-            { throw new ClassParseException (ibce); }
+            { throw new ClassParseException(ibce); }
         }
     
     public ParsedClassInfo(InputStream classFileStream)
@@ -47,7 +49,7 @@ public class ParsedClassInfo
         {
         try { parse(ClassFileReader.readFromInputStream(classFileStream)); }
         catch(InvalidByteCodeException ibce)
-            { throw new ClassParseException (ibce); }
+            { throw new ClassParseException(ibce); }
         }
     
     private void parse(ClassFile classFile)
@@ -81,7 +83,7 @@ public class ParsedClassInfo
         { return className; }
     
     private void parseFlags(ClassFile classFile)
-        throws InvalidByteCodeException
+        throws ClassParseException, InvalidByteCodeException
         {
         int flags = classFile.getAccessFlags();
         isInterface = 0 != (flags & AccessFlags.ACC_INTERFACE);
@@ -111,19 +113,19 @@ public class ParsedClassInfo
         { return accessModifier; }
 
     private void parseExtends(ClassFile classFile)
-        throws InvalidByteCodeException
+        throws ClassParseException, InvalidByteCodeException
         { extendsName = decodeClassName(classFile, classFile.getSuperClass()); }
     
     public String getExtends()
         { return extendsName; }
     
     private void parseImplements(ClassFile classFile)
-        throws InvalidByteCodeException
+        throws ClassParseException, InvalidByteCodeException
         {
         implementsNames = new TreeSet();
         int[] interfaces = classFile.getInterfaces();
-        for(int n = 0; n < interfaces.length; n++)
-            implementsNames.add(decodeClassName(classFile, interfaces[n]));
+        for(int a = 0; a < interfaces.length; a++)
+            implementsNames.add(decodeClassName(classFile, interfaces[a]));
         implementsNames = Collections.unmodifiableSet(implementsNames);
         }
     
@@ -131,44 +133,114 @@ public class ParsedClassInfo
         { return implementsNames; }
     
     private void parseReferences(ClassFile classFile)
-        throws InvalidByteCodeException
+        throws ClassParseException, InvalidByteCodeException
         {
         CPInfo[] constantPool = classFile.getConstantPool();
-        referenceNames = new TreeSet();
-        apiReferenceNames = new TreeSet();
+        references = new CompositeMultiMap(TreeMap.class, HashSet.class);
         
         // Add accessed classes from constant pool entries
-        for(int n = 1; n < constantPool.length; n++)
-            if(constantPool[n] instanceof ConstantClassInfo)
-                referenceNames.add(
-                    ClassNameTranslator.typeConstantToClassName(
-                        ((ConstantClassInfo) constantPool[n]).getName()));
+        for(int a = 1; a < constantPool.length; a++)
+            if(constantPool[a] instanceof ConstantClassInfo)
+                addReference(
+                    new Reference(
+                        getClassName(),
+                        ClassNameTranslator.typeConstantToClassName(
+                            ((ConstantClassInfo) constantPool[a]).getName()),
+                        ReferenceType.CONSTANT_POOL,
+                        null,
+                        null));
         
         // Add yet more accessed classes from method & field signatures
-        Collection members = new ArrayList(50);
-        members.addAll(Arrays.asList(classFile.getMethods()));
-        members.addAll(Arrays.asList(classFile.getFields()));
-        for(Iterator i = members.iterator(); i.hasNext(); )
+        MethodInfo[] methods = classFile.getMethods();
+        for(int m = 0; m < methods.length; m++)
             {
-            ClassMember member = (ClassMember) i.next();
-            Collection refNames =
+            MethodInfo method = methods[m];
+            AccessModifier methodAccess = translateAccess(method.getAccessFlags());
+            
+            List paramsAndReturn =
                 ClassNameTranslator.signatureToClassNames(
-                    classFile.getConstantPoolUtf8Entry(member.getDescriptorIndex())
+                    classFile.getConstantPoolUtf8Entry(method.getDescriptorIndex())
                              .getString());
-            referenceNames.addAll(refNames);
-            if(isApi(classFile.getAccessFlags()) && isApi(member.getAccessFlags()))
-                apiReferenceNames.addAll(refNames);
+            if(paramsAndReturn.isEmpty())
+                throw new ClassParseException(
+                    "unable to read types for method " + className + '.' + method.getName());
+            
+            for(Iterator i = paramsAndReturn.iterator(); i.hasNext(); )
+                {
+                String refTo = (String) i.next();
+                addReference(
+                    new Reference(
+                        getClassName(),
+                        (String) paramsAndReturn.get(paramsAndReturn.size()-1),
+                        i.hasNext() ? ReferenceType.METHOD_PARAM
+                                    : ReferenceType.METHOD_RETURNS,
+                        method.getName(),
+                        methodAccess));
+                }
+            
+            AttributeInfo[] attribs = method.getAttributes();
+            for(int a = 0; a < attribs.length; a++)
+                if(attribs[a] instanceof ExceptionsAttribute)
+                    {
+                    int[] excepts = ((ExceptionsAttribute) attribs[a]).getExceptionIndexTable();
+                    for(int e = 0; e < excepts.length; e++)
+                        addReference(
+                            new Reference(
+                                getClassName(),
+                                classFile.getConstantPoolEntryName(excepts[e]),
+                                ReferenceType.METHOD_THROWS,
+                                method.getName(),
+                                methodAccess));
+                    }
             }
         
-        referenceNames = Collections.unmodifiableSet(referenceNames);
-        apiReferenceNames = Collections.unmodifiableSet(apiReferenceNames);
+        FieldInfo[] fields = classFile.getFields();
+        for(int a = 0; a < fields.length; a++)
+            {
+            FieldInfo field = fields[a];
+            List types =
+                ClassNameTranslator.signatureToClassNames(
+                    classFile.getConstantPoolUtf8Entry(field.getDescriptorIndex())
+                             .getString());
+            if(types.size() != 1)
+                throw new ClassParseException(
+                    "expected one type for field " + className + '.' + field.getName()
+                    + "; got: " + types);
+
+            addReference(
+                new Reference(
+                    getClassName(),
+                    (String) types.get(0),
+                    ReferenceType.FIELD,
+                    field.getName(),
+                    translateAccess(field.getAccessFlags())));
+            }
+
+        references = InnigCollections.unmodifiableMultiMap(references);
+        }
+        
+    private AccessModifier translateAccess(int accessFlags)
+        throws ClassParseException
+        {
+        accessFlags = accessFlags & ( AccessFlags.ACC_PUBLIC
+                                    | AccessFlags.ACC_PROTECTED
+                                    | AccessFlags.ACC_PRIVATE);
+        if(accessFlags == AccessFlags.ACC_PUBLIC)
+            return AccessModifier.PUBLIC;
+        if(accessFlags == AccessFlags.ACC_PROTECTED)
+            return AccessModifier.PROTECTED;
+        if(accessFlags == 0)
+            return AccessModifier.PACKAGE;
+        if(accessFlags == AccessFlags.ACC_PRIVATE)
+            return AccessModifier.PRIVATE;
+        throw new ClassParseException("unknown access flags: " + accessFlags);
         }
     
-    public Set/*<String>*/ getReferences()
-        { return referenceNames; }
+    private void addReference(Reference ref)
+        { references.put(ref.getTo(), ref); }
     
-    public Set/*<String>*/ getApiReferences()
-        { return apiReferenceNames; }
+    public MultiMap/*<String,Reference>*/ getReferences()
+        { return references; }
     
     public String toString()
         { return getClassName(); }
@@ -179,6 +251,7 @@ public class ParsedClassInfo
     private String className, extendsName;
     private boolean isInterface, isAbstract, isFinal;
     private AccessModifier accessModifier;
-    private Set/*<String>*/ referenceNames, apiReferenceNames, implementsNames;
+    private Set/*<String>*/ implementsNames;
+    private MultiMap/*<String,Reference>*/ references;
     }
 
