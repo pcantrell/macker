@@ -32,7 +32,7 @@ public abstract class FilterFinder
         if(filter == null)
             {
             String filterClassName = 
-                Conf.getMergedProperties(FILTER_CONF)
+                Conf.getMergedProperties(FILTER_CONF, FilterFinder.class.getClassLoader())
                     .getProperty(filterName);
             if(filterClassName == null)
                 throw new NoSuchFilterException(filterName);
