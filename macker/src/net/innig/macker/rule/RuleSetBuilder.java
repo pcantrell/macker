@@ -45,6 +45,10 @@ public class RuleSetBuilder
         {
         RuleSet ruleSet = new RuleSet(parent);
         
+        String name = ruleSetElem.getAttributeValue("name");
+        if(name != null)
+            ruleSet.setName(name);
+        
         for(Iterator patIter = ruleSetElem.getChildren().iterator(); patIter.hasNext(); )
             {
             Element subElem = (Element) patIter.next();
@@ -129,21 +133,21 @@ public class RuleSetBuilder
     public ForEach buildForEach(Element forEachElem, RuleSet parent)
         throws RulesException
         {
-        String name = forEachElem.getAttributeValue("name");
-        if(name == null)
+        String varName = forEachElem.getAttributeValue("var");
+        if(varName == null)
             throw new RulesDocumentException(
                 forEachElem,
-                "<foreach> is missing the \"name\" attribute");
+                "<foreach> is missing the \"var\" attribute");
         
-        String value = forEachElem.getAttributeValue("value");
-        if(value == null)
+        String regex = forEachElem.getAttributeValue("regex");
+        if(regex == null)
             throw new RulesDocumentException(
                 forEachElem,
-                "<foreach> is missing the \"value\" attribute");
+                "<foreach> is missing the \"regex\" attribute");
         
         ForEach forEach = new ForEach();
-        forEach.setName(name);
-        forEach.setValue(value);
+        forEach.setVariableName(varName);
+        forEach.setRegex(regex);
         forEach.setRuleSet(buildRuleSet(forEachElem, parent));
         return forEach;
         }

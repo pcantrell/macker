@@ -1,5 +1,9 @@
 package net.innig.macker.rule;
 
+import net.innig.macker.event.MackerIsMadEvent;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.event.MackerEventListener;
+
 import java.util.*;
 
 public class EvaluationContext
@@ -8,6 +12,7 @@ public class EvaluationContext
         {
         this.ruleSet = ruleSet;
         varValues = new HashMap();
+        listeners = new HashSet();
         }
     
     public EvaluationContext(RuleSet ruleSet, EvaluationContext parent)
@@ -38,8 +43,52 @@ public class EvaluationContext
             return parent.getVariableValue(name);
         throw new UndeclaredVariableException(name);
         }
+    
+    public void addListener(MackerEventListener listener)
+        { listeners.add(listener); }
+        
+    public void removeListener(MackerEventListener listener)
+        { listeners.remove(listener); }
+    
+    public void broadcastStarted()
+        {
+        for(Iterator i = listeners.iterator(); i.hasNext(); )
+            ((MackerEventListener) i.next()).mackerStarted(ruleSet);
+        if(getParent() != null)
+            getParent().broadcastStarted();
+        }
+    
+    public void broadcastFinished()
+        throws MackerIsMadException
+        {
+        for(Iterator i = listeners.iterator(); i.hasNext(); )
+            ((MackerEventListener) i.next()).mackerFinished(ruleSet);
+        if(getParent() != null)
+            getParent().broadcastFinished();
+        }
+    
+    public void broadcastAborted()
+        {
+        for(Iterator i = listeners.iterator(); i.hasNext(); )
+            ((MackerEventListener) i.next()).mackerAborted(ruleSet);
+        if(getParent() != null)
+            getParent().broadcastAborted();
+        }
+    
+    public void broadcastEvent(MackerIsMadEvent event)
+        throws MackerIsMadException
+        {
+        for(Iterator i = listeners.iterator(); i.hasNext(); )
+            ((MackerEventListener) i.next()).handleMackerIsMadEvent(ruleSet, event);
+        if(getParent() != null)
+            getParent().broadcastEvent(event);
+        }
         
     private RuleSet ruleSet;
     private EvaluationContext parent;
     private Map varValues;
+    private Set listeners;
     }
+
+
+

@@ -2,6 +2,7 @@ package net.innig.macker;
 
 import net.innig.macker.structure.*;
 import net.innig.macker.rule.*;
+import net.innig.macker.event.*;
 
 import net.innig.collect.*;
 
@@ -19,7 +20,7 @@ public class Macker
         
         ClassManager cm = new ClassManager();
         for(int arg = 0; arg < args.length; arg++)
-            cm.addClass(new ClassInfo(new File(args[arg])));
+            cm.addClass(new ParsedClassInfo(new File(args[arg])));
         
         Set allClasses = cm.getReferences().keySet();
         for(Iterator i = allClasses.iterator(); i.hasNext(); )
@@ -39,6 +40,7 @@ public class Macker
         for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
             {
             RuleSet rs = (RuleSet) rsIter.next();
+            
             for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
                 {
                 final Pattern pat = (Pattern) patIter.next();
@@ -52,6 +54,12 @@ public class Macker
                     }
                 System.out.println();
                 }
+            
+            EvaluationContext context = new EvaluationContext(rs);
+            context.addListener(new PrintingListener(System.out));
+            rs.check(context, cm);
             }
         }
     }
+
+

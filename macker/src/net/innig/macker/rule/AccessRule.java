@@ -4,8 +4,11 @@ import net.innig.macker.structure.ClassManager;
 import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
+import net.innig.macker.event.AccessRuleViolation;
+import net.innig.macker.event.MackerIsMadException;
 
 import java.util.*;
+import net.innig.collect.MultiMap;
 
 public class AccessRule
     extends Rule
@@ -81,15 +84,17 @@ public class AccessRule
     //--------------------------------------------------------------------------
 
     public void check(EvaluationContext context, ClassManager classes)
-        throws RulesException
+        throws RulesException, MackerIsMadException
         {
         for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
             {
-            Map.Entry entry = (Map.Entry) refIter.next();
-            checkAccess(
-                context,
-                classes.getClassInfo((String) entry.getKey()),
-                classes.getClassInfo((String) entry.getValue()));
+            MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
+            ClassInfo from = classes.getClassInfo((String) entry.getKey());
+            ClassInfo to   = classes.getClassInfo((String) entry.getValue());
+
+            if(!checkAccess(context, from, to))
+                context.broadcastEvent(
+                    new AccessRuleViolation(this, from, to, Collections.EMPTY_LIST));
             }
         }
     

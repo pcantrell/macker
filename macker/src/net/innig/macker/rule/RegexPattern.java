@@ -46,6 +46,8 @@ public class RegexPattern
         throws RulesException
         {
         parseExpr(context);
+System.out.println("context=" + context);
+System.out.println("classInfo=" + classInfo);
         return regex.match(classInfo.getClassName());
         }
     

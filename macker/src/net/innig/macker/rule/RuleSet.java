@@ -1,10 +1,12 @@
 package net.innig.macker.rule;
 
-import net.innig.macker.MackerIsMadException;
+import net.innig.macker.event.MackerIsMadException;
+import net.innig.macker.structure.ClassManager;
 
 import java.util.*;
 
 public class RuleSet
+    extends Rule
     {
     public RuleSet()
         {
@@ -17,6 +19,16 @@ public class RuleSet
         this();
         setParent(parent);
         }
+    
+    public String getName()
+        {
+        if(name == null)
+            return (parent != null) ? getParent().getName() : "<anonymous ruleset>";
+        return name;
+        }
+    
+    public void setName(String name)
+        { this.name = name; }
     
     public boolean declaresPattern(String name)
         { return patterns.keySet().contains(name); }
@@ -58,6 +70,20 @@ public class RuleSet
     public void setParent(RuleSet parent)
         { this.parent = parent; }
     
+    public String toString()
+        { return getClass().getName() + '[' + name + ']'; }
+
+    public void check(EvaluationContext context, ClassManager classes)
+        throws RulesException, MackerIsMadException
+        {
+        for(Iterator ruleIter = rules.iterator(); ruleIter.hasNext(); )
+            {
+            Rule rule = (Rule) ruleIter.next();
+            rule.check(context, classes);
+            }
+        }
+    
+    private String name;
     private Map/*<String,Pattern>*/ patterns;
     private Collection rules;
     private RuleSet parent;
