@@ -38,7 +38,7 @@ public class RuleSetRecording
     public RuleSetRecording(EventRecording parent)
         {
         super(parent);
-        children = new ArrayList();
+        children = new ArrayList<EventRecording>();
         }
     
     public EventRecording record(MackerEvent event)
@@ -62,9 +62,8 @@ public class RuleSetRecording
     
     public void read(Element elem)
         {
-        for(Iterator childIter = elem.getChildren().iterator(); childIter.hasNext(); )
+        for(Element childElem : (List<Element>) elem.getChildren())
             {
-            Element childElem = (Element) childIter.next();
             EventRecording child;
             if(childElem.getName().equals("rule"))
                 child = new GenericRuleRecording(this);
@@ -94,13 +93,13 @@ public class RuleSetRecording
             }
         
         boolean match = true;
-        Iterator
+        Iterator<EventRecording>
             expectedIter = children.iterator(),
             actualIter = actualRuleSet.children.iterator();
         while(expectedIter.hasNext())
             {
-            EventRecording expectedChild = (EventRecording) expectedIter.next();
-            EventRecording   actualChild = (EventRecording)   actualIter.next();
+            EventRecording expectedChild = expectedIter.next();
+            EventRecording   actualChild =   actualIter.next();
             match = expectedChild.compare(actualChild, out) && match;
             }
         return match;
@@ -112,15 +111,12 @@ public class RuleSetRecording
     public void dump(PrintWriter out, int indent)
         {
         super.dump(out, indent);
-        for(Iterator childIter = children.iterator(); childIter.hasNext(); )
-            {
-            EventRecording child = (EventRecording) childIter.next();
+        for(EventRecording child : children)
             child.dump(out, indent+3);
-            }
         }
     
     private String name;
-    private List/*<EventRecording>*/ children;
+    private List<EventRecording> children;
     }
 
 

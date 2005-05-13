@@ -31,7 +31,6 @@ import net.innig.macker.structure.IncompleteClassInfoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.AntClassLoader;
@@ -52,7 +51,7 @@ public class MackerAntTask extends Task
     public MackerAntTask()
         {
         macker = new Macker();
-        jvmArgs = new ArrayList();
+        jvmArgs = new ArrayList<String>();
         }
         
     public void execute()
@@ -83,8 +82,8 @@ public class MackerAntTask extends Task
                 getJvm().setFailonerror(false);
                 getJvm().clearArgs();
                 
-                for(Iterator i = jvmArgs.iterator(); i.hasNext(); )
-                    getJvm().createArg().setValue((String) i.next());
+                for(String arg : jvmArgs)
+                    getJvm().createArg().setValue(arg);
                     
                 int resultCode = getJvm().executeJava();
                 if(resultCode == 2)
@@ -247,7 +246,7 @@ public class MackerAntTask extends Task
     private boolean fork = false;
     private boolean failOnError = true;
     private boolean verbose = false;
-    private List/*<String>*/ jvmArgs;
+    private List<String> jvmArgs;
     private Macker macker;  // for non-forked
     private Java jvm;       // for forked
     private Path classPath;

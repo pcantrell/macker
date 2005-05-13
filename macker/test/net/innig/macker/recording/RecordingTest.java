@@ -137,10 +137,10 @@ public final class RecordingTest
         RecordingListener recordingListener = new RecordingListener();
         macker.addListener(recordingListener);
         
-        for(Iterator rsIter = rulesFile.iterator(); rsIter.hasNext();)
-            macker.addRuleSet((RuleSet) rsIter.next());
-        for(Iterator cfIter = classFiles.iterator(); cfIter.hasNext();)
-            macker.addClass((File) cfIter.next());
+        for(RuleSet rs : rulesFile)
+            macker.addRuleSet(rs);
+        for(File cf : classFiles)
+            macker.addClass(cf);
         
         macker.setPrintThreshold(null);
         
@@ -198,14 +198,13 @@ public final class RecordingTest
         File srcDir = new File(baseDir, "src");
         File classesDir = new File(baseDir, "classes");
         
-        List/*<String>*/ javacArgs = new ArrayList();
+        List<String> javacArgs = new ArrayList<String>();
         javacArgs.add("-d");
         javacArgs.add(classesDir.getPath());
         classesDir.mkdirs();
         
-        for(Iterator sourceIter = testClassesElem.getChildren("source").iterator(); sourceIter.hasNext(); )
+        for(Element sourceElem : (List<Element>) testClassesElem.getChildren("source"))
             {
-            Element sourceElem = (Element) sourceIter.next();
             String packName = sourceElem.getAttributeValue("package");
             String className = sourceElem.getAttributeValue("class");
             packName = (packName == null) ? "" : packName + ".";
@@ -234,25 +233,25 @@ public final class RecordingTest
             javacArgs.add(sourceFile.getPath());
             }
 
-        int compilerResult = com.sun.tools.javac.Main.compile(  //! can be static ref in 1.4
-            (String[]) javacArgs.toArray(new String[0]));
+        int compilerResult = com.sun.tools.javac.Main.compile(
+            javacArgs.toArray(new String[0]));
         if(compilerResult != 0)
             throw new Exception("compile failed (result code " + compilerResult + ")");
         
-        classFiles = new ArrayList();
-        findFiles(classesDir, classFiles);
+        classFiles = new ArrayList<File>();
+        findFilesDeep(classesDir, classFiles);
         }
     
-    private void findFiles(File file, Collection files)
+    private void findFilesDeep(File file, Collection<File> results)
         {
         if(file.isDirectory())
             {
             File[] contents = file.listFiles();
             for(int f = 0; f < contents.length; f++)
-                findFiles(contents[f], files);
+                findFilesDeep(contents[f], results);
             }
         else
-            files.add(file);
+            results.add(file);
         }
     
     private void buildRulesFile(Element rulesFileElem)
@@ -272,8 +271,8 @@ public final class RecordingTest
     private File testFile;
     private File buildDir;
     
-    private Collection/*<RuleSet>*/ rulesFile;
-    private Collection/*<File>*/ classFiles;
+    private Collection<RuleSet> rulesFile;
+    private Collection<File> classFiles;
 
     private EventRecording expected;
     private int expectedAngerEvents;

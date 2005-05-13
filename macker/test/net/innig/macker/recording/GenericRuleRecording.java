@@ -29,7 +29,6 @@ import net.innig.macker.rule.Rule;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,14 +91,11 @@ public class GenericRuleRecording
             }
         }
     
-    private Map getAttributeValueMap(Element elem)
+    private Map<String,String> getAttributeValueMap(Element elem)
         {
-        Map attValues = new TreeMap();
-        for(Iterator i = elem.getAttributes().iterator(); i.hasNext(); )
-            {
-            Attribute attr = (Attribute) i.next();
+        Map<String,String> attValues = new TreeMap<String,String>();
+        for(Attribute attr : (List<Attribute>) elem.getAttributes())
             attValues.put(attr.getName(), attr.getValue());
-            }
         return attValues;
         }
     
@@ -130,8 +126,8 @@ public class GenericRuleRecording
     
     private void dump(PrintWriter out, Collection events)
         {
-        for(Iterator i = events.iterator(); i.hasNext(); )
-            out.println("    " + i.next());
+        for(Object event : events)
+            out.println("    " + event);
         }
     
     public String toString()
@@ -140,9 +136,8 @@ public class GenericRuleRecording
     public void dump(PrintWriter out, int indent)
         {
         super.dump(out, indent);
-        for(Iterator eventIter = events.iterator(); eventIter.hasNext(); )
+        for(Map event : events)
             {
-            Map event = (Map) eventIter.next();
             for(int n = -3; n < indent; n++)
                 out.print(' ');
             out.println(event);

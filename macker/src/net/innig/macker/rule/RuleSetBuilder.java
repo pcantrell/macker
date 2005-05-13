@@ -244,11 +244,11 @@ public class RuleSetBuilder
         // build up children
         
         Pattern childrenPat = null;
-        List children = new ArrayList(patternElem.getChildren()); //! workaround for bug in JUnit
+        List<Element> children = new ArrayList<Element>(patternElem.getChildren()); //! workaround for bug in JUnit
         //List children = patternElem.getChildren(); // this should work instead when JUnit bug is fixed
-        for(ListIterator childIter = children.listIterator(children.size()); childIter.hasPrevious(); )
+        for(ListIterator<Element> childIter = children.listIterator(children.size()); childIter.hasPrevious(); )
             {
-            Element subElem = (Element) childIter.previous();
+            Element subElem = childIter.previous();
             if(subElem.getName().equals("message"))
                 continue;
             
@@ -336,9 +336,8 @@ public class RuleSetBuilder
         throws RulesException
         {
         AccessRule prevRule = null, topRule = null;
-        for(Iterator childIter = ruleElem.getChildren().iterator(); childIter.hasNext(); )
+        for(Element subElem : (List<Element>) ruleElem.getChildren())
             {
-            Element subElem = (Element) childIter.next();
             AccessRule accRule = new AccessRule(ruleSet);
             
             if(subElem.getName().equals("allow"))
