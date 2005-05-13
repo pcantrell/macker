@@ -22,7 +22,6 @@ package net.innig.macker.structure;
 
 import net.innig.collect.GraphWalker;
 import net.innig.collect.Graphs;
-import net.innig.collect.MultiMap;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,45 +46,32 @@ public abstract class AbstractClassInfo
         return (lastDotPos > 0) ? className.substring(0, lastDotPos) : "";
         }
     
-    public Set/*<ClassInfo>*/ getDirectSupertypes()
+    public Set<ClassInfo> getDirectSupertypes()
         {
         if(cachedAllDirectSuper == null)
             {
-            Set newAllDirectSuper = new HashSet(getImplements());
+            Set<ClassInfo> newAllDirectSuper = new HashSet<ClassInfo>(getImplements());
             newAllDirectSuper.add(getExtends());
             cachedAllDirectSuper = newAllDirectSuper; // failure atomicity
             }
         return cachedAllDirectSuper;
         }
     
-    public Set/*<ClassInfo>*/ getSupertypes()
+    public Set<ClassInfo> getSupertypes()
         {
         if(cachedAllSuper == null)
             cachedAllSuper = Graphs.reachableNodes(
                 this,
-                new GraphWalker()
+                new GraphWalker<ClassInfo>()
                     {
-                    public Collection getEdgesFrom(Object node)
-                        { return ((ClassInfo) node).getDirectSupertypes(); }
+                    public Collection<ClassInfo> getEdgesFrom(ClassInfo node)
+                        { return node.getDirectSupertypes(); }
                     } );
         return cachedAllSuper;
         }
     
     public final ClassManager getClassManager()
         { return classManager; }
-    
-    public abstract boolean isComplete();
-    public abstract String getFullName();
-    public abstract boolean isInterface();
-    public abstract boolean isAbstract();
-    public abstract boolean isFinal();
-    public abstract AccessModifier getAccessModifier();
-    public abstract ClassInfo getExtends();
-    public abstract Set/*<ClassInfo>*/ getImplements();
-    public abstract MultiMap/*<ClassInfo,Reference>*/ getReferences();
-    
-    public int compareTo(Object that)
-        { return getFullName().compareTo(((ClassInfo) that).getFullName()); }
     
     public final boolean equals(Object that)
         {
@@ -105,6 +91,6 @@ public abstract class AbstractClassInfo
         { return getFullName(); }
     
     private ClassManager classManager;
-    private Set cachedAllSuper, cachedAllDirectSuper;
+    private Set<ClassInfo> cachedAllSuper, cachedAllDirectSuper;
     }
 

@@ -9,12 +9,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 public class XmlReportingListener
@@ -25,7 +25,7 @@ public class XmlReportingListener
     
     private Document document;
     private Element curElem;
-    private LinkedList elemStack;
+    private LinkedList<Element> elemStack;
     
     public XmlReportingListener(File outFile)
         throws ListenerException
@@ -51,7 +51,7 @@ public class XmlReportingListener
         this.out = out;
         this.encoding = encoding;
         
-        elemStack = new LinkedList();
+        elemStack = new LinkedList<Element>();
         Element topElem = new Element("macker-report");
         Element timestampElem = new Element("timestamp");
         timestampElem.setText(new java.util.Date().toString()); // to heck with sophisticated localization!
@@ -66,7 +66,9 @@ public class XmlReportingListener
         {
         try
             {
-            XMLOutputter xmlOut = new XMLOutputter("    ", true, encoding);
+            Format format = Format.getPrettyFormat();
+            format.setEncoding(encoding);
+            XMLOutputter xmlOut = new XMLOutputter(format);
             xmlOut.output(document, out);
             out.flush();
             }
@@ -154,9 +156,8 @@ public class XmlReportingListener
     private void handleEventBasics(Element elem, MackerEvent event)
         {
         elem.setAttribute("severity", event.getRule().getSeverity().getName());
-        for(Iterator msgIter = event.getMessages().iterator(); msgIter.hasNext(); )
+        for(String message : event.getMessages())
             {
-            String message = (String) msgIter.next();
             Element messageElem = new Element("message");
             messageElem.setText(message);
             elem.addContent(messageElem);
@@ -184,7 +185,7 @@ public class XmlReportingListener
         }
     
     private void popElem()
-        { curElem = (Element) elemStack.removeLast(); }
+        { curElem = elemStack.removeLast(); }
     
     public String toString()
         { return "XmlReportingListener"; }

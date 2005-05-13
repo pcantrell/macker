@@ -28,7 +28,6 @@ import net.innig.macker.structure.ClassManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,8 +37,8 @@ public class EvaluationContext
         {
         this.classManager = classManager;
         this.ruleSet = ruleSet;
-        varValues = new HashMap();
-        listeners = new HashSet();
+        varValues = new HashMap<String,String>();
+        listeners = new HashSet<MackerEventListener>();
         }
     
     public EvaluationContext(RuleSet ruleSet, EvaluationContext parent)
@@ -67,7 +66,7 @@ public class EvaluationContext
     public String getVariableValue(String name)
         throws UndeclaredVariableException
         {
-        String value = (String) varValues.get(name);
+        String value = varValues.get(name);
         if(value != null)
             return value;
         if(parent != null)
@@ -75,7 +74,7 @@ public class EvaluationContext
         throw new UndeclaredVariableException(name);
         }
         
-    public void setVariables(Map/*<String,String>*/ vars)
+    public void setVariables(Map<String,String> vars)
         { varValues.putAll(vars); }
     
     public void addListener(MackerEventListener listener)
@@ -91,8 +90,8 @@ public class EvaluationContext
     protected void broadcastStarted(RuleSet targetRuleSet)
         throws ListenerException
         {
-        for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerStarted(targetRuleSet);
+        for(MackerEventListener listener : listeners)
+            listener.mackerStarted(targetRuleSet);
         if(getParent() != null)
             getParent().broadcastStarted(targetRuleSet);
         }
@@ -104,8 +103,8 @@ public class EvaluationContext
     protected void broadcastFinished(RuleSet targetRuleSet)
         throws MackerIsMadException, ListenerException
         {
-        for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerFinished(targetRuleSet);
+        for(MackerEventListener listener : listeners)
+            listener.mackerFinished(targetRuleSet);
         if(getParent() != null)
             getParent().broadcastFinished(targetRuleSet);
         }
@@ -115,8 +114,8 @@ public class EvaluationContext
         
     protected void broadcastAborted(RuleSet targetRuleSet)
         {
-        for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).mackerAborted(targetRuleSet);
+        for(MackerEventListener listener : listeners)
+            listener.mackerAborted(targetRuleSet);
         if(getParent() != null)
             getParent().broadcastAborted(targetRuleSet);
         }
@@ -128,16 +127,16 @@ public class EvaluationContext
     protected void broadcastEvent(MackerEvent event, RuleSet targetRuleSet)
         throws MackerIsMadException, ListenerException
         {
-        for(Iterator i = listeners.iterator(); i.hasNext(); )
-            ((MackerEventListener) i.next()).handleMackerEvent(targetRuleSet, event);
+        for(MackerEventListener listener : listeners)
+            listener.handleMackerEvent(targetRuleSet, event);
         if(getParent() != null)
             getParent().broadcastEvent(event, targetRuleSet);
         }
         
     private RuleSet ruleSet;
     private EvaluationContext parent;
-    private Map varValues;
-    private Set listeners;
+    private Map<String,String> varValues;
+    private Set<MackerEventListener> listeners;
     private ClassManager classManager;
     }
 

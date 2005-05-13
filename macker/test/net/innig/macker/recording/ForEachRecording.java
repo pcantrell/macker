@@ -29,6 +29,7 @@ import net.innig.macker.event.MackerEvent;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -40,7 +41,7 @@ public class ForEachRecording
     public ForEachRecording(EventRecording parent)
         {
         super(parent);
-        iterations = new TreeMap();
+        iterations = new TreeMap<String,RuleSetRecording>();
         }
     
     public EventRecording record(MackerEvent event)
@@ -68,14 +69,12 @@ public class ForEachRecording
     public void read(Element elem)
         {
         var = elem.getAttributeValue("var");
-        for(Iterator childIter = elem.getChildren("iteration").iterator(); childIter.hasNext(); )
+        for(Element childElem : (List<Element>) elem.getChildren("iteration"))
             {
-            Element iterElem = (Element) childIter.next();
-            
-            String varValue = iterElem.getAttributeValue("value");
-            EventRecording iter = new RuleSetRecording(this);
-            iter.read(iterElem);
-            iterations.put(varValue, iter);
+            String varValue = childElem.getAttributeValue("value");
+            RuleSetRecording recording = new RuleSetRecording(this);
+            recording.read(childElem);
+            iterations.put(varValue, recording);
             }
         }
     
@@ -93,19 +92,18 @@ public class ForEachRecording
             match = false;
             }
         
-        CollectionDiff diff = new CollectionDiff(iterations.keySet(), actualForEach.iterations.keySet());
+        CollectionDiff<String> diff = new CollectionDiff<String>(iterations.keySet(), actualForEach.iterations.keySet());
         if(!diff.getRemoved().isEmpty())
             out.println(this + ": missing iterations: " + diff.getRemoved());
         if(!diff.getAdded().isEmpty())
             out.println(this + ": unexpected iterations: " + diff.getAdded());
         match = match && diff.getRemoved().isEmpty() && diff.getAdded().isEmpty();
         
-        for(Iterator i = diff.getSame().iterator(); i.hasNext(); )
+        for(String varValue : diff.getSame())
             {
-            String varValue = (String) i.next();
 //            out.println("(comparing " + var + "=" + varValue + ")");
-            RuleSetRecording iterExpected = (RuleSetRecording) iterations.get(varValue);
-            RuleSetRecording iterActual   = (RuleSetRecording) actualForEach.iterations.get(varValue);
+            RuleSetRecording iterExpected = iterations.get(varValue);
+            RuleSetRecording iterActual   = actualForEach.iterations.get(varValue);
             match = iterExpected.compare(iterActual, out) && match;
             }
         return match;
@@ -117,18 +115,17 @@ public class ForEachRecording
     public void dump(PrintWriter out, int indent)
         {
         super.dump(out, indent);
-        for(Iterator entryIter = iterations.entrySet().iterator(); entryIter.hasNext(); )
+        for(Map.Entry<String,RuleSetRecording> entry : iterations.entrySet())
             {
-            Map.Entry entry = (Map.Entry) entryIter.next();
             for(int n = -3; n < indent; n++)
                 out.print(' ');
             out.println("[iteration:" + entry.getKey() + "]");
-            ((EventRecording) entry.getValue()).dump(out, indent+6);
+            entry.getValue().dump(out, indent+6);
             }
         }
     
     private String var;
-    private Map/*<String,RuleSetRecording>*/ iterations;
+    private Map<String,RuleSetRecording> iterations;
     }
 
 

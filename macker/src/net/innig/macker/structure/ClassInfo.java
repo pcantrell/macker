@@ -28,7 +28,6 @@ import java.util.Set;
     Information about a class's structure.
 */
 public interface ClassInfo
-    extends Comparable
     {
     public ClassManager getClassManager();
     public boolean isComplete();
@@ -43,10 +42,10 @@ public interface ClassInfo
     public AccessModifier getAccessModifier();
     
     public ClassInfo getExtends();
-    public Set/*<ClassInfo>*/ getImplements();
-    public Set/*<ClassInfo>*/ getDirectSupertypes();
-    public Set/*<ClassInfo>*/ getSupertypes();
+    public Set<ClassInfo> getImplements();
+    public Set<ClassInfo> getDirectSupertypes();
+    public Set<ClassInfo> getSupertypes();
 
-    public MultiMap/*<ClassInfo,Reference>*/ getReferences();
+    public MultiMap<ClassInfo,Reference> getReferences();
     }
 

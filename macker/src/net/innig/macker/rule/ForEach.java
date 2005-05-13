@@ -30,7 +30,6 @@ import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.structure.ClassManager;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -69,31 +68,26 @@ public class ForEach
         {
         EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
         
-        Set varValues = new TreeSet();
-        Set pool = new HashSet();
-        for(Iterator p = classes.getPrimaryClasses().iterator(); p.hasNext(); )
-            {
-            ClassInfo curClass = (ClassInfo) p.next();
+        Set<String> varValues = new TreeSet<String>();
+        Set<ClassInfo> pool = new HashSet<ClassInfo>();
+        for(ClassInfo curClass : classes.getPrimaryClasses())
             if(getParent().isInSubset(context, curClass))
                 {
                 pool.add(curClass);
-                for(Iterator r = curClass.getReferences().keySet().iterator(); r.hasNext(); )
-                    pool.add(r.next());
+                for(ClassInfo referencedClass : curClass.getReferences().keySet())
+                    pool.add(referencedClass);
                 }
-            }
         
-        for(Iterator i = pool.iterator(); i.hasNext(); )
+        for(ClassInfo classInfo : pool)
             {
-            ClassInfo classInfo = (ClassInfo) i.next();
             String varValue = regexPat.getMatch(parentContext, classInfo);
             if(varValue != null)
                 varValues.add(varValue);
             }
         
         context.broadcastEvent(new ForEachStarted(this));
-        for(Iterator i = varValues.iterator(); i.hasNext(); )
+        for(String varValue : varValues)
             {
-            String varValue = (String) i.next();
             context.broadcastEvent(new ForEachIterationStarted(this, varValue));
             
             context.setVariableValue(getVariableName(), varValue);

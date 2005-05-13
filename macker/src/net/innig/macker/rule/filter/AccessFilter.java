@@ -27,6 +27,7 @@ import net.innig.macker.rule.RulesException;
 import net.innig.macker.structure.AccessModifier;
 import net.innig.macker.structure.ClassInfo;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,8 @@ public class AccessFilter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
-            List/*<Pattern>*/ params,
-            Map/*<String,String>*/ options)
+            List<Pattern> params,
+            Map<String,String> options)
         throws RulesException
         {
         if(params.size() != 0)
@@ -45,11 +46,11 @@ public class AccessFilter
                 "Filter \"" + options.get("filter") + "\" expects no parameters, but has " + params.size());
 
         String
-            maxS = (String) options.get("max"),
-            minS = (String) options.get("min");
+            maxS = options.get("max"),
+            minS = options.get("min");
         final AccessModifier
-            max = (maxS != null) ? AccessModifier.fromName(maxS) : AccessModifier.PUBLIC,
-            min = (minS != null) ? AccessModifier.fromName(minS) : AccessModifier.PRIVATE;
+            max = (maxS != null) ? AccessModifier.valueOf(maxS.toUpperCase()) : AccessModifier.PUBLIC,
+            min = (minS != null) ? AccessModifier.valueOf(minS.toUpperCase()) : AccessModifier.PRIVATE;
             
         if(maxS == null && minS == null)
             throw new FilterSyntaxException(
@@ -58,20 +59,20 @@ public class AccessFilter
             throw new FilterSyntaxException(
                 this, 
                 '"' + maxS + "\" is not a valid access level; expected one of: "
-                + AccessModifier.allTypesSorted(AccessModifier.class));
+                + Arrays.asList(AccessModifier.values()));
         if(min == null && minS != null)
             throw new FilterSyntaxException(
                 this, 
                 '"' + minS + "\" is not a valid access level; expected one of: "
-                + AccessModifier.allTypesSorted(AccessModifier.class));
+                + Arrays.asList(AccessModifier.values()));
         
         return new Pattern()
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 throws RulesException
                 {
-                return classInfo.getAccessModifier().greaterThanEq(min)
-                    && classInfo.getAccessModifier().   lessThanEq(max);
+                return classInfo.getAccessModifier().compareTo(min) >= 0
+                    && classInfo.getAccessModifier().compareTo(max) <= 0;
                 }
             };
         }

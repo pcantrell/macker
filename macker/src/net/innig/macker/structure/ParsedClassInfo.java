@@ -147,20 +147,22 @@ public class ParsedClassInfo
     private void parseImplements(JavaClass classFile)
         throws ClassParseException
         {
-        implementsClasses = new TreeSet();
+        implementsClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
         String[] names = classFile.getInterfaceNames();
         for(int n = 0; n < names.length; n++)
             implementsClasses.add(getSafeClassInfo(names[n]));
         implementsClasses = Collections.unmodifiableSet(implementsClasses);
         }
     
-    public Set/*<ClassInfo>*/ getImplements()
+    public Set<ClassInfo> getImplements()
         { return implementsClasses; }
     
     private void parseReferences(JavaClass classFile)
         throws ClassParseException
         {
-        references = new CompositeMultiMap(TreeMap.class, HashSet.class);
+        references = new CompositeMultiMap<ClassInfo,Reference>(
+            new TreeMap<ClassInfo,Set<Reference>>(ClassInfoNameComparator.INSTANCE),
+            HashSet.class);
         parseConstantPoolReferences(classFile);
         parseMethodReferences(classFile);
         parseFieldReferences(classFile);
@@ -195,16 +197,16 @@ public class ParsedClassInfo
             Method method = methods[m];
             AccessModifier methodAccess = translateAccess(method);
             
-            List paramsAndReturn = 
+            List<String> paramsAndReturn = 
                 ClassNameTranslator.signatureToClassNames(
                     method.getSignature());
             if(paramsAndReturn.isEmpty())
                 throw new ClassParseException(
                     "unable to read types for method " + fullClassName + '.' + method.getName(), classFile);
             
-            for(Iterator i = paramsAndReturn.iterator(); i.hasNext(); )
+            for(Iterator<String> i = paramsAndReturn.iterator(); i.hasNext(); )
                 {
-                String refTo = (String) i.next();
+                String refTo = i.next();
                 addReference(
                     new Reference(
                         this,
@@ -237,7 +239,7 @@ public class ParsedClassInfo
         for(int a = 0; a < fields.length; a++)
             {
             Field field = fields[a];
-            List types =
+            List<String> types =
                 ClassNameTranslator.signatureToClassNames(
                     field.getSignature());
             if(types.size() != 1)
@@ -249,7 +251,7 @@ public class ParsedClassInfo
             addReference(
                 new Reference(
                     this,
-                    getSafeClassInfo((String) types.get(0), field.getSignature()),
+                    getSafeClassInfo(types.get(0), field.getSignature()),
                     ReferenceType.FIELD_SIGNATURE,
                     field.getName(),
                     translateAccess(field)));
@@ -284,14 +286,14 @@ public class ParsedClassInfo
     private void addReference(Reference ref)
         { references.put(ref.getTo(), ref); }
     
-    public MultiMap/*<ClassInfo,Reference>*/ getReferences()
+    public MultiMap<ClassInfo,Reference> getReferences()
         { return references; }
     
     private String fullClassName;
     private boolean isInterface, isAbstract, isFinal;
     private AccessModifier accessModifier;
     private ClassInfo extendsClass;
-    private Set/*<ClassInfo>*/ implementsClasses;
-    private MultiMap/*<ClassInfo,Reference>*/ references;
+    private Set<ClassInfo> implementsClasses;
+    private MultiMap<ClassInfo,Reference> references;
     }
 

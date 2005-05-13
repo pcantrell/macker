@@ -33,9 +33,9 @@ public class ClassNameTranslator
     static public boolean isJavaIdentifier(String className)
         { return legalJavaIdentRE.match(className); }
     
-    static public List signatureToClassNames(String signature)
+    static public List<String> signatureToClassNames(String signature)
         {
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         for(int pos = 0; pos < signature.length(); )
             {
             String remaining = signature.substring(pos);
@@ -55,7 +55,7 @@ public class ClassNameTranslator
         if(arrayExtractorRE.match(typeName))
             {
             if(arrayExtractorRE.getParen(2) != null)
-                return (String) primitiveTypeMap.get(arrayExtractorRE.getParen(2));
+                return primitiveTypeMap.get(arrayExtractorRE.getParen(2));
             if(arrayExtractorRE.getParen(3) != null)
                 return resourceToClassName(arrayExtractorRE.getParen(3));
             }
@@ -69,7 +69,7 @@ public class ClassNameTranslator
         { return (dotRE.subst(resourceName, "/") + ".class").intern(); }
     
     static private RE classSuffixRE, slashRE, dotRE, arrayExtractorRE, sigExtractorRE, legalJavaIdentRE;
-    static private Map/*<String,String>*/ primitiveTypeMap;
+    static private Map<String,String> primitiveTypeMap;
     static
         {
         try {
@@ -83,7 +83,7 @@ public class ClassNameTranslator
         catch(RESyntaxException rese)
             { throw new RuntimeException("Can't initialize ClassNameTranslator: " + rese); } 
         
-        primitiveTypeMap = new HashMap();
+        primitiveTypeMap = new HashMap<String,String>();
         primitiveTypeMap.put("B", "byte");
         primitiveTypeMap.put("S", "short");
         primitiveTypeMap.put("I", "int");

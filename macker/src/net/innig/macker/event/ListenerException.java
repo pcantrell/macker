@@ -1,9 +1,7 @@
 package net.innig.macker.event;
 
-import org.apache.commons.lang.exception.NestableException;
-
 public class ListenerException
-    extends NestableException
+    extends Exception
     {
     public ListenerException(MackerEventListener listener, String message)
         {

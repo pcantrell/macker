@@ -20,23 +20,11 @@
  
 package net.innig.macker.structure;
 
-import net.innig.util.OrderedType;
-
 /**
     Java access modifiers for classes and members.
     Ordered by increasing visibility.
 */
-public class AccessModifier
-    extends OrderedType
+public enum AccessModifier
     {
-    public static final AccessModifier
-        PRIVATE   = new AccessModifier("private"),
-        PACKAGE   = new AccessModifier("package"),
-        PROTECTED = new AccessModifier("protected"),
-        PUBLIC    = new AccessModifier("public");
-    
-    public static AccessModifier fromName(String name)
-        { return (AccessModifier) resolveFromName(AccessModifier.class, name); }
-    
-    private AccessModifier(String name) { super(name); }
+    PRIVATE, PACKAGE, PROTECTED, PUBLIC;
     }

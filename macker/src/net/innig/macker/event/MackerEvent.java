@@ -26,7 +26,6 @@ import net.innig.macker.rule.RuleSeverity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventObject;
-import java.util.Iterator;
 import java.util.List;
 
 public class MackerEvent
@@ -35,12 +34,12 @@ public class MackerEvent
     public MackerEvent(
             Rule rule,
             String description,
-            List/*<String>*/ messages)
+            List<String> messages)
         {
         super(rule);
         this.rule = rule;
         this.description = description;
-        this.messages = Collections.unmodifiableList(new ArrayList(messages));
+        this.messages = Collections.unmodifiableList(new ArrayList<String>(messages));
         }
     
     public Rule getRule()
@@ -49,7 +48,7 @@ public class MackerEvent
     public String getDescription()
         { return description; }
         
-    public List/*<String>*/ getMessages()
+    public List<String> getMessages()
         { return messages; }
     
     public String toString()
@@ -65,9 +64,9 @@ public class MackerEvent
             s.append(rule.getSeverity().getName().toUpperCase());
             s.append(": ");
             }
-        for(Iterator i = messages.iterator(); i.hasNext(); )
+        for(String msg : messages)
             {
-            s.append(i.next().toString());
+            s.append(msg);
             s.append(CR);
             }
         if(getDescription() != null)
@@ -78,6 +77,6 @@ public class MackerEvent
     
     private final Rule rule;
     private final String description;
-    private final List/*<String>*/ messages;
+    private final List<String> messages;
     }
 

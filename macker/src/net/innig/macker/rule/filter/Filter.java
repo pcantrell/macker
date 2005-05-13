@@ -31,7 +31,7 @@ public interface Filter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
-            List/*<Pattern>*/ params,
-            Map/*<String,String>*/ options)
+            List<Pattern> params,
+            Map<String,String> options)
         throws RulesException;
     }

@@ -29,10 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.lang.exception.NestableRuntimeException;
 
 public class RuleSet
     extends Rule
@@ -46,7 +43,7 @@ public class RuleSet
                 defaults.setPattern("to", new RegexPattern("${to-full}"));
                 }
             catch(MackerRegexSyntaxException mrse)
-                { throw new NestableRuntimeException("Macker built-ins are broken", mrse); } //! what else to throw?
+                { throw new RuntimeException("Macker built-ins are broken", mrse); } //! what else to throw?
         return defaults;
         }
     private static RuleSet defaults;
@@ -57,15 +54,15 @@ public class RuleSet
         if(parent == null)
             throw new IllegalArgumentException("parent == null");
             
-        patterns = new HashMap();
-        rules = new ArrayList();
+        patterns = new HashMap<String,Pattern>();
+        rules = new ArrayList<Rule>();
         }
 
     private RuleSet()
         {
         super(null);
-        rules = Collections.EMPTY_LIST;
-        patterns = new HashMap();
+        rules = Collections.emptyList();
+        patterns = new HashMap<String,Pattern>();
         }
         
     public String getName()
@@ -88,7 +85,7 @@ public class RuleSet
     
     public Pattern getPattern(String name)
         {
-        Pattern pat = (Pattern) patterns.get(name);
+        Pattern pat = patterns.get(name);
         if(pat != null)
             return pat;
         if(getParent() != null)
@@ -105,7 +102,7 @@ public class RuleSet
         patterns.put(name, pattern);
         }
     
-    public Collection getAllPatterns()
+    public Collection<Pattern> getAllPatterns()
         { return patterns.values(); }
     
     public void clearPattern(String name)
@@ -143,11 +140,8 @@ public class RuleSet
         boolean finished = false;
         try
             {
-            for(Iterator ruleIter = rules.iterator(); ruleIter.hasNext(); )
-                {
-                Rule rule = (Rule) ruleIter.next();
+            for(Rule rule : rules)
                 rule.check(context, classes);
-                }
             context.broadcastFinished();
             finished = true;
             }
@@ -162,8 +156,8 @@ public class RuleSet
         { return getClass().getName() + '[' + name + ", parent=" + getParent() + ']'; }
     
     private String name;
-    private Map/*<String,Pattern>*/ patterns;
-    private Collection rules;
+    private Map<String,Pattern> patterns;
+    private Collection<Rule> rules;
     private Pattern subsetPat;
     }
 

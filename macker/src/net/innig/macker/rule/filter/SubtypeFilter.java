@@ -26,7 +26,6 @@ import net.innig.macker.rule.RuleSet;
 import net.innig.macker.rule.RulesException;
 import net.innig.macker.structure.ClassInfo;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,26 +34,23 @@ public class SubtypeFilter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
-            List/*<Pattern>*/ params,
-            Map/*<String,String>*/ options)
+            List<Pattern> params,
+            Map<String,String> options)
         throws RulesException
         {
         if(params.size() != 1)
             throw new FilterSyntaxException(
                 this,
                 "Filter \"" + options.get("filter") + "\" expects one parameter, but has " + params.size());
-        final Pattern supertypePat = (Pattern) params.get(0);
+        final Pattern supertypePat = params.get(0);
         return new Pattern()
             {
             public boolean matches(EvaluationContext context, ClassInfo classInfo)
                 throws RulesException
                 {
-                for(Iterator superI = classInfo.getSupertypes().iterator(); superI.hasNext(); )
-                    {
-                    ClassInfo supertype = (ClassInfo) superI.next();
+                for(ClassInfo supertype : classInfo.getSupertypes())
                     if(supertypePat.matches(context, supertype))
                         return true;
-                    }
                 return false;
                 }
             };

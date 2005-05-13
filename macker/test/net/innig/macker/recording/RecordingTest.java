@@ -78,11 +78,11 @@ public final class RecordingTest
         
         Arrays.sort(  // most recent first
             testFiles,
-            new Comparator()
+            new Comparator<File>()
                 {
-                public int compare(Object f1, Object f2)
+                public int compare(File f1, File f2)
                     {
-                    long diff = ((File) f2).lastModified() - ((File) f1).lastModified();
+                    long diff = f2.lastModified() - f1.lastModified();
                     return diff > 0 ? 1 : -1;
                     }
                 });
@@ -234,7 +234,7 @@ public final class RecordingTest
             javacArgs.add(sourceFile.getPath());
             }
 
-        int compilerResult = new com.sun.tools.javac.Main().compile(  //! can be static ref in 1.4
+        int compilerResult = com.sun.tools.javac.Main.compile(  //! can be static ref in 1.4
             (String[]) javacArgs.toArray(new String[0]));
         if(compilerResult != 0)
             throw new Exception("compile failed (result code " + compilerResult + ")");

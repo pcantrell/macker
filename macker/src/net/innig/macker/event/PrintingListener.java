@@ -31,10 +31,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 
 public class PrintingListener
     implements MackerEventListener
@@ -114,12 +113,11 @@ public class PrintingListener
         {
         // output looks like: "(2 errors, 1 warning)"
         boolean firstSeverity = true;
-        List severities = new ArrayList(eventsBySeverity.keySet());
+        List<RuleSeverity> severities = new ArrayList<RuleSeverity>(eventsBySeverity.keySet());
         Collections.reverse(severities);
-        for(Iterator i = severities.iterator(); i.hasNext(); )
+        for(RuleSeverity severity : severities)
             {
-            RuleSeverity severity = (RuleSeverity) i.next();
-            Collection eventsForSev = eventsBySeverity.get(severity);
+            Collection<MackerEvent> eventsForSev = eventsBySeverity.get(severity);
             if(eventsForSev.size() > 0)
                 {
                 if(firstSeverity)
@@ -145,6 +143,7 @@ public class PrintingListener
     private PrintWriter out;
     private int maxMessages = Integer.MAX_VALUE, messagesPrinted = 0;
     private RuleSeverity threshold = RuleSeverity.INFO;
-    private final MultiMap eventsBySeverity = new CompositeMultiMap(TreeMap.class, HashSet.class);
+    private final MultiMap<RuleSeverity,MackerEvent> eventsBySeverity =
+        new CompositeMultiMap<RuleSeverity,MackerEvent>(EnumMap.class, HashSet.class);
     }
 

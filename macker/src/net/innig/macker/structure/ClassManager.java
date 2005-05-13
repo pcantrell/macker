@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -43,14 +42,16 @@ public class ClassManager
     public ClassManager()
         {
         // Trees make nice sorted output
-        allClasses = new TreeSet();
-        primaryClasses = new TreeSet();
-        classNameToInfo = new TreeMap();
-        references = new TreeMultiMap();
+        allClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
+        primaryClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
+        classNameToInfo = new TreeMap<String,ClassInfo>();
+        references = new TreeMultiMap<ClassInfo,ClassInfo>(
+            ClassInfoNameComparator.INSTANCE,
+            ClassInfoNameComparator.INSTANCE);
         classLoader = Thread.currentThread().getContextClassLoader();
         
-        for(Iterator i = PrimitiveTypeInfo.ALL.iterator(); i.hasNext(); )
-            replaceClass((ClassInfo) i.next());
+        for(ClassInfo ci : PrimitiveTypeInfo.ALL)
+            replaceClass(ci);
         }
     
     public ClassLoader getClassLoader()
@@ -106,13 +107,13 @@ public class ClassManager
         allClasses.addAll(classInfo.getReferences().keySet());
         }
     
-    public Set/*<ClassInfo>*/ getAllClasses()
+    public Set<ClassInfo> getAllClasses()
         { return Collections.unmodifiableSet(allClasses); }
     
-    public Set/*<ClassInfo>*/ getPrimaryClasses()
+    public Set<ClassInfo> getPrimaryClasses()
         { return Collections.unmodifiableSet(primaryClasses); }
     
-    public MultiMap/*<ClassInfo,ClassInfo>*/ getReferences()
+    public MultiMap<ClassInfo,ClassInfo> getReferences()
         { return InnigCollections.unmodifiableMultiMap(references); }
 
     public ClassInfo getClassInfo(String className)
@@ -169,7 +170,7 @@ public class ClassManager
         }
     
     private ClassInfo findClassInfo(String className)
-        { return (ClassInfo) classNameToInfo.get(className); }
+        { return classNameToInfo.get(className); }
     
     private void checkOwner(ClassInfo classInfo)
         throws IllegalStateException
@@ -194,9 +195,9 @@ public class ClassManager
     
     private boolean incompleteClassWarning;
     private ClassLoader classLoader;
-    private Set allClasses, primaryClasses;
-    private Map/*<String,ClassInfo>*/ classNameToInfo;
-    private MultiMap/*<ClassInfo,ClassInfo>*/ references;
+    private Set<ClassInfo> allClasses, primaryClasses;
+    private Map<String,ClassInfo> classNameToInfo;
+    private MultiMap<ClassInfo,ClassInfo> references;
     }
 
 

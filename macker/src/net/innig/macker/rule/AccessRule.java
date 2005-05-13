@@ -30,7 +30,6 @@ import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class AccessRule
@@ -104,11 +103,10 @@ public class AccessRule
         throws RulesException, MackerIsMadException, ListenerException
         {
         EvaluationContext localContext = new EvaluationContext(context);
-        for(Iterator refIter = classes.getReferences().entrySet().iterator(); refIter.hasNext(); )
+        for(MultiMap.Entry<ClassInfo,ClassInfo> reference : classes.getReferences().entrySet())
             {
-            MultiMap.Entry entry = (MultiMap.Entry) refIter.next();
-            ClassInfo from = (ClassInfo) entry.getKey();
-            ClassInfo to   = (ClassInfo) entry.getValue();
+            ClassInfo from = reference.getKey();
+            ClassInfo to   = reference.getValue();
             if(from.equals(to))
                 continue;
             if(!localContext.getRuleSet().isInSubset(localContext, from))
@@ -123,20 +121,19 @@ public class AccessRule
 
             if(!checkAccess(localContext, from, to))
                 {
-                List messages;
+                List<String> messages;
                 if(getMessage() == null)
-                    messages = Collections.EMPTY_LIST;
+                    messages = Collections.emptyList();
                 else
                     messages = Collections.singletonList(
                         VariableParser.parse(localContext, getMessage()));
-                
                 context.broadcastEvent(
                     new AccessRuleViolation(this, from, to, messages));
                 }
             }
         }
     
-    public boolean checkAccess(EvaluationContext context, ClassInfo fromClass, ClassInfo toClass)
+    private boolean checkAccess(EvaluationContext context, ClassInfo fromClass, ClassInfo toClass)
         throws RulesException
         { return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, fromClass, toClass)); }
     

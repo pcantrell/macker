@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -43,7 +44,7 @@ public class GenericRuleRecording
     public GenericRuleRecording(EventRecording parent)
         {
         super(parent);
-        events = new HashSet();
+        events = new HashSet<Map<String,String>>();
         }
     
     public EventRecording record(MackerEvent event)
@@ -53,15 +54,15 @@ public class GenericRuleRecording
         if(event.getRule() != rule)
             return getParent().record(event);
         
-        Map eventAttributes = new TreeMap();
+        Map<String,String> eventAttributes = new TreeMap<String,String>();
         eventType = event.getClass().getName();
         if(eventType.startsWith(DEFAULT_EVENT_PACKAGE))
             eventType = eventType.substring(DEFAULT_EVENT_PACKAGE.length());
         eventAttributes.put("type", eventType);
         eventAttributes.put("severity", event.getRule().getSeverity().getName());
         int msgNum = 0;
-        for(Iterator msgIter = event.getMessages().iterator(); msgIter.hasNext(); msgNum++)
-            eventAttributes.put("message" + msgNum, msgIter.next());
+        for(String msg : event.getMessages())
+            eventAttributes.put("message" + msgNum, msg);
 
         if(event instanceof MessageEvent)
             { } // done already!
@@ -82,12 +83,11 @@ public class GenericRuleRecording
     public void read(Element elem)
         {
         Map baseAtt = getAttributeValueMap(elem);
-        for(Iterator evtIter = elem.getChildren("event").iterator(); evtIter.hasNext(); )
+        for(Element eventElem : (List<Element>) elem.getChildren("event"))
             {
-            Element eventElem = (Element) evtIter.next();
-            Map eventAtt = new TreeMap(baseAtt);
+            Map<String,String> eventAtt = new TreeMap<String,String>(baseAtt);
             eventAtt.putAll(getAttributeValueMap(eventElem));
-            eventType = (String) eventAtt.get("type");
+            eventType = eventAtt.get("type");
             events.add(eventAtt);
             }
         }
@@ -151,7 +151,7 @@ public class GenericRuleRecording
     
     private Rule rule;
     private String eventType;
-    private Set/*<Map<String,String>>*/ events;
+    private Set<Map<String,String>> events;
     private static final String DEFAULT_EVENT_PACKAGE = "net.innig.macker.event.";
     }
 

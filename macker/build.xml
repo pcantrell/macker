@@ -49,8 +49,8 @@
         <mkdir dir="${build.lib.dir}" /> <!-- because it's usually empty -->
 
         <path id="build.classpath">
-            <fileset dir="${lib.dir}" />
-            <fileset dir="${build.lib.dir}" />
+            <fileset dir="${lib.dir}" includes="**/*.jar" />
+            <fileset dir="${build.lib.dir}" includes="**/*.jar" />
         </path>
         <property name="build.classpath" refid="build.classpath" />
         
@@ -83,7 +83,14 @@
         depends="prepare"
         description="Compiles the source code">
 
-        <!-- http://www.experimentalstuff.com/Technologies/JavaMake -->
+        <javac
+            srcdir="${src.dir}"
+            destdir="${build.classes.dir}"
+            source="1.5"
+            target="1.5">
+            <classpath refid="build.classpath" />
+        </javac>
+<!--
         <taskdef name="javamake"
             classname="com.sun.tools.javamake.ant.JavaMake"
             classpath="${build.classpath}" />
@@ -92,9 +99,11 @@
             srcdir="${src.dir}"
             destdir="${build.classes.dir}"
             pdbFilename="${build.dir}/${name}.pdb"
-            target="1.3">
+            source="1.5"
+            target="1.5">
             <classpath refid="build.classpath" />
         </javamake>
+-->
 
     </target>
 
@@ -179,12 +188,21 @@
         
         <mkdir dir="${build.test.dir}" />
 
+        <javac
+            srcdir="${test.dir}"
+            destdir="${build.test.dir}"
+            source="1.5"
+            target="1.5">
+            <classpath refid="test.classpath" />
+        </javac>
+<!--
         <javamake
             srcdir="${test.dir}"
             destdir="${build.test.dir}"
             pdbFilename="${build.dir}/${name}-test.pdb">
             <classpath refid="test.classpath" />
         </javamake>
+-->
     </target>
     
     <target name="test"

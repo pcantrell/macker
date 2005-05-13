@@ -31,7 +31,7 @@ public abstract class FilterFinder
     public static Filter findFilter(String filterName)
         throws NoSuchFilterException
         {
-        Filter filter = (Filter) filterCache.get(filterName);
+        Filter filter = filterCache.get(filterName);
         if(filter == null)
             {
             String filterClassName = 
@@ -68,5 +68,5 @@ public abstract class FilterFinder
     private FilterFinder() { }
     
     private static final String FILTER_CONF = "net.innig.macker.filter";
-    private static Map filterCache = new HashMap();
+    private static Map<String,Filter> filterCache = new HashMap<String,Filter>();
     }

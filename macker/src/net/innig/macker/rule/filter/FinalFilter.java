@@ -35,8 +35,8 @@ public class FinalFilter
     {
     public Pattern createPattern(
             RuleSet ruleSet,
-            List/*<Pattern>*/ params,
-            Map/*<String,String>*/ options)
+            List<Pattern> params,
+            Map<String,String> options)
         throws RulesException
         {
         if(params.size() != 0)

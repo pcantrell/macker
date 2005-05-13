@@ -22,7 +22,6 @@ package net.innig.macker.rule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public final class MackerRegex
         this.regexStr = regexStr;
         parts = null;
         regex = null;
-        prevVarValues = new HashMap();
+        prevVarValues = new HashMap<String,String>();
 
         if(!(allowParts ? allowable : allowableNoParts).match(regexStr))
             throw new MackerRegexSyntaxException(regexStr);
@@ -76,11 +75,11 @@ public final class MackerRegex
         throws UndeclaredVariableException, MackerRegexSyntaxException
         {
         parseExpr(context);
-        Boolean match = (Boolean) matchCache.get(s);
+        Boolean match = matchCache.get(s);
         if(Boolean.FALSE.equals(match))
             return null;
         if(Boolean.TRUE.equals(match))
-            return (String) matchResultCache.get(s);
+            return matchResultCache.get(s);
             
         match = regex.match('.' + s) ? Boolean.TRUE : Boolean.FALSE;
         matchCache.put(s, match);
@@ -101,7 +100,7 @@ public final class MackerRegex
         
         if(parts == null)
             {
-            parts = new ArrayList();
+            parts = new ArrayList<Part>();
             for(int pos = 0; pos >= 0; )
                 {
                 boolean hasAnotherVar = var.match(regexStr, pos);
@@ -120,21 +119,22 @@ public final class MackerRegex
         // already have one cached, and the relevant variables haven't changed
         
         boolean changed = (regex == null);
-        for(Iterator i = prevVarValues.entrySet().iterator(); !changed && i.hasNext(); )
+        for(Map.Entry<String,String> entry : prevVarValues.entrySet())
             {
-            Map.Entry entry = (Map.Entry) i.next();
-            String name  = (String) entry.getKey();
-            String value = (String) entry.getValue();
+            String name  = entry.getKey();
+            String value = entry.getValue();
             if(!context.getVariableValue(name).equals(value))
+                {
                 changed = true;
+                break;
+                }
             }
             
         if(changed)
             {
             StringBuffer builtRegexStr = new StringBuffer("^\\.?");
-            for(Iterator i = parts.iterator(); i.hasNext(); )
+            for(Part part : parts)
                 {
-                Part part = (Part) i.next();
                 if(part instanceof VarPart)
                     {
                     String varName = ((VarPart) part).varName;
@@ -158,8 +158,8 @@ public final class MackerRegex
                 
 //!            if(???)
 //!                throw new MackerRegexSyntaxException(regexStr, "Too many parenthesized expressions");
-            matchCache = new HashMap();
-            matchResultCache = new HashMap();
+            matchCache = new HashMap<String,Boolean>();
+            matchResultCache = new HashMap<String,String>();
             }
         }
     
@@ -201,8 +201,10 @@ public final class MackerRegex
         }
     
     private RE regex;
-    private List/*<Part>*/ parts;
-    private Map prevVarValues, matchCache, matchResultCache;
+    private List<Part> parts;
+    private Map<String,String> prevVarValues;
+    private Map<String,Boolean> matchCache;
+    private Map<String,String> matchResultCache;
     static private RE star, matchWithin, matchAcross,
         partBoundary, packageBoundary, innerClassBoundary, var,
         allowable, allowableNoParts;

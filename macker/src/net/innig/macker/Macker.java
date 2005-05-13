@@ -49,7 +49,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -184,8 +183,8 @@ public class Macker
     public Macker()
         {
     	cm = new ClassManager();
-    	ruleSets = new ArrayList();
-    	vars = new HashMap();
+    	ruleSets = new ArrayList<RuleSet>();
+    	vars = new HashMap<String,String>();
     	verbose = false;
         }
     
@@ -238,19 +237,18 @@ public class Macker
         {
         Graphs.reachableNodes(
             cm.getClassInfo(initialClassName),
-            new GraphWalker()
+            new GraphWalker<ClassInfo>()
                 {
-                public Collection getEdgesFrom(Object node)
+                public Collection<ClassInfo> getEdgesFrom(ClassInfo classInfo)
                     {
-                    ClassInfo classInfo = (ClassInfo) node;
                     cm.makePrimary(classInfo);
                     return InnigCollections.select(
                         classInfo.getReferences().keySet(),
-                        new Selector()
+                        new Selector<ClassInfo>()
                             {
-                            public boolean select(Object classInfo)
+                            public boolean select(ClassInfo classInfo)
                                 {
-                                return ((ClassInfo) classInfo)
+                                return classInfo
                                     .getFullName()
                                     .startsWith(primaryPrefix);
                                 }
@@ -319,12 +317,11 @@ public class Macker
             System.out.println(cm.getAllClasses().size() + " total classes");
             System.out.println(cm.getReferences().size() + " references");
             
-            for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
+            for(ClassInfo classInfo : cm.getPrimaryClasses())
                 {
-                ClassInfo classInfo = (ClassInfo) i.next();
                 System.out.println("Classes used by " + classInfo + ":");
-                for(Iterator usedIter = classInfo.getReferences().keySet().iterator(); usedIter.hasNext(); )
-                    System.out.println("    " + usedIter.next());
+                for(ClassInfo used : classInfo.getReferences().keySet())
+                    System.out.println("    " + used);
                 System.out.println();
                 }
             }
@@ -376,40 +373,34 @@ public class Macker
     public void checkRaw()
         throws MackerIsMadException, RulesException, ListenerException
         {
-        for(Iterator rsIter = ruleSets.iterator(); rsIter.hasNext(); )
+        for(RuleSet rs : ruleSets)
             {
-            RuleSet rs = (RuleSet) rsIter.next();
-            
             if(verbose)
-                for(Iterator patIter = rs.getAllPatterns().iterator(); patIter.hasNext(); )
+                for(final Pattern pat : rs.getAllPatterns())
                     {
-                    final Pattern pat = (Pattern) patIter.next();
                     final EvaluationContext ctx = new EvaluationContext(cm, rs);
                     System.out.println("matching " + pat);
-                    for(Iterator i = cm.getPrimaryClasses().iterator(); i.hasNext(); )
-                        {
-                        ClassInfo classInfo = (ClassInfo) i.next();
+                    for(ClassInfo classInfo : cm.getPrimaryClasses())
                         if(pat.matches(ctx, classInfo))
                             System.out.println("    " + classInfo);
-                        }
                     System.out.println();
                     }
                     
             EvaluationContext context = new EvaluationContext(cm, rs);
             context.setVariables(vars);
-            for(Iterator listenIter = listeners.iterator(); listenIter.hasNext(); )
-                context.addListener((MackerEventListener) listenIter.next());
+            for(MackerEventListener listener : listeners)
+                context.addListener(listener);
             
             rs.check(context, cm);
             }
         }
 
     private ClassManager cm;
-    private Collection/*<RuleSet>*/ ruleSets;
-    private Map/*<String,String>*/ vars;
+    private Collection<RuleSet> ruleSets;
+    private Map<String,String> vars;
     private boolean verbose;
     private File xmlReportFile;
-    private List/*<MackerEventListener>*/ listeners = new ArrayList();
+    private List<MackerEventListener> listeners = new ArrayList<MackerEventListener>();
     private int printMaxMessages;
     private RuleSeverity printThreshold = RuleSeverity.INFO, angerThreshold = RuleSeverity.ERROR;
     }

@@ -89,13 +89,13 @@ public class ThrowingListener
         }
     
     public void clear()
-        { events = new LinkedList(); }
+        { events = new LinkedList<MackerEvent>(); }
     
     public String toString()
         { return "ThrowingListener"; }
     
     private final RuleSeverity throwOnFirstThreshold, throwOnFinishThreshold;
     private RuleSeverity maxSeverity;
-    private List events;
+    private List<MackerEvent> events;
     private boolean inUse;
     }

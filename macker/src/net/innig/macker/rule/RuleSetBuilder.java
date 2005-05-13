@@ -68,7 +68,7 @@ public class RuleSetBuilder
             { System.setErr(realErr); }
         }
         
-    public Collection/*<RuleSet>*/ build(InputStream is)
+    public Collection<RuleSet> build(InputStream is)
         throws RulesException
         {
         try { return build(saxBuilder.build(is)); }
@@ -78,7 +78,7 @@ public class RuleSetBuilder
             { throw new RulesDocumentException(ioe); }
         }
 
-    public Collection/*<RuleSet>*/ build(Reader reader)
+    public Collection<RuleSet> build(Reader reader)
         throws RulesException
         {
         try { return build(saxBuilder.build(reader)); }
@@ -88,7 +88,7 @@ public class RuleSetBuilder
             { throw new RulesDocumentException(ioe); }
         }
 
-    public Collection/*<RuleSet>*/ build(File file)
+    public Collection<RuleSet> build(File file)
         throws RulesException
         {
         try { return build(saxBuilder.build(file)); }
@@ -98,7 +98,7 @@ public class RuleSetBuilder
             { throw new RulesDocumentException(ioe); }
         }
 
-    public Collection/*<RuleSet>*/ build(String fileName)
+    public Collection<RuleSet> build(String fileName)
         throws RulesException
         {
         try { return build(saxBuilder.build(fileName)); }
@@ -108,19 +108,20 @@ public class RuleSetBuilder
             { throw new RulesDocumentException(ioe); }
         }
 
-    public Collection/*<RuleSet>*/ build(Document doc)
+    public Collection<RuleSet> build(Document doc)
         throws RulesException
         {
         validateAgainstDTD(doc);
         return build(doc.getRootElement());
         }
     
-    public Collection/*<RuleSet>*/ build(Element elem)
+    public Collection<RuleSet> build(Element elem)
         throws RulesException
         {
-        Collection ruleSets = new ArrayList();
-        for(Iterator rsIter = elem.getChildren("ruleset").iterator(); rsIter.hasNext(); )
-            ruleSets.add(buildRuleSet((Element) rsIter.next(), RuleSet.getMackerDefaults()));
+        Collection<RuleSet> ruleSets = new ArrayList<RuleSet>();
+        
+        for(Element rsElem : (Collection<Element>) elem.getChildren("ruleset"))
+            ruleSets.add(buildRuleSet(rsElem, RuleSet.getMackerDefaults()));
         return ruleSets;
         }
 
@@ -155,9 +156,8 @@ public class RuleSetBuilder
         
         buildSeverity(ruleSet, ruleSetElem);
         
-        for(Iterator patIter = ruleSetElem.getChildren().iterator(); patIter.hasNext(); )
+        for(Element subElem : (Collection<Element>) ruleSetElem.getChildren())
             {
-            Element subElem = (Element) patIter.next();
             String subElemName = subElem.getName();
             if(subElemName.equals("pattern"))
                 {
@@ -259,12 +259,9 @@ public class RuleSetBuilder
         
         if(filterName != null)
             {
-            Map options = new HashMap();
-            for(Iterator i = patternElem.getAttributes().iterator(); i.hasNext(); )
-                {
-                Attribute attr = (Attribute) i.next();
+            Map<String,String> options = new HashMap<String,String>();
+            for(Attribute attr : (Collection<Attribute>) patternElem.getAttributes())
                 options.put(attr.getName(), attr.getValue());
-                }
             options.remove("name");
             options.remove("pattern");
             options.remove("class");
@@ -274,7 +271,7 @@ public class RuleSetBuilder
             head = filter.createPattern(
                 ruleSet,
                 (head == null)
-                    ? Collections.EMPTY_LIST
+                    ? new ArrayList<Pattern>()
                     : Collections.singletonList(head),
                 options);
                 

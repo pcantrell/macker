@@ -46,10 +46,10 @@ public class IncompleteClassInfo
     public boolean isInterface()               { throw newIncompleteException("get \"interface\" attribute of"); }
     public boolean isAbstract()                { throw newIncompleteException("get \"abstract\" attribute of"); }
     public boolean isFinal()                   { throw newIncompleteException("get \"final\" attribute of"); }
-    public AccessModifier getAccessModifier()  { throw newIncompleteException("determine accessibility of"); }
+    public AccessModifier getAccessModifier()    { throw newIncompleteException("determine accessibility of"); }
     public ClassInfo getExtends()              { throw newIncompleteException("determine superclass of"); }
-    public Set/*<String>*/ getImplements()     { throw newIncompleteException("determine interfaces implemented by"); }
-    public MultiMap getReferences()            { throw newIncompleteException("resolve references from"); }
+    public Set<ClassInfo> getImplements()      { throw newIncompleteException("determine interfaces implemented by"); }
+    public MultiMap<ClassInfo,Reference> getReferences() { throw newIncompleteException("resolve references from"); }
     
     private IncompleteClassInfoException newIncompleteException(String action)
         {

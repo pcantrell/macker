@@ -22,14 +22,14 @@ package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
 
-import java.util.Collections;
+import java.util.ArrayList;
 
 public class ForEachEvent
     extends MackerEvent
     {
     public ForEachEvent(ForEach forEach, String description)
         {
-        super(forEach, description, Collections.EMPTY_LIST);
+        super(forEach, description, new ArrayList<String>());
         this.forEach = forEach;
         }
     
