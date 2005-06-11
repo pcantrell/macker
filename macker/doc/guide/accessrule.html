@@ -46,7 +46,7 @@ The allow/deny construct is very similar to the include/exclude construct, excep
 If you omit a <code>&lt;from&gt;</code> or a <code>&lt;to&gt;</code>, Macker presumes the rule applies from or to anything.  Here, for example, is a rule which forbids any primary class from using the outdated <code>Vector</code>:
 <pre>&lt;access-rule&gt;
     &lt;deny&gt;
-        &lt;to class="java.lang.Vector" /&gt;
+        &lt;to class="java.util.Vector" /&gt;
     &lt;/deny&gt;
 &lt;/access-rule&gt;</pre>
 <p>

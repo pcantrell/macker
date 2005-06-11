@@ -196,7 +196,7 @@ In this hypothetical situation, the application has a set of modules in packages
         &lt;pattern name="api" class="${module}.*" /&gt;
         &lt;pattern name="inside" class="${module}.**" /&gt;
         &lt;pattern name="outside"&gt;
-            &lt;exclude pattern name="inside" /&gt;
+            &lt;exclude pattern="inside" /&gt;
         &lt;/pattern&gt;
 
         &lt;access-rule&gt;
