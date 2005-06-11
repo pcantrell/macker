@@ -61,7 +61,6 @@ public class MackerAntTask extends Task
             System.out.println("Macker (verbose mode enabled)");
         if(failOnError && angerProperty != null)
             System.out.println("WARNING: failOnError is set, so angerProperty will have no effect");
-
         try
             { 
             if(!fork)
@@ -95,10 +94,7 @@ public class MackerAntTask extends Task
         catch(MackerIsMadException mime)
             {
             if(mime.getMessage() != null)
-                {
-                System.out.println();
-                System.out.println(mime.getMessage());
-                }
+                printMessageChain(mime);
             if(angerProperty != null)
                 getProject().setProperty(angerProperty, "true");
             if(failOnError)
@@ -106,20 +102,17 @@ public class MackerAntTask extends Task
             }
         catch(ListenerException lie)
             {
-            System.out.println();
-            System.out.println(lie.getMessage());
+            printMessageChain(lie);
             throw new BuildException(MACKER_CHOKED_MESSAGE);
             }
         catch(RulesException rue)
             {
-            System.out.println();
-            System.out.println(rue.getMessage());
+            printMessageChain(rue);
             throw new BuildException(MACKER_CHOKED_MESSAGE);
             }
         catch(IncompleteClassInfoException icie)
             {
-            System.out.println();
-            System.out.println(icie.getMessage());
+            printMessageChain(icie);
             throw new BuildException(MACKER_CHOKED_MESSAGE);
             }
         }
@@ -205,8 +198,7 @@ public class MackerAntTask extends Task
                 { macker.addClass(classFile); }
             catch(ClassParseException cpe)
                 {
-                System.out.println("Unable to parse class file: " + classFile.getPath());
-                System.out.println(cpe.getMessage());
+                printMessageChain("Unable to parse class file: " + classFile.getPath(), cpe);
                 throw new BuildException(MACKER_CHOKED_MESSAGE);
                 }
             }
@@ -227,7 +219,7 @@ public class MackerAntTask extends Task
                 { macker.addRulesFile(rulesFile); }
             catch(RulesException re)
                 {
-                System.out.println(re.getMessage());
+                printMessageChain(re);
                 throw new BuildException(MACKER_CHOKED_MESSAGE);
                 }
             }
@@ -243,6 +235,16 @@ public class MackerAntTask extends Task
         return jvm;
         }
 
+    private void printMessageChain(Throwable e)
+        { printMessageChain("", e); }
+    
+    private void printMessageChain(String message, Throwable e)
+        {
+        System.out.println(message);
+        for(; e != null; e = e.getCause())
+            System.out.println(e.getMessage());
+        }
+    
     private boolean fork = false;
     private boolean failOnError = true;
     private boolean verbose = false;

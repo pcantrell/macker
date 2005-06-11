@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "../build-shared.xml">]>
+<!DOCTYPE DOCUMENT [<!ENTITY stdbuild SYSTEM "file:../build-shared.xml">]>
 
 <project name="conventions" default="macker" basedir="../../..">
     &stdbuild;

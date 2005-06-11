@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PrintingListener
     implements MackerEventListener
@@ -144,6 +145,8 @@ public class PrintingListener
     private int maxMessages = Integer.MAX_VALUE, messagesPrinted = 0;
     private RuleSeverity threshold = RuleSeverity.INFO;
     private final MultiMap<RuleSeverity,MackerEvent> eventsBySeverity =
-        new CompositeMultiMap<RuleSeverity,MackerEvent>(EnumMap.class, HashSet.class);
+        new CompositeMultiMap<RuleSeverity,MackerEvent>(
+            new EnumMap<RuleSeverity,Set<MackerEvent>>(RuleSeverity.class),
+            HashSet.class);
     }
 

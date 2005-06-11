@@ -7,6 +7,6 @@
                 <from class="**Print*" />
                 <to class="java.**" />
             </deny>
-        </access-rule>
+        </access-rulex>
     </ruleset>
 </macker>

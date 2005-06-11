@@ -29,7 +29,7 @@
         </javac>        
     </target>
     
-    <target name="build-macker-jar" depends="prepare" unless="macker.jar.file.exists">
+    <target name="build-macker-jar" depends="prepare"> <!--unless="macker.jar.file.exists"-->
         <ant dir="${basedir}"
             target="jar"
             inheritAll="false" />
