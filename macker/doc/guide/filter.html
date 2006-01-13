@@ -40,8 +40,8 @@ This simple example uses the filter named "interface" to create a pattern which 
 You can combine patterns based on filters, just as you would combine any other sort of pattern:
 </p>
 <pre>&lt;pattern name="concrete-class"&gt;
-    &lt;exclude filter="interface"&gt;
-    &lt;exclude filter="abstract-class"&gt;
+    &lt;exclude filter="interface" /&gt;
+    &lt;exclude filter="abstract-class" /&gt;
 &lt;/pattern&gt;</pre>
 <p>
 Some filters take a pattern as a parameter.  In this case, the filter expects a <code>class</code> or <code>pattern</code> attribute, which becomes the parameter to the filter.  In this example, <code>java.util.List</code> is a parameter to <code>subtype-of</code>:
