@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/CVS/**|**/.DS_Store" kind="src" path="test"/>
-	<classpathentry excluding="**/CVS/**|**/.DS_Store" kind="src" path="src"/>
-	<classpathentry excluding="**/CVS/**|**/.DS_Store" kind="src" path="res"/>
-	<classpathentry excluding="**/CVS/**|**/.DS_Store" kind="src" path="conf"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="lib" path="src/res"/>
 	<classpathentry kind="lib" path="lib/build-only/javamake-ant15.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/build-only/javamake.jar"/>

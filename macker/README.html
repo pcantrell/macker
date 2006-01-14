@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>Macker</title>
-<style>@import "doc/macker.css";</style>
+<style type="text/css">@import "doc/macker.css";</style>
 </head>
 <body>
 
@@ -20,10 +20,14 @@
 <p>
 In this distribution, you'll find:
 <p>
-<table class="example-table" cellspacing=0>
+<table class="example-table" cellspacing="0" cellpadding="0" border="0">
 <tr><td class="example">build/macker.jar</td><td>Macker binary, ready for rule-checking fun</td></tr>
-<tr><td class="example">lib/</td><td>libraries required by Macker</td></tr>
-<tr><td class="example">src/</td><td>Macker source code</td></tr>
+<tr><td class="example">lib/</td><td>libraries required by Macker
+    <br/><span class="moreinfo">(the ones in lib/build-only/ are only for building Macker from source; you don't need them to use Macker)</span>
+</td></tr>
+<tr><td class="example">src/</td><td>Macker source code
+    <br/><span class="moreinfo">("ant test" builds a jar and runs tests for you)</span>
+</td></tr>
 <tr><td class="example">doc/</td><td>lots of fascinating documentation, including an <a href="doc/faq.html">FAQ</a> and a <a href="doc/guide/index.html">user guide</a></td></tr>
 <tr><td class="example">bin/</td><td>useful scripts for running Macker from a command line</td></tr>
 <tr><td class="example">LICENSE.html</td><td>license for Macker (<a href="LICENSE.html">GPL</a>)</td></tr>
