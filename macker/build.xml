@@ -14,13 +14,12 @@
     <property name="src.dir"              location="${basedir}/src" />
     <property name="res.dir"              location="${basedir}/res" />
     <property name="lib.dir"              location="${basedir}/lib" />
-    <property name="conf.dir"             location="${basedir}/conf" />
     <property name="test.dir"             location="${basedir}/test" />
     <property name="doc.dir"              location="${basedir}/doc" />
     <property name="build.lib.dir"        location="${lib.dir}/build-only" />
     <property name="example.dir"          location="${doc.dir}/example" />
     
-    <property file="${conf.dir}/build.properties" />
+    <property file="${basedir}/build.properties" />
     
     <!-- Targets -->
     
@@ -56,7 +55,6 @@
         
         <path id="run.classpath">
             <pathelement location="${build.classes.dir}" />
-            <pathelement location="${conf.dir}" />
             <fileset dir="${lib.dir}" includes="**/*.jar" />
         </path>
         <property name="run.classpath" refid="run.classpath" />
