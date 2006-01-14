@@ -11,8 +11,8 @@
     <property name="Name"                 value="Macker" />
     <property name="name"                 value="macker" />
     
-    <property name="src.dir"              location="${basedir}/src" />
-    <property name="res.dir"              location="${basedir}/res" />
+    <property name="src.dir"              location="${basedir}/src/java" />
+    <property name="res.dir"              location="${basedir}/src/res" />
     <property name="lib.dir"              location="${basedir}/lib" />
     <property name="test.dir"             location="${basedir}/test" />
     <property name="doc.dir"              location="${basedir}/doc" />
@@ -29,7 +29,7 @@
     <property name="dist.dir"             location="${build.dir}/dist" />
     
     <property name="jar.file"             location="${build.dir}/${name}.jar" />
-    <property name="jar.manifest"         location="${src.dir}/manifest.mf" />
+    <property name="jar.manifest"         location="${basedir}/src/manifest.mf" />
     
     <property name="javadoc.dir"          location="${doc.dir}/javadoc"/>
     <property name="javadoc.packages"     value="net.innig.macker.*" />
