@@ -187,7 +187,7 @@
         <mkdir dir="${build.test.dir}" />
 
         <javac
-            srcdir="${test.dir}"
+            srcdir="${test.dir}/java/"
             destdir="${build.test.dir}"
             source="1.5"
             target="1.5">
@@ -229,7 +229,7 @@
             <sysproperty key="Macker.RecordingTest.buildDir" value="${test.build.recording.dir}" />
 
             <batchtest>
-                <fileset dir="${test.dir}">
+                <fileset dir="${test.dir}/java/">
                     <include name="**/*Test.java"/>
                 </fileset>
             </batchtest>
