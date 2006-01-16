@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<macker>    
+    <ruleset name="Test rules">
+    
+        <access-rule>
+            <deny> <to class="java.util.Collection" /> </deny>
+        </access-rule>
+        
+    </ruleset>
+</macker>

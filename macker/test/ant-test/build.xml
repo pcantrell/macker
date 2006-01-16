@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<project name="Macker Ant Task Test" default="go" basedir="../..">
+
+    <property name="build.dir"            location="${basedir}/build/ant/" />
+    
+    <target name="go">
+
+        <path id="run.classpath">
+            <pathelement location="${build.dir}/classes" />
+            <fileset dir="${basedir}/lib" includes="**/*.jar" />
+        </path>
+        <property name="run.classpath" refid="run.classpath" />
+        <taskdef name="macker"
+            classname="net.innig.macker.ant.MackerAntTask"
+            classpath="${run.classpath}"/>
+        
+        <macker
+            printthreshold="warning"
+            angerthreshold="error"
+            failonerror="false"
+            fork="false"
+            xmlReportFile="${build.dir}/testreport.xml"
+            angerProperty="macker.angry"
+            maxMessages="3"
+            >
+            <rules dir="${basedir}" includes="test/ant-test/macker.xml" />
+            <classes dir="${build.dir}/classes">
+                <include name="**/*.class" />
+            </classes>
+            <var name="basepkg" value="net.innig.macker" />
+            <classpath refid="run.classpath" />
+        </macker>
+        
+        <echo>macker.angry=${macker.angry}</echo>
+        <echo>Ant task test completed without blowing up</echo>
+        
+    </target>
+</project>

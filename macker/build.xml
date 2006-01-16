@@ -23,7 +23,7 @@
     
     <!-- Targets -->
     
-    <property name="build.dir"            location="${basedir}/build" />
+    <property name="build.dir"            location="${basedir}/build/ant/" />
     <property name="build.classes.dir"    location="${build.dir}/classes" />
     <property name="build.test.dir"       location="${build.dir}/test" />
     <property name="dist.dir"             location="${build.dir}/dist" />
@@ -235,6 +235,9 @@
             </batchtest>
 
         </junit>
+    	
+    	<!-- We need some actual tests around the Ant task — but for now, just make sure it doesn't blow up! -->
+    	<ant antfile="${test.dir}/ant-test/build.xml" target="go" inheritall="no"/>
 
     </target>
 
@@ -289,7 +292,11 @@
     <!-- Package distribution version                                      -->
     <!-- ================================================================= -->
 
-    <target name="dist" depends="clean,test,javadoc">
+    <target
+		name="dist"
+		depends="clean,test,javadoc"
+    	description="Prepares distribution-ready archives (uses dist.version parameter)">
+	
         <echo>Bundling dist: ${dist.version.long}</echo>
         <property name="dist.name" value="${name}-${dist.version}" />
         <property name="dist.file" value="${dist.dir}/${dist.name}" />
@@ -301,12 +308,11 @@
             <fileset dir="${basedir}">
                 <include name="**" />
                 <exclude name="build/**" />
-                <include name="build/*.jar" />
                 <exclude name="**/.DS_Store" />
             </fileset>
         </copy>
         <copy todir="${dist.staging.dir}">
-            <fileset dir="${basedir}" includes="build/*.jar" />
+            <fileset dir="${build.dir}" includes="${name}.jar" />
         </copy>
         <copy todir="${dist.staging.dir}" overwrite="yes">
             <filterset>
