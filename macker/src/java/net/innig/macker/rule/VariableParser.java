@@ -20,8 +20,8 @@
  
 package net.innig.macker.rule;
 
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class VariableParser
     {
@@ -29,32 +29,23 @@ public final class VariableParser
         throws UndeclaredVariableException
         {
         StringBuffer outS = new StringBuffer();
+        Matcher varMatcher = var.matcher(inS);
         for(int pos = 0; pos >= 0; )
             {
-            boolean hasAnotherVar = var.match(inS, pos);
-            int expEnd = hasAnotherVar ? var.getParenStart(0) : inS.length();
+            boolean hasAnotherVar = varMatcher.find(pos);
+            int expEnd = hasAnotherVar ? varMatcher.start() : inS.length();
             
             if(pos < expEnd)
                 outS.append(inS.substring(pos, expEnd));
             if(hasAnotherVar)
-                outS.append(context.getVariableValue(var.getParen(1)));
+                outS.append(context.getVariableValue(varMatcher.group(1)));
             
-            pos = hasAnotherVar ? var.getParenEnd(0) : -1;
+            pos = hasAnotherVar ? varMatcher.end() : -1;
             }
         return outS.toString();
         }
     
-    static private RE var;
-    static
-        {
-        try
-            { var = new RE("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}"); }
-        catch(RESyntaxException rese)
-            {
-            rese.printStackTrace(System.out);
-            throw new RuntimeException("Can't initialize VariableParser: " + rese);
-            }
-        }
+    static private Pattern var = Pattern.compile("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}");
     
     private VariableParser() { }
     }

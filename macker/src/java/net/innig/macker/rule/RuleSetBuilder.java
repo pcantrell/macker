@@ -23,6 +23,8 @@ package net.innig.macker.rule;
 import net.innig.io.NullOutputStream;
 import net.innig.macker.rule.filter.Filter;
 import net.innig.macker.rule.filter.FilterFinder;
+import net.innig.sweetxml.ConverterInput;
+import net.innig.sweetxml.SweetToXmlConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,6 +92,11 @@ public class RuleSetBuilder
     public Collection<RuleSet> build(File file)
         throws RulesException
         {
+        if(file.getName().endsWith(".sxml"))
+            try { return build(new SweetToXmlConverter(new ConverterInput(file))); }
+            catch(IOException e)
+                { throw new RulesDocumentException(e); }
+        
         try { return build(saxBuilder.build(file)); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
@@ -99,8 +106,12 @@ public class RuleSetBuilder
 
     public Collection<RuleSet> build(String fileName)
         throws RulesException
+        { return build(new File(fileName)); }
+
+    private Collection<RuleSet> build(SweetToXmlConverter converter)
+        throws RulesException
         {
-        try { return build(saxBuilder.build(fileName)); }
+        try { return build(saxBuilder.build(converter.getResultReader())); }
         catch(JDOMException jdome)
             { throw new RulesDocumentException(jdome); }
         catch(IOException ioe)

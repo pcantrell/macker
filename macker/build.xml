@@ -85,7 +85,8 @@
             srcdir="${src.dir}"
             destdir="${build.classes.dir}"
             source="1.5"
-            target="1.5">
+            target="1.5"
+            debug="true">
             <classpath refid="build.classpath" />
         </javac>
 <!--
@@ -190,7 +191,8 @@
             srcdir="${test.dir}/java/"
             destdir="${build.test.dir}"
             source="1.5"
-            target="1.5">
+            target="1.5"
+            debug="true">
             <classpath refid="test.classpath" />
         </javac>
 <!--

@@ -20,7 +20,6 @@
  
 package net.innig.macker.rule;
 
-import org.apache.regexp.RESyntaxException;
 
 public class MackerRegexSyntaxException
     extends RulesException
@@ -31,7 +30,7 @@ public class MackerRegexSyntaxException
         this.regexp = regexp;
         }
     
-    public MackerRegexSyntaxException(String regexp, RESyntaxException cause)
+    public MackerRegexSyntaxException(String regexp, Exception cause)
         {
         super(getMessage(regexp) + ": ", cause);
         this.regexp = regexp;

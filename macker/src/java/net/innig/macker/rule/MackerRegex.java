@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.regexp.RE;
-import org.apache.regexp.RESyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public final class MackerRegex
     {
@@ -43,14 +43,13 @@ public final class MackerRegex
         {
         if(regexStr == null)
             throw new NullPointerException("regexStr == null");
-        buildStaticPatterns();
 
         this.regexStr = regexStr;
         parts = null;
         regex = null;
         prevVarValues = new HashMap<String,String>();
 
-        if(!(allowParts ? allowable : allowableNoParts).match(regexStr))
+        if(!(allowParts ? allowable : allowableNoParts).matcher(regexStr).matches())
             throw new MackerRegexSyntaxException(regexStr);
         }
         
@@ -76,16 +75,15 @@ public final class MackerRegex
         {
         parseExpr(context);
         Boolean match = matchCache.get(s);
-        if(Boolean.FALSE.equals(match))
-            return null;
-        if(Boolean.TRUE.equals(match))
-            return matchResultCache.get(s);
+        if(match != null)
+            return match ? matchResultCache.get(s) : null;
             
-        match = regex.match('.' + s) ? Boolean.TRUE : Boolean.FALSE;
+        Matcher matcher = regex.matcher('.' + s);
+        match = matcher.matches();
         matchCache.put(s, match);
-        if(match.booleanValue())
+        if(match)
             {
-            String matchResult = regex.getParen(regex.getParenCount() - 1);
+            String matchResult = matcher.group(matcher.groupCount());
             matchResultCache.put(s, matchResult);
             return matchResult;
             }
@@ -96,22 +94,21 @@ public final class MackerRegex
     private void parseExpr(EvaluationContext context)
         throws UndeclaredVariableException, MackerRegexSyntaxException
         {
-        buildStaticPatterns();
-        
         if(parts == null)
             {
             parts = new ArrayList<Part>();
+            Matcher varMatcher = var.matcher(regexStr);
             for(int pos = 0; pos >= 0; )
                 {
-                boolean hasAnotherVar = var.match(regexStr, pos);
-                int expEnd = hasAnotherVar ? var.getParenStart(0) : regexStr.length();
+                boolean hasAnotherVar = varMatcher.find(pos);
+                int expEnd = hasAnotherVar ? varMatcher.start() : regexStr.length();
                 
                 if(pos < expEnd)
                     parts.add(new ExpPart(parseSubexpr(regexStr.substring(pos, expEnd))));
                 if(hasAnotherVar)
-                    parts.add(new VarPart(var.getParen(1)));
+                    parts.add(new VarPart(varMatcher.group(1)));
                 
-                pos = hasAnotherVar ? var.getParenEnd(0) : -1;
+                pos = hasAnotherVar ? varMatcher.end() : -1;
                 }
             }
         
@@ -149,11 +146,11 @@ public final class MackerRegex
                 }
             builtRegexStr.append('$');
             
-            try { regex = new RE(builtRegexStr.toString()); }
-            catch(RESyntaxException rese)
+            try { regex = Pattern.compile(builtRegexStr.toString()); }
+            catch(PatternSyntaxException pse)
                 {
                 System.out.println("builtRegexStr = " + builtRegexStr);
-                throw new MackerRegexSyntaxException(regexStr, rese);
+                throw new MackerRegexSyntaxException(regexStr, pse);
                 }
                 
 //!            if(???)
@@ -165,49 +162,31 @@ public final class MackerRegex
     
     private String parseSubexpr(String exp)
         {
-        exp = partBoundary.subst(exp, "[\\.\\$]");
-        exp = packageBoundary.subst(exp, "\\.");
-        exp = innerClassBoundary.subst(exp, "\\$");
-        exp = star.subst(exp, "@");
-        exp = matchAcross.subst(exp, ".*");
-        exp = matchWithin.subst(exp, "[^\\.]*");
-//        exp = matchWithinInner.subst(exp, "[^\\.\\$]*");
-        return exp;
+        return exp
+            .replace(".", "[\\.\\$]")
+            .replace("/", "\\.")
+            .replace("$", "\\$")
+            .replace("*", "\uFFFF")
+            .replace("\uFFFF\uFFFF", ".*")
+            .replace("\uFFFF", "[^\\.]*");
         }
 
-    private static void buildStaticPatterns()
-        {
-        if(allowable == null)
-            try {
-                star = new RE("\\*");
-                matchWithin = new RE("@");
-                matchAcross = new RE("@@");
-                partBoundary = new RE("\\.");
-                packageBoundary = new RE("/");
-                innerClassBoundary = new RE("\\$");
-
-                String varS  = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
-                String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")"
-                               + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";
-                var = new RE(varS);
-                allowable = new RE("^([\\$\\./]?" + partS + ")+$", RE.MATCH_SINGLELINE);
-                allowableNoParts = new RE("^" + partS + "$", RE.MATCH_SINGLELINE);
-                }
-            catch(RESyntaxException rese)
-                {
-                rese.printStackTrace(System.out);
-                throw new RuntimeException("Can't initialize RegexPattern: " + rese);
-                }
-        }
-    
-    private RE regex;
+    private Pattern regex;
     private List<Part> parts;
     private Map<String,String> prevVarValues;
     private Map<String,Boolean> matchCache;
     private Map<String,String> matchResultCache;
-    static private RE star, matchWithin, matchAcross,
-        partBoundary, packageBoundary, innerClassBoundary, var,
-        allowable, allowableNoParts;
+    static private Pattern var, allowable, allowableNoParts;
+    static
+        {
+        String varS  = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
+        String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")"
+                       + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";
+        var = Pattern.compile(varS);
+        allowable = Pattern.compile("^([\\$\\./]?" + partS + ")+$");
+        allowableNoParts = Pattern.compile("^" + partS + "$");
+        }
+    
     
     private class Part { }
     private class VarPart extends Part
