@@ -17,44 +17,43 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
 
-public final class RegexPattern
-    implements Pattern
-    {
-    //--------------------------------------------------------------------------
-    // Constructors
-    //--------------------------------------------------------------------------
+public final class RegexPattern implements Pattern {
+	// --------------------------------------------------------------------------
+	// Constructors
+	// --------------------------------------------------------------------------
 
-    public RegexPattern(String regexStr)
-        throws MackerRegexSyntaxException
-        { regex = new MackerRegex(regexStr); }
-        
-    //--------------------------------------------------------------------------
-    // Properties
-    //--------------------------------------------------------------------------
+	public RegexPattern(String regexStr) throws MackerRegexSyntaxException {
+		regex = new MackerRegex(regexStr);
+	}
 
-    public MackerRegex getRegex()
-        { return regex; }
-    
-    private final MackerRegex regex;
+	// --------------------------------------------------------------------------
+	// Properties
+	// --------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------
-    // Evaluation
-    //--------------------------------------------------------------------------
+	public MackerRegex getRegex() {
+		return regex;
+	}
 
-    public boolean matches(EvaluationContext context, ClassInfo classInfo)
-        throws RulesException
-        { return regex.matches(context, classInfo.getFullName()); }
-    
-    public String getMatch(EvaluationContext context, ClassInfo classInfo)
-        throws RulesException
-        { return regex.getMatch(context, classInfo.getFullName()); }
-    
-    public String toString()
-        { return regex.toString(); }
-    }
+	private final MackerRegex regex;
 
+	// --------------------------------------------------------------------------
+	// Evaluation
+	// --------------------------------------------------------------------------
+
+	public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+		return regex.matches(context, classInfo.getFullName());
+	}
+
+	public String getMatch(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+		return regex.getMatch(context, classInfo.getFullName());
+	}
+
+	public String toString() {
+		return regex.toString();
+	}
+}

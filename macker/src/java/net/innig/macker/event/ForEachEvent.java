@@ -17,24 +17,22 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
 
 import java.util.ArrayList;
 
-public class ForEachEvent
-    extends MackerEvent
-    {
-    public ForEachEvent(ForEach forEach, String description)
-        {
-        super(forEach, description, new ArrayList<String>());
-        this.forEach = forEach;
-        }
-    
-    public ForEach getForEach()
-        { return forEach; }
-    
-    private ForEach forEach;
-    }
+public class ForEachEvent extends MackerEvent {
+	public ForEachEvent(ForEach forEach, String description) {
+		super(forEach, description, new ArrayList<String>());
+		this.forEach = forEach;
+	}
+
+	public ForEach getForEach() {
+		return forEach;
+	}
+
+	private ForEach forEach;
+}

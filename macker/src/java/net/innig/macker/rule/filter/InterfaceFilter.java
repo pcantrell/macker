@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.EvaluationContext;
@@ -29,27 +29,18 @@ import net.innig.macker.structure.ClassInfo;
 import java.util.List;
 import java.util.Map;
 
-public class InterfaceFilter
-    implements Filter
-    {
-    public Pattern createPattern(
-            RuleSet ruleSet,
-            List<Pattern> params,
-            Map<String,String> options)
-        throws RulesException
-        {
-        if(params.size() != 0)
-            throw new FilterSyntaxException(
-                this,
-                "Filter \"" + options.get("filter") + "\" expects no parameters, but has " + params.size());
-        return INTERFACE_PATTERN;
-        }
+public class InterfaceFilter implements Filter {
+	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+			throws RulesException {
+		if (params.size() != 0)
+			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
+					+ "\" expects no parameters, but has " + params.size());
+		return INTERFACE_PATTERN;
+	}
 
-    private final Pattern INTERFACE_PATTERN =
-        new Pattern()
-            {
-            public boolean matches(EvaluationContext context, ClassInfo classInfo)
-                throws RulesException
-                { return classInfo.isInterface(); }
-            };
-    }
+	private final Pattern INTERFACE_PATTERN = new Pattern() {
+		public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+			return classInfo.isInterface();
+		}
+	};
+}

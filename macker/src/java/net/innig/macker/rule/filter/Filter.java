@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.Pattern;
@@ -27,11 +27,7 @@ import net.innig.macker.rule.RulesException;
 import java.util.List;
 import java.util.Map;
 
-public interface Filter
-    {
-    public Pattern createPattern(
-            RuleSet ruleSet,
-            List<Pattern> params,
-            Map<String,String> options)
-        throws RulesException;
-    }
+public interface Filter {
+	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+			throws RulesException;
+}

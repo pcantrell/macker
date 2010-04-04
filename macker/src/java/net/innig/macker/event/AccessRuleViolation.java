@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.event;
 
 import net.innig.macker.rule.AccessRule;
@@ -25,35 +25,28 @@ import net.innig.macker.structure.ClassInfo;
 
 import java.util.List;
 
-public class AccessRuleViolation
-    extends MackerEvent
-    {
-    public AccessRuleViolation(
-            AccessRule accessRule,
-            ClassInfo from,
-            ClassInfo to,
-            List<String> messages)
-        {
-        super(accessRule,
-            "Illegal reference" + CR //! hokey, hokey, hokey!
-            + "  from " + from + CR
-            + "    to " + to,
-            messages);
-        this.accessRule = accessRule;
-        this.from = from;
-        this.to = to;
-        }
-    
-    public final AccessRule getAccessRule()
-        { return accessRule; }
-    
-    public final ClassInfo getFrom()
-        { return from; }
-        
-    public final ClassInfo getTo()
-        { return to; }
-    
-    private final AccessRule accessRule;
-    private final ClassInfo from, to;
-    private static final String CR = System.getProperty("line.separator");
-    }
+public class AccessRuleViolation extends MackerEvent {
+	public AccessRuleViolation(AccessRule accessRule, ClassInfo from, ClassInfo to, List<String> messages) {
+		super(accessRule, "Illegal reference" + CR // ! hokey, hokey, hokey!
+				+ "  from " + from + CR + "    to " + to, messages);
+		this.accessRule = accessRule;
+		this.from = from;
+		this.to = to;
+	}
+
+	public final AccessRule getAccessRule() {
+		return accessRule;
+	}
+
+	public final ClassInfo getFrom() {
+		return from;
+	}
+
+	public final ClassInfo getTo() {
+		return to;
+	}
+
+	private final AccessRule accessRule;
+	private final ClassInfo from, to;
+	private static final String CR = System.getProperty("line.separator");
+}

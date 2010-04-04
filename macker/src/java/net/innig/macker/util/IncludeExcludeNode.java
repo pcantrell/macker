@@ -17,19 +17,17 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.util;
 
 import net.innig.macker.rule.RulesException;
 
-public interface IncludeExcludeNode
-    {
-    public boolean isInclude();
+public interface IncludeExcludeNode {
+	public boolean isInclude();
 
-    public boolean matches()
-        throws RulesException;
-    
-    public IncludeExcludeNode getChild();
-    
-    public IncludeExcludeNode getNext();
-    }
+	public boolean matches() throws RulesException;
+
+	public IncludeExcludeNode getChild();
+
+	public IncludeExcludeNode getNext();
+}

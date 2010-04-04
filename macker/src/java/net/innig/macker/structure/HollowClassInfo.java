@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
 import net.innig.collect.MultiMap;
@@ -25,40 +25,64 @@ import net.innig.collect.MultiMap;
 import java.util.Set;
 
 /**
-    Holds a class name, and lazily loads other attributes.
-*/
-public class HollowClassInfo
-    extends AbstractClassInfo
-    {
-    public HollowClassInfo(ClassManager classManager, String className)
-        {
-        super(classManager);
-        this.className = className;
-        }
-    
-    public String getFullName()
-        { return className; }
+ * Holds a class name, and lazily loads other attributes.
+ */
+public class HollowClassInfo extends AbstractClassInfo {
+	public HollowClassInfo(ClassManager classManager, String className) {
+		super(classManager);
+		this.className = className;
+	}
 
-    public boolean isComplete()                { return getActual().isComplete(); }
-    public boolean isInterface()               { return getActual().isInterface(); }
-    public boolean isAbstract()                { return getActual().isAbstract(); }
-    public boolean isFinal()                   { return getActual().isFinal(); }
-    public AccessModifier getAccessModifier()  { return getActual().getAccessModifier(); }
-    public ClassInfo getExtends()              { return getActual().getExtends(); }
-    public Set<ClassInfo> getImplements()                 { return getActual().getImplements(); }
-    public Set<ClassInfo> getDirectSupertypes()           { return getActual().getDirectSupertypes(); }
-    public Set<ClassInfo> getSupertypes()                 { return getActual().getSupertypes(); }
-    public MultiMap<ClassInfo,Reference> getReferences()            { return getActual().getReferences(); }
+	public String getFullName() {
+		return className;
+	}
 
-    private ClassInfo getActual()
-        {
-        if(actual == null)
-            actual = getClassManager().loadClassInfo(className);
-        return actual;
-        }
-    
-    private String className;
-    private ClassInfo actual;
-    }
+	public boolean isComplete() {
+		return getActual().isComplete();
+	}
 
+	public boolean isInterface() {
+		return getActual().isInterface();
+	}
 
+	public boolean isAbstract() {
+		return getActual().isAbstract();
+	}
+
+	public boolean isFinal() {
+		return getActual().isFinal();
+	}
+
+	public AccessModifier getAccessModifier() {
+		return getActual().getAccessModifier();
+	}
+
+	public ClassInfo getExtends() {
+		return getActual().getExtends();
+	}
+
+	public Set<ClassInfo> getImplements() {
+		return getActual().getImplements();
+	}
+
+	public Set<ClassInfo> getDirectSupertypes() {
+		return getActual().getDirectSupertypes();
+	}
+
+	public Set<ClassInfo> getSupertypes() {
+		return getActual().getSupertypes();
+	}
+
+	public MultiMap<ClassInfo, Reference> getReferences() {
+		return getActual().getReferences();
+	}
+
+	private ClassInfo getActual() {
+		if (actual == null)
+			actual = getClassManager().loadClassInfo(className);
+		return actual;
+	}
+
+	private String className;
+	private ClassInfo actual;
+}

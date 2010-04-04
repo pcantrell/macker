@@ -17,38 +17,35 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.event;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MackerIsMadException
-    extends Exception
-    {
-    public MackerIsMadException()
-        {
-        super();
-        events = null;
-        }
+public class MackerIsMadException extends Exception {
+	public MackerIsMadException() {
+		super();
+		events = null;
+	}
 
-    public MackerIsMadException(MackerEvent event)
-        { this(Collections.singletonList(event)); }
+	public MackerIsMadException(MackerEvent event) {
+		this(Collections.singletonList(event));
+	}
 
-    public MackerIsMadException(List<MackerEvent> events)
-        {
-        super(BASE_MESSAGE);
-        if(events.isEmpty())
-            throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
-        this.events = Collections.unmodifiableList(new ArrayList<MackerEvent>(events));
-        }
-    
-    public List getEvents()
-        { return events; }
-    
-    private final List<MackerEvent> events;
-    
-    private static final String BASE_MESSAGE = "Macker rules checking failed";
-    }
+	public MackerIsMadException(List<MackerEvent> events) {
+		super(BASE_MESSAGE);
+		if (events.isEmpty())
+			throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
+		this.events = Collections.unmodifiableList(new ArrayList<MackerEvent>(events));
+	}
 
+	public List<MackerEvent> getEvents() {
+		return events;
+	}
+
+	private final List<MackerEvent> events;
+
+	private static final String BASE_MESSAGE = "Macker rules checking failed";
+}

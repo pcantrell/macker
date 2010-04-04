@@ -17,23 +17,24 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
 import org.apache.bcel.classfile.JavaClass;
 
 /**
-    A class file was found, but was unparsable.
-*/
-public class ClassParseException
-    extends Exception
-    {
-    public ClassParseException(String message)
-        { super(message); }
-        
-    public ClassParseException(String message, JavaClass classFile)
-        { super(message + "\n" + classFile); }
-        
-    public ClassParseException(ClassFormatError cfe)
-        { super(cfe); }
-    }
+ * A class file was found, but was unparsable.
+ */
+public class ClassParseException extends Exception {
+	public ClassParseException(String message) {
+		super(message);
+	}
+
+	public ClassParseException(String message, JavaClass classFile) {
+		super(message + "\n" + classFile);
+	}
+
+	public ClassParseException(ClassFormatError cfe) {
+		super(cfe);
+	}
+}

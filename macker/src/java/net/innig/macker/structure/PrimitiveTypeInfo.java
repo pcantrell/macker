@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
 import net.innig.collect.InnigCollections;
@@ -28,36 +28,71 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
-    Hard-coded class info for Java's primitive types.
-*/
-public enum PrimitiveTypeInfo
-    implements ClassInfo
-    {
-    BYTE, SHORT, INT, LONG, CHAR, BOOLEAN, FLOAT, DOUBLE, VOID;
-    
-    public static final Set<PrimitiveTypeInfo> ALL = Collections.unmodifiableSet(EnumSet.allOf(PrimitiveTypeInfo.class));
+ * Hard-coded class info for Java's primitive types.
+ */
+public enum PrimitiveTypeInfo implements ClassInfo {
+	BYTE, SHORT, INT, LONG, CHAR, BOOLEAN, FLOAT, DOUBLE, VOID;
 
-    public ClassManager getClassManager()
-        { return null; }
-    
-    public boolean isComplete()
-        { return true; }
-    
-    public String getName()        { return toString().toLowerCase(); }
-    public String getFullName()    { return getName(); }
-    public String getClassName()   { return getName(); }
-    public String getPackageName() { return null; }
-    
-    public boolean isInterface() { return false; }
-    public boolean isAbstract()  { return false; }
-    public boolean isFinal()     { return true; }
-    public AccessModifier getAccessModifier() { return AccessModifier.PUBLIC; }
-    
-    public ClassInfo getExtends()                   { return null; }
-    public Set<ClassInfo> getImplements()       { return Collections.emptySet(); }
-    public Set<ClassInfo> getDirectSupertypes() { return Collections.emptySet(); }
-    public Set<ClassInfo> getSupertypes()       { return Collections.emptySet(); }
-    
-    public MultiMap<ClassInfo,Reference> getReferences()
-        { return InnigCollections.emptyMultimap(); }
-    }
+	public static final Set<PrimitiveTypeInfo> ALL = Collections
+			.unmodifiableSet(EnumSet.allOf(PrimitiveTypeInfo.class));
+
+	public ClassManager getClassManager() {
+		return null;
+	}
+
+	public boolean isComplete() {
+		return true;
+	}
+
+	public String getName() {
+		return toString().toLowerCase();
+	}
+
+	public String getFullName() {
+		return getName();
+	}
+
+	public String getClassName() {
+		return getName();
+	}
+
+	public String getPackageName() {
+		return null;
+	}
+
+	public boolean isInterface() {
+		return false;
+	}
+
+	public boolean isAbstract() {
+		return false;
+	}
+
+	public boolean isFinal() {
+		return true;
+	}
+
+	public AccessModifier getAccessModifier() {
+		return AccessModifier.PUBLIC;
+	}
+
+	public ClassInfo getExtends() {
+		return null;
+	}
+
+	public Set<ClassInfo> getImplements() {
+		return Collections.emptySet();
+	}
+
+	public Set<ClassInfo> getDirectSupertypes() {
+		return Collections.emptySet();
+	}
+
+	public Set<ClassInfo> getSupertypes() {
+		return Collections.emptySet();
+	}
+
+	public MultiMap<ClassInfo, Reference> getReferences() {
+		return InnigCollections.emptyMultimap();
+	}
+}

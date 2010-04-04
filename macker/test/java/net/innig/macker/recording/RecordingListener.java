@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.recording;
 
 import net.innig.macker.event.MackerEvent;
@@ -25,33 +25,32 @@ import net.innig.macker.event.MackerEventListener;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.rule.RuleSet;
 
-public class RecordingListener
-    implements MackerEventListener
-    {
-    public RecordingListener()
-        { recording = curRecording = new RuleSetRecording(null); }
-    
-    public void mackerStarted(RuleSet ruleSet)
-        { }
-    
-    public void mackerFinished(RuleSet ruleSet)
-        throws MackerIsMadException
-        { }
+public class RecordingListener implements MackerEventListener {
+	public RecordingListener() {
+		recording = curRecording = new RuleSetRecording(null);
+	}
 
-    public void mackerAborted(RuleSet ruleSet)
-        { } // don't care
-    
-    public void handleMackerEvent(RuleSet ruleSet, MackerEvent event)
-        throws MackerIsMadException
-        { curRecording = curRecording.record(event); }
-    
-    public EventRecording getRecording()
-        { return recording; }
-    
-    public String toString()
-        { return "RecordingListener"; }
-    
-    private EventRecording recording;
-    private EventRecording curRecording;
-    }
+	public void mackerStarted(RuleSet ruleSet) {
+	}
 
+	public void mackerFinished(RuleSet ruleSet) throws MackerIsMadException {
+	}
+
+	public void mackerAborted(RuleSet ruleSet) {
+	} // don't care
+
+	public void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException {
+		curRecording = curRecording.record(event);
+	}
+
+	public EventRecording getRecording() {
+		return recording;
+	}
+
+	public String toString() {
+		return "RecordingListener";
+	}
+
+	private EventRecording recording;
+	private EventRecording curRecording;
+}

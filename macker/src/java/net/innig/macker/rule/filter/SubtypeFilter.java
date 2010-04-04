@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.EvaluationContext;
@@ -29,30 +29,20 @@ import net.innig.macker.structure.ClassInfo;
 import java.util.List;
 import java.util.Map;
 
-public class SubtypeFilter
-    implements Filter
-    {
-    public Pattern createPattern(
-            RuleSet ruleSet,
-            List<Pattern> params,
-            Map<String,String> options)
-        throws RulesException
-        {
-        if(params.size() != 1)
-            throw new FilterSyntaxException(
-                this,
-                "Filter \"" + options.get("filter") + "\" expects one parameter, but has " + params.size());
-        final Pattern supertypePat = params.get(0);
-        return new Pattern()
-            {
-            public boolean matches(EvaluationContext context, ClassInfo classInfo)
-                throws RulesException
-                {
-                for(ClassInfo supertype : classInfo.getSupertypes())
-                    if(supertypePat.matches(context, supertype))
-                        return true;
-                return false;
-                }
-            };
-        }
-    }
+public class SubtypeFilter implements Filter {
+	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+			throws RulesException {
+		if (params.size() != 1)
+			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
+					+ "\" expects one parameter, but has " + params.size());
+		final Pattern supertypePat = params.get(0);
+		return new Pattern() {
+			public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+				for (ClassInfo supertype : classInfo.getSupertypes())
+					if (supertypePat.matches(context, supertype))
+						return true;
+				return false;
+			}
+		};
+	}
+}

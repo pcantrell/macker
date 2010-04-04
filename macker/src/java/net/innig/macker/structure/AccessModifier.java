@@ -17,14 +17,12 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
 /**
-    Java access modifiers for classes and members.
-    Ordered by increasing visibility.
-*/
-public enum AccessModifier
-    {
-    PRIVATE, PACKAGE, PROTECTED, PUBLIC;
-    }
+ * Java access modifiers for classes and members. Ordered by increasing visibility.
+ */
+public enum AccessModifier {
+	PRIVATE, PACKAGE, PROTECTED, PUBLIC;
+}

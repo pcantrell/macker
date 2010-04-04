@@ -17,14 +17,13 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
 
-public class ForEachStarted
-    extends ForEachEvent
-    {
-    public ForEachStarted(ForEach forEach)
-        { super(forEach, "forEach started"); }
-    }
+public class ForEachStarted extends ForEachEvent {
+	public ForEachStarted(ForEach forEach) {
+		super(forEach, "forEach started");
+	}
+}

@@ -17,21 +17,16 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.structure;
 
-
 /**
-    Macker needs attributes of a missing class.
-    
-    @see IncompleteClassInfo
-*/
-public class IncompleteClassInfoException
-    extends UnsupportedOperationException
-    {
-    public IncompleteClassInfoException(String message)
-        { super(message); }
-    }
-
-
-
+ * Macker needs attributes of a missing class.
+ * 
+ * @see IncompleteClassInfo
+ */
+public class IncompleteClassInfoException extends UnsupportedOperationException {
+	public IncompleteClassInfoException(String message) {
+		super(message);
+	}
+}

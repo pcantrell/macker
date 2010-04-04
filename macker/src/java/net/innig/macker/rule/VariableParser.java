@@ -17,36 +17,32 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class VariableParser
-    {
-    public static String parse(EvaluationContext context, String inS)
-        throws UndeclaredVariableException
-        {
-        StringBuffer outS = new StringBuffer();
-        Matcher varMatcher = var.matcher(inS);
-        for(int pos = 0; pos >= 0; )
-            {
-            boolean hasAnotherVar = varMatcher.find(pos);
-            int expEnd = hasAnotherVar ? varMatcher.start() : inS.length();
-            
-            if(pos < expEnd)
-                outS.append(inS.substring(pos, expEnd));
-            if(hasAnotherVar)
-                outS.append(context.getVariableValue(varMatcher.group(1)));
-            
-            pos = hasAnotherVar ? varMatcher.end() : -1;
-            }
-        return outS.toString();
-        }
-    
-    static private Pattern var = Pattern.compile("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}");
-    
-    private VariableParser() { }
-    }
+public final class VariableParser {
+	public static String parse(EvaluationContext context, String inS) throws UndeclaredVariableException {
+		StringBuffer outS = new StringBuffer();
+		Matcher varMatcher = var.matcher(inS);
+		for (int pos = 0; pos >= 0;) {
+			boolean hasAnotherVar = varMatcher.find(pos);
+			int expEnd = hasAnotherVar ? varMatcher.start() : inS.length();
 
+			if (pos < expEnd)
+				outS.append(inS.substring(pos, expEnd));
+			if (hasAnotherVar)
+				outS.append(context.getVariableValue(varMatcher.group(1)));
+
+			pos = hasAnotherVar ? varMatcher.end() : -1;
+		}
+		return outS.toString();
+	}
+
+	static private Pattern var = Pattern.compile("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}");
+
+	private VariableParser() {
+	}
+}

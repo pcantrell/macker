@@ -17,19 +17,19 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.rule;
 
 /**
-    Indicates an illegal or ill-formed rule.
-*/
+ * Indicates an illegal or ill-formed rule.
+ */
 
-public abstract class RulesException
-    extends Exception
-    {
-    public RulesException(String message)
-        { super(message); }
-    
-    public RulesException(String message, Throwable cause)
-        { super(message, cause); }
-    }
+public abstract class RulesException extends Exception {
+	public RulesException(String message) {
+		super(message);
+	}
+
+	public RulesException(String message, Throwable cause) {
+		super(message, cause);
+	}
+}

@@ -17,7 +17,7 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.recording;
 
 import net.innig.macker.event.MackerEvent;
@@ -27,42 +27,39 @@ import java.io.PrintWriter;
 
 import org.jdom.Element;
 
-public abstract class EventRecording
-    {
-    public EventRecording(EventRecording parent)
-        { this.parent = parent; }
-    
-    protected EventRecording getParent()
-        { return parent; }
-    
-    public abstract EventRecording record(MackerEvent event);
-    
-    public abstract void read(Element elem);
-    
-    public boolean compare(EventRecording actual, PrintWriter out)
-        {
-        if(getClass() != actual.getClass())
-            {
-            out.println("expected " + this + ", but got " + actual);
-            return false;
-            }
-        
-        return true;
-        }
-    
-    public void dump(PrintStream out, int indent)
-        {
-        PrintWriter outWriter = new PrintWriter(out);
-        dump(outWriter, indent);
-        outWriter.flush();
-        }
-        
-    public void dump(PrintWriter out, int indent)
-        {
-        for(int n = 0; n < indent; n++)
-            out.print(' ');
-        out.println(this);
-        }
-        
-    private EventRecording parent;
-    }
+public abstract class EventRecording {
+	public EventRecording(EventRecording parent) {
+		this.parent = parent;
+	}
+
+	protected EventRecording getParent() {
+		return parent;
+	}
+
+	public abstract EventRecording record(MackerEvent event);
+
+	public abstract void read(Element elem);
+
+	public boolean compare(EventRecording actual, PrintWriter out) {
+		if (getClass() != actual.getClass()) {
+			out.println("expected " + this + ", but got " + actual);
+			return false;
+		}
+
+		return true;
+	}
+
+	public void dump(PrintStream out, int indent) {
+		PrintWriter outWriter = new PrintWriter(out);
+		dump(outWriter, indent);
+		outWriter.flush();
+	}
+
+	public void dump(PrintWriter out, int indent) {
+		for (int n = 0; n < indent; n++)
+			out.print(' ');
+		out.println(this);
+	}
+
+	private EventRecording parent;
+}

@@ -17,16 +17,15 @@
  * Place, Suite 330 / Boston, MA 02111-1307 / USA.
  *______________________________________________________________________________
  */
- 
+
 package net.innig.macker.event;
 
 import net.innig.macker.rule.Message;
 
 import java.util.Collections;
 
-public class MessageEvent
-    extends MackerEvent
-    {
-    public MessageEvent(Message messageRule, String message)
-        { super(messageRule, null, Collections.singletonList(message)); }
-    }
+public class MessageEvent extends MackerEvent {
+	public MessageEvent(Message messageRule, String message) {
+		super(messageRule, null, Collections.singletonList(message));
+	}
+}
