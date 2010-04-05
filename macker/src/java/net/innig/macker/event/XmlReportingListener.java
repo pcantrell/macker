@@ -27,8 +27,12 @@ public class XmlReportingListener implements MackerEventListener {
 
 	public XmlReportingListener(File outFile) throws ListenerException {
 		try {
-			if (outFile.exists())
-				outFile.delete();
+			if (outFile.exists()) {
+				final boolean succesfullyDeleted = outFile.delete();
+				if (!succesfullyDeleted) {
+					throw new ListenerException(this, "Unable to remove report file \"" + outFile + "\"");
+				}
+			}
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
 			BufferedWriter bufferedOut = new BufferedWriter(out);
 			init(bufferedOut, "UTF-8");

@@ -38,16 +38,18 @@ public final class MackerRegex {
 	}
 
 	public MackerRegex(String regexStr, boolean allowParts) throws MackerRegexSyntaxException {
-		if (regexStr == null)
-			throw new NullPointerException("regexStr == null");
+		if (regexStr == null) {
+			throw new IllegalArgumentException("regexStr == null");
+		}
 
 		this.regexStr = regexStr;
 		parts = null;
 		regex = null;
 		prevVarValues = new HashMap<String, String>();
 
-		if (!(allowParts ? allowable : allowableNoParts).matcher(regexStr).matches())
+		if (!(allowParts ? allowable : allowableNoParts).matcher(regexStr).matches()) {
 			throw new MackerRegexSyntaxException(regexStr);
+		}
 	}
 
 	// --------------------------------------------------------------------------
@@ -73,8 +75,9 @@ public final class MackerRegex {
 			MackerRegexSyntaxException {
 		parseExpr(context);
 		Boolean match = matchCache.get(s);
-		if (match != null)
+		if (match != null) {
 			return match ? matchResultCache.get(s) : null;
+		}
 
 		Matcher matcher = regex.matcher('.' + s);
 		match = matcher.matches();
@@ -83,8 +86,9 @@ public final class MackerRegex {
 			String matchResult = matcher.group(matcher.groupCount());
 			matchResultCache.put(s, matchResult);
 			return matchResult;
-		} else
-			return null;
+		}
+		
+		return null;
 	}
 
 	private void parseExpr(EvaluationContext context) throws UndeclaredVariableException, MackerRegexSyntaxException {
@@ -95,10 +99,12 @@ public final class MackerRegex {
 				boolean hasAnotherVar = varMatcher.find(pos);
 				int expEnd = hasAnotherVar ? varMatcher.start() : regexStr.length();
 
-				if (pos < expEnd)
+				if (pos < expEnd) {
 					parts.add(new ExpPart(parseSubexpr(regexStr.substring(pos, expEnd))));
-				if (hasAnotherVar)
+				}
+				if (hasAnotherVar) {
 					parts.add(new VarPart(varMatcher.group(1)));
+				}
 
 				pos = hasAnotherVar ? varMatcher.end() : -1;
 			}
@@ -107,7 +113,7 @@ public final class MackerRegex {
 		// Building the regexp is expensive; there's no point in doing it if we
 		// already have one cached, and the relevant variables haven't changed
 
-		boolean changed = (regex == null);
+		boolean changed = regex == null;
 		for (Map.Entry<String, String> entry : prevVarValues.entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
@@ -125,8 +131,9 @@ public final class MackerRegex {
 					String varValue = context.getVariableValue(varName);
 					prevVarValues.put(varName, varValue);
 					builtRegexStr.append(parseSubexpr(varValue));
-				} else if (part instanceof ExpPart)
+				} else if (part instanceof ExpPart) {
 					builtRegexStr.append(((ExpPart) part).exp);
+				}
 			}
 			builtRegexStr.append('$');
 
@@ -155,7 +162,9 @@ public final class MackerRegex {
 	private Map<String, String> prevVarValues;
 	private Map<String, Boolean> matchCache;
 	private Map<String, String> matchResultCache;
-	static private Pattern var, allowable, allowableNoParts;
+	private static Pattern var;
+	private static Pattern allowable;
+	private static Pattern allowableNoParts;
 	static {
 		String varS = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
 		String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")" + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";

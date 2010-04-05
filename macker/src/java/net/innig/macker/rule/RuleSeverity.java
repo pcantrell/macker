@@ -20,6 +20,8 @@
 
 package net.innig.macker.rule;
 
+import java.util.Arrays;
+
 public enum RuleSeverity {
 	DEBUG("debug"), INFO("info"), WARNING("warnings"), ERROR("errors");
 
@@ -27,7 +29,7 @@ public enum RuleSeverity {
 		RuleSeverity severity = RuleSeverity.valueOf(name.toUpperCase());
 		if (severity == null)
 			throw new IllegalArgumentException("Unknown severity level \"" + name + "\" (expected one of "
-					+ RuleSeverity.values() + ")");
+					+ Arrays.toString(RuleSeverity.values()) + ")");
 		return severity;
 	}
 

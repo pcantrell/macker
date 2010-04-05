@@ -32,9 +32,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.mpr.util.StreamSplitter;
 
 /**
  * A task which formats Macker reports using XSLT. Requires Xalan 2 or some other well-behaved XSLT implementation.
@@ -137,7 +137,9 @@ public class MackerReportAntTask extends Task {
 
 		File skinOutputFile = new File(outputDir, "macker-report.css");
 		try {
-			new StreamSplitter(skinUrl.openStream(), new FileOutputStream(skinOutputFile)).run();
+			IOUtils.copy(skinUrl.openStream(), new FileOutputStream(skinOutputFile));
+			// StreamSplitter is used blocking here, right?
+			// new StreamSplitter(skinUrl.openStream(), new FileOutputStream(skinOutputFile)).run();
 		} catch (IOException ioe) {
 			throw new BuildException("Unable to copy skin to " + skinOutputFile, ioe);
 		}

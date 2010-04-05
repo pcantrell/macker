@@ -40,7 +40,8 @@ public class AccessRule extends Rule {
 	public AccessRule(RuleSet parent) {
 		super(parent);
 		type = AccessRuleType.DENY;
-		from = to = Pattern.ALL;
+		from = Pattern.ALL;
+		to = Pattern.ALL;
 	}
 
 	// --------------------------------------------------------------------------
@@ -52,8 +53,9 @@ public class AccessRule extends Rule {
 	}
 
 	public void setType(AccessRuleType type) {
-		if (type == null)
-			throw new NullPointerException("type parameter cannot be null");
+		if (type == null) {
+			throw new IllegalArgumentException("type parameter cannot be null");
+		}
 		this.type = type;
 	}
 
@@ -98,9 +100,11 @@ public class AccessRule extends Rule {
 	}
 
 	private AccessRuleType type;
-	private Pattern from, to;
+	private Pattern from;
+	private Pattern to;
 	private String message;
-	private AccessRule child, next;
+	private AccessRule child;
+	private AccessRule next;
 
 	// --------------------------------------------------------------------------
 	// Evaluation
@@ -112,10 +116,12 @@ public class AccessRule extends Rule {
 		for (MultiMap.Entry<ClassInfo, ClassInfo> reference : classes.getReferences().entrySet()) {
 			ClassInfo from = reference.getKey();
 			ClassInfo to = reference.getValue();
-			if (from.equals(to))
+			if (from.equals(to)) {
 				continue;
-			if (!localContext.getRuleSet().isInSubset(localContext, from))
+			}
+			if (!localContext.getRuleSet().isInSubset(localContext, from)) {
 				continue;
+			}
 
 			localContext.setVariableValue("from", from.getClassName());
 			localContext.setVariableValue("to", to.getClassName());
@@ -126,10 +132,11 @@ public class AccessRule extends Rule {
 
 			if (!checkAccess(localContext, from, to)) {
 				List<String> messages;
-				if (getMessage() == null)
+				if (getMessage() == null) {
 					messages = Collections.emptyList();
-				else
+				} else {
 					messages = Collections.singletonList(VariableParser.parse(localContext, getMessage()));
+				}
 				context.broadcastEvent(new AccessRuleViolation(this, from, to, messages));
 			}
 		}
@@ -142,7 +149,11 @@ public class AccessRule extends Rule {
 
 	static IncludeExcludeNode makeIncludeExcludeNode(final AccessRule rule, final EvaluationContext context,
 			final ClassInfo fromClass, final ClassInfo toClass) {
-		return (rule == null) ? null : new IncludeExcludeNode() {
+		if (rule == null) {
+			return null;
+		}
+		
+		return new IncludeExcludeNode() {
 			public boolean isInclude() {
 				return rule.getType() == AccessRuleType.ALLOW;
 			}

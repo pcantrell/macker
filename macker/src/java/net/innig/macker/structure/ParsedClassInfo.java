@@ -98,29 +98,32 @@ public class ParsedClassInfo extends AbstractClassInfo {
 	}
 
 	private void parseAccess(JavaClass classFile) throws ClassParseException {
-		if (getFullName().indexOf('$') == -1) // ! will break many synthetic
+		if (getFullName().indexOf('$') == -1) {
 			// classes!
 			accessModifier = translateAccess(classFile);
-		else {
+		} else {
 			Attribute[] attributes = classFile.getAttributes();
 			String classNameRaw = classFile.getClassName().replace('.', '/');
-			for (int a = 0; a < attributes.length; a++)
+			for (int a = 0; a < attributes.length; a++) {
 				if (attributes[a] instanceof InnerClasses) {
 					InnerClass[] inners = ((InnerClasses) attributes[a]).getInnerClasses();
 					for (int i = 0; i < inners.length; i++) {
 						String innerClassNameRaw = classFile.getConstantPool().getConstantString(
 								inners[i].getInnerClassIndex(), org.apache.bcel.Constants.CONSTANT_Class);
 						if (innerClassNameRaw.equals(classNameRaw)) {
-							if (accessModifier != null)
+							if (accessModifier != null) {
 								throw new ClassParseException("Found multiple inner class attributes for " + this,
 										classFile);
+							}
 							accessModifier = translateAccess(new AccessFlags(inners[i].getInnerAccessFlags()) {
 							});
 						}
 					}
 				}
-			if (accessModifier == null)
+			}
+			if (accessModifier == null) {
 				throw new ClassParseException("Could not find any class attributes for " + this, classFile);
+			}
 		}
 	}
 
@@ -149,10 +152,11 @@ public class ParsedClassInfo extends AbstractClassInfo {
 	}
 
 	private void parseImplements(JavaClass classFile) throws ClassParseException {
-		implementsClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
+		implementsClasses = new TreeSet<ClassInfo>(new ClassInfoNameComparator());
 		String[] names = classFile.getInterfaceNames();
-		for (int n = 0; n < names.length; n++)
+		for (int n = 0; n < names.length; n++) {
 			implementsClasses.add(getSafeClassInfo(names[n]));
+		}
 		implementsClasses = Collections.unmodifiableSet(implementsClasses);
 	}
 
@@ -162,7 +166,7 @@ public class ParsedClassInfo extends AbstractClassInfo {
 
 	private void parseReferences(JavaClass classFile) throws ClassParseException {
 		references = new CompositeMultiMap<ClassInfo, Reference>(new TreeMap<ClassInfo, Set<Reference>>(
-				ClassInfoNameComparator.INSTANCE), HashSet.class);
+				new ClassInfoNameComparator()), HashSet.class);
 		parseConstantPoolReferences(classFile);
 		parseMethodReferences(classFile);
 		parseFieldReferences(classFile);
@@ -173,10 +177,12 @@ public class ParsedClassInfo extends AbstractClassInfo {
 		// Add accessed classes from constant pool entries
 		ConstantPool constantPool = classFile.getConstantPool();
 		Constant[] constants = constantPool.getConstantPool();
-		for (int a = 1; a < constants.length; a++)
-			if (constants[a] instanceof ConstantClass)
+		for (int a = 1; a < constants.length; a++) {
+			if (constants[a] instanceof ConstantClass) {
 				addReference(new Reference(this, getSafeClassInfo(constantPool.constantToString(constants[a])),
 						ReferenceType.CONSTANT_POOL, null, null));
+			}
+		}
 	}
 
 	private void parseMethodReferences(JavaClass classFile) throws ClassParseException {
@@ -187,9 +193,10 @@ public class ParsedClassInfo extends AbstractClassInfo {
 			AccessModifier methodAccess = translateAccess(method);
 
 			List<String> paramsAndReturn = ClassNameTranslator.signatureToClassNames(method.getSignature());
-			if (paramsAndReturn.isEmpty())
+			if (paramsAndReturn.isEmpty()) {
 				throw new ClassParseException("unable to read types for method " + fullClassName + '.'
 						+ method.getName(), classFile);
+			}
 
 			for (Iterator<String> i = paramsAndReturn.iterator(); i.hasNext();) {
 				String refTo = i.next();
@@ -200,9 +207,10 @@ public class ParsedClassInfo extends AbstractClassInfo {
 
 			if (method.getExceptionTable() != null) {
 				String[] exceptionNames = method.getExceptionTable().getExceptionNames();
-				for (int e = 0; e < exceptionNames.length; e++)
+				for (int e = 0; e < exceptionNames.length; e++) {
 					addReference(new Reference(this, getSafeClassInfo(exceptionNames[e]), ReferenceType.METHOD_THROWS,
 							method.getName(), methodAccess));
+				}
 			}
 		}
 	}
@@ -212,9 +220,10 @@ public class ParsedClassInfo extends AbstractClassInfo {
 		for (int a = 0; a < fields.length; a++) {
 			Field field = fields[a];
 			List<String> types = ClassNameTranslator.signatureToClassNames(field.getSignature());
-			if (types.size() != 1)
+			if (types.size() != 1) {
 				throw new ClassParseException("expected one type for field " + fullClassName + '.' + field.getName()
 						+ "; got: " + types + " (signature is \"" + field.getSignature() + "\")", classFile);
+			}
 
 			addReference(new Reference(this, getSafeClassInfo(types.get(0), field.getSignature()),
 					ReferenceType.FIELD_SIGNATURE, field.getName(), translateAccess(field)));
@@ -222,14 +231,19 @@ public class ParsedClassInfo extends AbstractClassInfo {
 	}
 
 	private AccessModifier translateAccess(AccessFlags accessFlags) throws ClassParseException {
-		if (accessFlags.isPublic())
+		if (accessFlags.isPublic()) {
 			return AccessModifier.PUBLIC;
-		else if (accessFlags.isProtected())
+		}
+		
+		if (accessFlags.isProtected()) {
 			return AccessModifier.PROTECTED;
-		else if (accessFlags.isPrivate())
+		}
+		
+		if (accessFlags.isPrivate()) {
 			return AccessModifier.PRIVATE;
-		else
-			return AccessModifier.PACKAGE;
+		}
+		
+		return AccessModifier.PACKAGE;
 	}
 
 	private ClassInfo getSafeClassInfo(String className) throws ClassParseException {
@@ -237,9 +251,10 @@ public class ParsedClassInfo extends AbstractClassInfo {
 	}
 
 	private ClassInfo getSafeClassInfo(String className, String unparsedClassName) throws ClassParseException {
-		if (!ClassNameTranslator.isJavaIdentifier(className))
+		if (!ClassNameTranslator.isJavaIdentifier(className)) {
 			throw new ClassParseException("unable to parse class name / signature: \"" + unparsedClassName
 					+ "\" (got \"" + className + "\")");
+		}
 		return getClassManager().getClassInfo(className);
 	}
 
@@ -252,7 +267,9 @@ public class ParsedClassInfo extends AbstractClassInfo {
 	}
 
 	private String fullClassName;
-	private boolean isInterface, isAbstract, isFinal;
+	private boolean isInterface;
+	private boolean isAbstract;
+	private boolean isFinal;
 	private AccessModifier accessModifier;
 	private ClassInfo extendsClass;
 	private Set<ClassInfo> implementsClasses;

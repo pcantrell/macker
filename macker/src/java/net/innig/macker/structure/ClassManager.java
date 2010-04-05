@@ -34,26 +34,30 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * The global collection of classes in Macker's rule-checking space.
  * 
  * @author Paul Cantrell
  */
 public class ClassManager {
+
 	/**
 	 * Create a new {@link ClassManager} instance.
 	 */
 	public ClassManager() {
 		// Trees make nice sorted output
-		allClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
-		primaryClasses = new TreeSet<ClassInfo>(ClassInfoNameComparator.INSTANCE);
+		final ClassInfoNameComparator classInfoNameComparator = new ClassInfoNameComparator();
+		allClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
+		primaryClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
 		classNameToInfo = new TreeMap<String, ClassInfo>();
-		references = new TreeMultiMap<ClassInfo, ClassInfo>(ClassInfoNameComparator.INSTANCE,
-				ClassInfoNameComparator.INSTANCE);
+		references = new TreeMultiMap<ClassInfo, ClassInfo>(classInfoNameComparator, classInfoNameComparator);
 		classLoader = Thread.currentThread().getContextClassLoader();
 
-		for (ClassInfo ci : PrimitiveTypeInfo.ALL)
+		for (ClassInfo ci : PrimitiveTypeInfo.ALL) {
 			replaceClass(ci);
+		}
 	}
 
 	/**
@@ -109,8 +113,9 @@ public class ClassManager {
 	 */
 	private void addClass(ClassInfo classInfo) {
 		ClassInfo existing = findClassInfo(classInfo.getFullName());
-		if (existing != null && !(existing instanceof HollowClassInfo))
+		if (existing != null && !(existing instanceof HollowClassInfo)) {
 			throw new IllegalStateException("ClassManager already contains a class named " + classInfo);
+		}
 		replaceClass(classInfo);
 	}
 
@@ -130,11 +135,14 @@ public class ClassManager {
 	 * @param classInfo The {@link ClassInfo} for the class to make primary.
 	 */
 	public void makePrimary(ClassInfo classInfo) {
-		if (!classInfo.isComplete())
+		if (!classInfo.isComplete()) {
 			throw new IncompleteClassInfoException(classInfo + " cannot be a primary class, because the"
 					+ " class file isn't on Macker's classpath");
-		if (classInfo instanceof PrimitiveTypeInfo)
-			throw new IllegalArgumentException(classInfo + " cannot be a primary class, because it is a primitive type");
+		}
+		if (classInfo instanceof PrimitiveTypeInfo) {
+			throw new IllegalArgumentException(classInfo
+				+ " cannot be a primary class, because it is a primitive type");
+		}
 		checkOwner(classInfo);
 		classInfo = findClassInfo(classInfo.getFullName()); // in case of hollow
 		primaryClasses.add(classInfo);
@@ -177,9 +185,9 @@ public class ClassManager {
 	 */
 	public ClassInfo getClassInfo(String className) {
 		ClassInfo classInfo = findClassInfo(className);
-		if (classInfo != null)
+		if (classInfo != null) {
 			return classInfo;
-		else {
+		} else {
 			classInfo = new HollowClassInfo(this, className);
 			replaceClass(classInfo);
 			return classInfo;
@@ -187,7 +195,7 @@ public class ClassManager {
 	}
 
 	/**
-	 * Load the {@link CassInfo}
+	 * Load the {@link CassInfo}.
 	 * 
 	 * @param className
 	 * @return
@@ -202,23 +210,23 @@ public class ClassManager {
 			if (classStream == null) {
 				showIncompleteWarning();
 				System.out.println("WARNING: Unable to find class " + className + " in the classpath");
-			} else
+			} else {
 				try {
 					classInfo = new ParsedClassInfo(this, classStream);
 				} catch (Exception e) {
-					if (e instanceof RuntimeException)
+					if (e instanceof RuntimeException) {
 						throw (RuntimeException) e;
+					}
 					showIncompleteWarning();
 					System.out.println("WARNING: Unable to load class " + className + ": " + e);
 				} finally {
-					try {
-						classStream.close();
-					} catch (IOException ioe) {
-					} // nothing we can do
+					IOUtils.closeQuietly(classStream);
 				}
+			}
 
-			if (classInfo == null)
+			if (classInfo == null) {
 				classInfo = new IncompleteClassInfo(this, className);
+			}
 
 			replaceClass(classInfo);
 		}
@@ -237,9 +245,10 @@ public class ClassManager {
 	 * @throws IllegalStateException When the {@link ClassManager} is not managing the class.
 	 */
 	private void checkOwner(ClassInfo classInfo) throws IllegalStateException {
-		if (classInfo.getClassManager() != this)
+		if (classInfo.getClassManager() != this) {
 			throw new IllegalStateException("classInfo argument (" + classInfo
 					+ ") is not managed by this ClassManager");
+		}
 	}
 
 	/**

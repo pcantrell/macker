@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+  <description>Sonar PMD rules</description>
+  <rule ref="rulesets/coupling.xml/LooseCoupling">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/strings.xml/AvoidStringBufferField">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/DoubleCheckedLocking">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateField">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/controversial.xml/UnnecessaryConstructor">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/DuplicateImports">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/DontImportJavaLang">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/imports.xml/ImportFromSamePackage">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/logging-jakarta-commons.xml/UseCorrectExceptionLogging">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyCatchBlock">
+    <priority>2</priority>
+    <properties>
+      <property name="allowCommentedBlocks" value="true"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyIfStmt">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyWhileStmt">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyTryBlock">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyFinallyBlock">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptySwitchStatements">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptySynchronizedBlock">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyStaticInitializer">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UnconditionalIfStatement">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/EmptyStatementNotInLoop">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UnnecessaryFinalModifier">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UselessOverridingMethod">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/UselessOperationOnImmutable">
+    <priority>2</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/MisplacedNullCheck">
+    <priority>2</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/BrokenNullCheck">
+    <priority>2</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/BigIntegerInstantiation">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidDeeplyNestedIfStmts">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/AvoidReassigningParameters">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/NonStaticInitializer">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/IdempotentOperations">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/SimplifyConditional">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/CompareObjectsWithEquals">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/PositionLiteralsFirstInComparisons">
+    <priority>4</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/UncommentedEmptyMethod">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/UncommentedEmptyConstructor">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/design.xml/PreserveStackTrace">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidCatchingThrowable">
+    <priority>2</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/SignatureDeclareThrowsException">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/ExceptionAsFlowControl">
+    <priority>5</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidCatchingNPE">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidThrowingRawExceptionTypes">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidThrowingNullPointerException">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strictexception.xml/AvoidRethrowingException">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/strings.xml/AvoidDuplicateLiterals">
+    <priority>5</priority>
+    <properties>
+      <property name="skipAnnotations" value="true"/>
+    </properties>
+  </rule>
+  <rule ref="rulesets/strings.xml/UnnecessaryCaseChange">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/optimizations.xml/AddEmptyString">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/MoreThanOneLogger">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/LoggerIsNotStaticFinal">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/SystemPrintln">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/logging-java.xml/AvoidPrintStackTrace">
+    <priority>3</priority>
+  </rule>
+  <rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP">
+    <priority>5</priority>
+  </rule>
+</ruleset>

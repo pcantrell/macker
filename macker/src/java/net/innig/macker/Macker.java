@@ -37,7 +37,6 @@ import net.innig.collect.Graphs;
 import net.innig.collect.InnigCollections;
 import net.innig.collect.Selector;
 import net.innig.macker.event.ListenerException;
-import net.innig.macker.event.MackerEvent;
 import net.innig.macker.event.MackerEventListener;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.PrintingListener;
@@ -53,6 +52,8 @@ import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.structure.ClassManager;
 import net.innig.macker.structure.ClassParseException;
 import net.innig.macker.structure.IncompleteClassInfoException;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * The command line interface for Macker.
@@ -138,10 +139,15 @@ public class Macker {
 	 */
 	public void addClassesFromFile(String fileName) throws IOException, ClassParseException {
 		File indexFile = new File(fileName);
-		BufferedReader indexReader = new BufferedReader(new FileReader(indexFile));
-		for (String line; (line = indexReader.readLine()) != null;)
-			addClass(new File(line));
-		indexReader.close();
+		BufferedReader indexReader = null;
+		try {
+			indexReader = new BufferedReader(new FileReader(indexFile));
+			for (String line; (line = indexReader.readLine()) != null;) {
+				addClass(new File(line));
+			}
+		} finally {
+			IOUtils.closeQuietly(indexReader);
+		}
 	}
 
 	/**
@@ -318,10 +324,12 @@ public class Macker {
 	 * @throws ListenerException TODO Document me!
 	 **/
 	public void check() throws MackerIsMadException, RulesException, ListenerException {
-		if (!hasRules())
+		if (!hasRules()) {
 			System.out.println("WARNING: No rules files specified");
-		if (!hasClasses())
+		}
+		if (!hasClasses()) {
 			System.out.println("WARNING: No class files specified");
+		}
 
 		if (verbose) {
 			System.out.println(cm.getPrimaryClasses().size() + " primary classes");
@@ -330,27 +338,29 @@ public class Macker {
 
 			for (ClassInfo classInfo : cm.getPrimaryClasses()) {
 				System.out.println("Classes used by " + classInfo + ":");
-				for (ClassInfo used : classInfo.getReferences().keySet())
+				for (ClassInfo used : classInfo.getReferences().keySet()) {
 					System.out.println("    " + used);
+				}
 				System.out.println();
 			}
 		}
 
 		PrintingListener printing;
-		if (printThreshold == null)
+		if (printThreshold == null) {
 			printing = null;
-		else {
+		} else {
 			printing = new PrintingListener(System.out);
 			printing.setThreshold(printThreshold);
-			if (printMaxMessages > 0)
+			if (printMaxMessages > 0) {
 				printing.setMaxMessages(printMaxMessages);
+			}
 			addListener(printing);
 		}
 
 		ThrowingListener throwing;
-		if (angerThreshold == null)
+		if (angerThreshold == null) {
 			throwing = null;
-		else {
+		} else {
 			throwing = new ThrowingListener(null, angerThreshold);
 			addListener(throwing);
 		}
@@ -363,14 +373,16 @@ public class Macker {
 
 		checkRaw();
 
-		if (printing != null)
+		if (printing != null) {
 			printing.printSummary();
+		}
 		if (xmlReporting != null) {
 			xmlReporting.flush();
 			xmlReporting.close();
 		}
-		if (throwing != null)
+		if (throwing != null) {
 			throwing.timeToGetMad();
+		}
 	}
 
 	/**
@@ -382,20 +394,24 @@ public class Macker {
 	 */
 	public void checkRaw() throws MackerIsMadException, RulesException, ListenerException {
 		for (RuleSet rs : ruleSets) {
-			if (verbose)
+			if (verbose) {
 				for (final Pattern pat : rs.getAllPatterns()) {
 					final EvaluationContext ctx = new EvaluationContext(cm, rs);
 					System.out.println("matching " + pat);
-					for (ClassInfo classInfo : cm.getPrimaryClasses())
-						if (pat.matches(ctx, classInfo))
+					for (ClassInfo classInfo : cm.getPrimaryClasses()) {
+						if (pat.matches(ctx, classInfo)) {
 							System.out.println("    " + classInfo);
+						}
+					}
 					System.out.println();
 				}
+			}
 
 			EvaluationContext context = new EvaluationContext(cm, rs);
 			context.setVariables(vars);
-			for (MackerEventListener listener : listeners)
+			for (MackerEventListener listener : listeners) {
 				context.addListener(listener);
+			}
 
 			rs.check(context, cm);
 		}
@@ -425,14 +441,16 @@ public class Macker {
 					System.out.println("http://innig.net/macker/");
 					System.out.println("Licensed under GPL v2.1; see LICENSE.html");
 					return;
-				} else if (args[arg].equals("-v") || args[arg].equals("--verbose"))
+				} else if (args[arg].equals("-v") || args[arg].equals("--verbose")) {
 					macker.setVerbose(true);
-				else if (args[arg].startsWith("-D") || args[arg].equals("--define")) {
-					int initialPos = 0, equalPos;
-					if (args[arg].length() == 2 || args[arg].equals("--define"))
+				} else if (args[arg].startsWith("-D") || args[arg].equals("--define")) {
+					int initialPos = 0;
+					int equalPos;
+					if (args[arg].length() == 2 || args[arg].equals("--define")) {
 						arg++;
-					else
+					} else {
 						initialPos = 2;
+					}
 
 					equalPos = args[arg].indexOf('=');
 					if (equalPos == -1) {
@@ -443,25 +461,25 @@ public class Macker {
 					String varName = args[arg].substring(initialPos, equalPos);
 					String value = args[arg].substring(equalPos + 1);
 					macker.setVariable(varName, value);
-				} else if (args[arg].equals("-o") || args[arg].equals("--output"))
+				} else if (args[arg].equals("-o") || args[arg].equals("--output")) {
 					macker.setXmlReportFile(new File(args[++arg]));
-				else if (args[arg].equals("--print-max"))
+				} else if (args[arg].equals("--print-max")) {
 					macker.setPrintMaxMessages(Integer.parseInt(args[++arg]));
-				else if (args[arg].equals("--print"))
+				} else if (args[arg].equals("--print")) {
 					macker.setPrintThreshold(RuleSeverity.fromName(args[++arg]));
-				else if (args[arg].equals("--anger"))
+				} else if (args[arg].equals("--anger")) {
 					macker.setAngerThreshold(RuleSeverity.fromName(args[++arg]));
-				else if (args[arg].equals("-r") || args[arg].equals("--rulesfile"))
+				} else if (args[arg].equals("-r") || args[arg].equals("--rulesfile")) {
 					nextIsRule = true;
-				else if (args[arg].startsWith("@"))
+				} else if (args[arg].startsWith("@")) {
 					macker.addClassesFromFile(args[arg].substring(1)); // the
 				// arg is a file with class names
-				else if (args[arg].endsWith(".xml") || nextIsRule) {
+				} else if (args[arg].endsWith(".xml") || nextIsRule) {
 					macker.addRulesFile(new File(args[arg]));
 					nextIsRule = false;
-				} else if (args[arg].endsWith(".class"))
+				} else if (args[arg].endsWith(".class")) {
 					macker.addClass(new File(args[arg]));
-				else {
+				} else {
 					System.out.println();
 					System.out.println("macker: Unknown file type: " + args[arg]);
 					System.out.println("(expected .class or .xml)");
@@ -472,8 +490,9 @@ public class Macker {
 
 			macker.check();
 
-			if (!macker.hasRules() || !macker.hasClasses())
+			if (!macker.hasRules() || !macker.hasClasses()) {
 				commandLineUsage();
+			}
 		} catch (MackerIsMadException mime) {
 			System.out.println(mime.getMessage());
 			System.exit(2);

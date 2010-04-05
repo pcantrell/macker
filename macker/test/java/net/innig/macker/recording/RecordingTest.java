@@ -219,7 +219,7 @@ public final class RecordingTest implements Test {
 			} finally {
 				try {
 					out.close();
-				} catch (Exception e) {
+				} catch (IOException e) {
 				}
 			}
 			javacArgs.add(sourceFile.getPath());
