@@ -27,52 +27,69 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Paul Cantrell
+ */
 public abstract class AbstractClassInfo implements ClassInfo {
-	public AbstractClassInfo(ClassManager classManager) {
+
+	private ClassManager classManager;
+	private Set<ClassInfo> cachedAllSuper;
+	private Set<ClassInfo> cachedAllDirectSuper;
+	
+	public AbstractClassInfo(final ClassManager classManager) {
 		this.classManager = classManager;
 	}
 
 	public String getClassName() {
-		String className = getFullName();
+		final String className = getFullName();
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
 	public String getPackageName() {
-		String className = getFullName();
-		int lastDotPos = className.lastIndexOf('.');
-		return (lastDotPos > 0) ? className.substring(0, lastDotPos) : "";
+		final String className = getFullName();
+		final int lastDotPos = className.lastIndexOf('.');
+		if (lastDotPos <= 0) {
+			return "";
+		}
+		
+		return className.substring(0, lastDotPos);
 	}
 
 	public Set<ClassInfo> getDirectSupertypes() {
-		if (cachedAllDirectSuper == null) {
-			Set<ClassInfo> newAllDirectSuper = new HashSet<ClassInfo>(getImplements());
+		if (this.cachedAllDirectSuper == null) {
+			final Set<ClassInfo> newAllDirectSuper = new HashSet<ClassInfo>(getImplements());
 			newAllDirectSuper.add(getExtends());
-			cachedAllDirectSuper = newAllDirectSuper; // failure atomicity
+			// failure atomicity
+			this.cachedAllDirectSuper = newAllDirectSuper;
 		}
-		return cachedAllDirectSuper;
+		return this.cachedAllDirectSuper;
 	}
 
 	public Set<ClassInfo> getSupertypes() {
-		if (cachedAllSuper == null)
-			cachedAllSuper = Graphs.reachableNodes(this, new GraphWalker<ClassInfo>() {
-				public Collection<ClassInfo> getEdgesFrom(ClassInfo node) {
+		if (this.cachedAllSuper == null) {
+			this.cachedAllSuper = Graphs.reachableNodes(this, new GraphWalker<ClassInfo>() {
+				public Collection<ClassInfo> getEdgesFrom(final ClassInfo node) {
 					return node.getDirectSupertypes();
 				}
 			});
-		return cachedAllSuper;
+		}
+		return this.cachedAllSuper;
 	}
 
 	public final ClassManager getClassManager() {
-		return classManager;
+		return this.classManager;
 	}
 
-	public final boolean equals(Object that) {
-		if (this == that)
+	public final boolean equals(final Object that) {
+		if (this == that) {
 			return true;
-		if (that == null)
+		}
+		if (that == null) {
 			return false;
-		if (!(that instanceof ClassInfo))
+		}
+		if (!(that instanceof ClassInfo)) {
 			return false;
+		}
 		return getFullName().equals(((ClassInfo) that).getFullName());
 	}
 
@@ -83,7 +100,4 @@ public abstract class AbstractClassInfo implements ClassInfo {
 	public String toString() {
 		return getFullName();
 	}
-
-	private ClassManager classManager;
-	private Set<ClassInfo> cachedAllSuper, cachedAllDirectSuper;
 }

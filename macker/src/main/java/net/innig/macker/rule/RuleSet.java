@@ -31,9 +31,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Paul Cantrell
+ */
 public class RuleSet extends Rule {
+	
+	private String name;
+	private Map<String, Pattern> patterns;
+	private Collection<Rule> rules;
+	private Pattern subsetPat;
+	
 	public static RuleSet getMackerDefaults() {
-		if (defaults == null)
+		if (defaults == null) {
 			try {
 				defaults = new RuleSet();
 				defaults.setPattern("from", new RegexPattern("${from-full}"));
@@ -41,115 +50,130 @@ public class RuleSet extends Rule {
 			} catch (MackerRegexSyntaxException mrse) {
 				throw new RuntimeException("Macker built-ins are broken", mrse);
 			} // ! what else to throw?
+		}
 		return defaults;
 	}
 
 	private static RuleSet defaults;
 
-	public RuleSet(RuleSet parent) {
+	public RuleSet(final RuleSet parent) {
 		super(parent);
-		if (parent == null)
+		if (parent == null) {
 			throw new IllegalArgumentException("parent == null");
+		}
 
-		patterns = new HashMap<String, Pattern>();
-		rules = new ArrayList<Rule>();
+		this.rules = new ArrayList<Rule>();
+		this.patterns = new HashMap<String, Pattern>();
 	}
 
 	private RuleSet() {
 		super(null);
-		rules = Collections.emptyList();
-		patterns = new HashMap<String, Pattern>();
+		this.rules = Collections.emptyList();
+		this.patterns = new HashMap<String, Pattern>();
 	}
 
 	public String getName() {
-		if (name == null)
-			return (getParent() != null) ? getParent().getName() : "<anonymous ruleset>";
-		return name;
+		if (this.name == null) {
+			if (getParent() == null) {
+				return "<anonymous ruleset>";
+			}
+			
+			return getParent().getName();
+		}
+
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
 	public boolean hasName() {
-		return name != null;
+		return getName() != null;
 	}
 
-	public boolean declaresPattern(String name) {
-		return patterns.keySet().contains(name);
+	public boolean declaresPattern(final String name) {
+		return getPatterns().keySet().contains(name);
 	}
 
-	public Pattern getPattern(String name) {
-		Pattern pat = patterns.get(name);
-		if (pat != null)
+	public Pattern getPattern(final String name) {
+		final Pattern pat = getPatterns().get(name);
+		if (pat != null) {
 			return pat;
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			return getParent().getPattern(name);
+		}
 		return null;
 	}
 
-	public void setPattern(String name, Pattern pattern) {
-		if (name == null)
+	public void setPattern(final String name, final Pattern pattern) {
+		if (name == null) {
 			throw new NullPointerException("name cannot be null");
-		if (pattern == null)
+		}
+		if (pattern == null) {
 			throw new NullPointerException("pattern cannot be null");
-		patterns.put(name, pattern);
+		}
+		getPatterns().put(name, pattern);
 	}
 
 	public Collection<Pattern> getAllPatterns() {
-		return patterns.values();
+		return getPatterns().values();
 	}
 
-	public void clearPattern(String name) {
-		patterns.remove(name);
+	public void clearPattern(final String name) {
+		getPatterns().remove(name);
 	}
 
 	public Collection<Rule> getRules() {
-		return rules;
+		return this.rules;
 	}
 
-	public void addRule(Rule rule) {
-		rules.add(rule);
+	public void addRule(final Rule rule) {
+		getRules().add(rule);
 	}
 
 	public Pattern getSubsetPattern() {
-		return subsetPat;
+		return this.subsetPat;
 	}
 
-	public void setSubsetPattern(Pattern subsetPat) {
+	public void setSubsetPattern(final Pattern subsetPat) {
 		this.subsetPat = subsetPat;
 	}
 
-	public boolean isInSubset(EvaluationContext context, ClassInfo classInfo) throws RulesException {
-		if (subsetPat != null && !subsetPat.matches(context, classInfo))
+	public boolean isInSubset(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+		if (getSubsetPattern() != null && !getSubsetPattern().matches(context, classInfo)) {
 			return false;
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			return getParent().isInSubset(context, classInfo);
+		}
 		return true;
 	}
 
-	public void check(EvaluationContext parentContext, ClassManager classes) throws RulesException,
+	public void check(final EvaluationContext parentContext, final ClassManager classes) throws RulesException,
 			MackerIsMadException, ListenerException {
-		EvaluationContext context = new EvaluationContext(this, parentContext);
+		final EvaluationContext context = new EvaluationContext(this, parentContext);
 		context.broadcastStarted();
 		boolean finished = false;
 		try {
-			for (Rule rule : rules)
+			for (Rule rule : getRules()) {
 				rule.check(context, classes);
+			}
 			context.broadcastFinished();
 			finished = true;
 		} finally {
-			if (!finished)
+			if (!finished) {
 				context.broadcastAborted();
+			}
 		}
 	}
 
 	public String toString() {
-		return getClass().getName() + '[' + name + ", parent=" + getParent() + ']';
+		return getClass().getName() + '[' + getName() + ", parent=" + getParent() + ']';
 	}
-
-	private String name;
-	private Map<String, Pattern> patterns;
-	private Collection<Rule> rules;
-	private Pattern subsetPat;
+	
+	private Map<String, Pattern> getPatterns() {
+		return this.patterns;
+	}
 }

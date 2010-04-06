@@ -26,16 +26,30 @@ import net.innig.util.CorruptConfigurationException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class FilterFinder {
-	public static Filter findFilter(String filterName) throws NoSuchFilterException {
+/**
+ * @author Paul Cantrell
+ */
+public final class FilterFinder {
+
+	private static final String FILTER_CONF = "net.innig.macker.filter";
+	private static Map<String, Filter> filterCache = new HashMap<String, Filter>();
+
+	private FilterFinder() {
+	}
+
+	public static Filter findFilter(final String filterName)
+			throws NoSuchFilterException {
 		Filter filter = filterCache.get(filterName);
 		if (filter == null) {
-			String filterClassName = Conf.getMergedProperties(FILTER_CONF, FilterFinder.class.getClassLoader())
+			final String filterClassName = Conf.getMergedProperties(
+					FILTER_CONF, FilterFinder.class.getClassLoader())
 					.getProperty(filterName);
-			if (filterClassName == null)
+			if (filterClassName == null) {
 				throw new NoSuchFilterException(filterName);
+			}
 			try {
-				filterCache.put(filterName, filter = (Filter) Class.forName(filterClassName).newInstance());
+				filter = (Filter) Class.forName(filterClassName).newInstance();
+				filterCache.put(filterName, filter);
 			} catch (ClassNotFoundException cnfe) {
 				throwFilterConfigException(filterClassName, filterName, cnfe);
 			} catch (IllegalAccessException iae) {
@@ -49,14 +63,12 @@ public abstract class FilterFinder {
 		return filter;
 	}
 
-	private static void throwFilterConfigException(String filterClassName, String filterName, Exception source) {
-		throw new CorruptConfigurationException(FILTER_CONF, "Unable to use class " + filterClassName
-				+ " specified for filter \"" + filterName + "\": " + source);
+	private static void throwFilterConfigException(
+			final String filterClassName, final String filterName,
+			final Exception source) {
+		throw new CorruptConfigurationException(FILTER_CONF,
+				"Unable to use class " + filterClassName
+						+ " specified for filter \"" + filterName + "\": "
+						+ source);
 	}
-
-	private FilterFinder() {
-	}
-
-	private static final String FILTER_CONF = "net.innig.macker.filter";
-	private static Map<String, Filter> filterCache = new HashMap<String, Filter>();
 }

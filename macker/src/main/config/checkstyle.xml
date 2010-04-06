@@ -11,8 +11,16 @@
     <module name="IllegalInstantiation">
       <property name="severity" value="warning"/>
     </module>
+    <module name="IllegalThrows">
+      <property name="severity" value="warning"/>
+    </module>
     <module name="InnerAssignment">
       <property name="severity" value="warning"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="severity" value="warning"/>
+      <property name="excludeScope" value="private"/>
+      <property name="allowMissingPropertyJavadoc" value="true"/>
     </module>
     <module name="JavadocStyle">
       <property name="severity" value="warning"/>
@@ -20,7 +28,10 @@
     <module name="JavadocType">
       <property name="severity" value="warning"/>
       <property name="authorFormat" value="."/>
-      <property name="versionFormat" value="\$Id.*\$"/>
+    </module>
+    <module name="JavadocVariable">
+      <property name="severity" value="warning"/>
+      <property name="excludeScope" value="private"/>
     </module>
     <module name="LineLength">
       <property name="severity" value="warning"/>
@@ -45,17 +56,24 @@
     <module name="MethodName">
       <property name="severity" value="warning"/>
     </module>
-    <module name="ArrayTypeStyle">
+    <module name="AnonInnerLength">
       <property name="severity" value="warning"/>
+    </module>
+    <module name="ArrayTypeStyle">
+      <property name="severity" value="info"/>
     </module>
     <module name="AvoidInlineConditionals">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="info"/>
     </module>
     <module name="AvoidNestedBlocks">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="info"/>
     </module>
     <module name="AvoidStarImport">
+      <property name="severity" value="info"/>
+    </module>
+    <module name="BooleanExpressionComplexity">
       <property name="severity" value="warning"/>
+      <property name="max" value="5"/>
     </module>
     <module name="ConstantName">
       <property name="severity" value="warning"/>
@@ -63,40 +81,57 @@
     <module name="DefaultComesLast">
       <property name="severity" value="warning"/>
     </module>
-    <module name="DoubleCheckedLocking">
-      <property name="severity" value="warning"/>
-    </module>
     <module name="EmptyBlock">
       <property name="severity" value="warning"/>
     </module>
-    <module name="EmptyForIteratorPad">
-      <property name="severity" value="warning"/>
-    </module>
     <module name="EmptyStatement">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="info"/>
     </module>
     <module name="EqualsHashCode">
       <property name="severity" value="warning"/>
     </module>
+    <module name="FinalLocalVariable">
+      <property name="severity" value="info"/>
+    </module>
+    <module name="FinalParameters">
+      <property name="severity" value="info"/>
+    </module>
     <module name="HideUtilityClassConstructor">
       <property name="severity" value="warning"/>
     </module>
-    <module name="MethodParamPad">
+    <module name="IllegalCatch">
       <property name="severity" value="warning"/>
+    </module>
+    <module name="MethodParamPad">
+      <property name="severity" value="info"/>
     </module>
     <module name="MissingSwitchDefault">
       <property name="severity" value="warning"/>
     </module>
     <module name="ModifierOrder">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="info"/>
     </module>
     <module name="MultipleVariableDeclarations">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="MutableException">
       <property name="severity" value="warning"/>
     </module>
     <module name="NeedBraces">
       <property name="severity" value="warning"/>
     </module>
+    <module name="NestedIfDepth">
+      <property name="severity" value="warning"/>
+      <property name="max" value="5"/>
+    </module>
+    <module name="NestedTryDepth">
+      <property name="severity" value="warning"/>
+      <property name="max" value="2"/>
+    </module>
     <module name="PackageName">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="ParameterAssignment">
       <property name="severity" value="warning"/>
     </module>
     <module name="ParameterName">
@@ -112,6 +147,10 @@
       <property name="severity" value="warning"/>
       <property name="allowUnchecked" value="true"/>
     </module>
+    <module name="ReturnCount">
+      <property name="severity" value="warning"/>
+      <property name="max" value="5"/>
+    </module>
     <module name="SimplifyBooleanExpression">
       <property name="severity" value="warning"/>
     </module>
@@ -124,11 +163,17 @@
     <module name="StringLiteralEquality">
       <property name="severity" value="warning"/>
     </module>
+    <module name="TodoComment">
+      <property name="severity" value="info"/>
+    </module>
+    <module name="TrailingComment">
+      <property name="severity" value="info"/>
+    </module>
     <module name="TypeName">
       <property name="severity" value="warning"/>
     </module>
     <module name="UnnecessaryParentheses">
-      <property name="severity" value="warning"/>
+      <property name="severity" value="info"/>
     </module>
     <module name="UnusedImports">
       <property name="severity" value="warning"/>
@@ -139,7 +184,27 @@
     <module name="VisibilityModifier">
       <property name="severity" value="warning"/>
       <property name="protectedAllowed" value="true"/>
-      <property name="packageAllowed" value="true"/>
+      <property name="packageAllowed" value="false"/>
+    </module>
+    <module name="SuppressWarnings">
+      <property name="severity" value="warning"/>
+      <property name="format" value="^deprecation$"/>
+    </module>
+    <module name="EqualsAvoidNull">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="NoFinalizer">
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="AvoidStaticImport">
+      <property name="severity" value="info"/>
+      <property name="excludes" value="org.mockito.Mockito.*, org.junit.Assert.*"/>
+    </module>
+    <module name="OuterTypeNumber">
+      <property name="severity" value="info"/>
+    </module>
+    <module name="MissingDeprecated">
+      <property name="severity" value="warning"/>
     </module>
     <module name="FileContentsHolder"/>
   </module>
@@ -148,6 +213,9 @@
     <property name="max" value="3000"/>
   </module>
   <module name="NewlineAtEndOfFile">
+    <property name="severity" value="info"/>
+  </module>
+  <module name="JavadocPackage">
     <property name="severity" value="info"/>
   </module>
   <module name="SuppressionCommentFilter"/>

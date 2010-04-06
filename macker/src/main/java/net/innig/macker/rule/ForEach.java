@@ -33,53 +33,65 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * @author Paul Cantrell
+ */
 public class ForEach extends Rule {
-	public ForEach(RuleSet parent) {
+
+	private RuleSet ruleSet;
+	private String variableName;
+	private String regexS;
+	private RegexPattern regexPat;
+	
+	public ForEach(final RuleSet parent) {
 		super(parent);
 	}
 
 	public String getVariableName() {
-		return variableName;
+		return this.variableName;
 	}
 
-	public void setVariableName(String variableName) {
+	public void setVariableName(final String variableName) {
 		this.variableName = variableName;
 	}
 
 	public String getRegex() {
-		return regexS;
+		return this.regexS;
 	}
 
-	public void setRegex(String regexS) throws MackerRegexSyntaxException {
+	public void setRegex(final String regexS) throws MackerRegexSyntaxException {
 		this.regexS = regexS;
-		regexPat = new RegexPattern(regexS);
+		setRegexPat(new RegexPattern(regexS));
 	}
 
 	public RuleSet getRuleSet() {
-		return ruleSet;
+		return this.ruleSet;
 	}
 
-	public void setRuleSet(RuleSet ruleSet) {
+	public void setRuleSet(final RuleSet ruleSet) {
 		this.ruleSet = ruleSet;
 	}
 
-	public void check(EvaluationContext parentContext, ClassManager classes) throws RulesException,
+	public void check(final EvaluationContext parentContext, final ClassManager classes) throws RulesException,
 			MackerIsMadException, ListenerException {
-		EvaluationContext context = new EvaluationContext(ruleSet, parentContext);
+		final EvaluationContext context = new EvaluationContext(getRuleSet(), parentContext);
 
-		Set<String> varValues = new TreeSet<String>();
-		Set<ClassInfo> pool = new HashSet<ClassInfo>();
-		for (ClassInfo curClass : classes.getPrimaryClasses())
+		final Set<String> varValues = new TreeSet<String>();
+		final Set<ClassInfo> pool = new HashSet<ClassInfo>();
+		for (ClassInfo curClass : classes.getPrimaryClasses()) {
 			if (getParent().isInSubset(context, curClass)) {
 				pool.add(curClass);
-				for (ClassInfo referencedClass : curClass.getReferences().keySet())
+				for (ClassInfo referencedClass : curClass.getReferences().keySet()) {
 					pool.add(referencedClass);
+				}
 			}
+		}
 
 		for (ClassInfo classInfo : pool) {
-			String varValue = regexPat.getMatch(parentContext, classInfo);
-			if (varValue != null)
+			final String varValue = getRegexPat().getMatch(parentContext, classInfo);
+			if (varValue != null) {
 				varValues.add(varValue);
+			}
 		}
 
 		context.broadcastEvent(new ForEachStarted(this));
@@ -87,14 +99,18 @@ public class ForEach extends Rule {
 			context.broadcastEvent(new ForEachIterationStarted(this, varValue));
 
 			context.setVariableValue(getVariableName(), varValue);
-			ruleSet.check(context, classes);
+			getRuleSet().check(context, classes);
 
 			context.broadcastEvent(new ForEachIterationFinished(this, varValue));
 		}
 		context.broadcastEvent(new ForEachFinished(this));
 	}
 
-	private RuleSet ruleSet;
-	private String variableName, regexS;
-	private RegexPattern regexPat;
+	private RegexPattern getRegexPat() {
+		return this.regexPat;
+	}
+	
+	private void setRegexPat(final RegexPattern regexPat) {
+		this.regexPat = regexPat;
+	}
 }

@@ -37,56 +37,68 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 /**
- * A task which formats Macker reports using XSLT. Requires Xalan 2 or some other well-behaved XSLT implementation.
+ * A task which formats Macker reports using XSLT. Requires Xalan 2 or some
+ * other well-behaved XSLT implementation.
  * 
+ * @author Paul Cantrell
  * @see <a href="http://ant.apache.org/manual/">The Ant manual</a>
  */
 public class MackerReportAntTask extends Task {
+
+	private URL formatUrl;
+	private URL skinUrl;
+	private URL reportUrl;
+	private File outputFile;
+	private final TransformerFactory tFactory;
+
 	public MackerReportAntTask() {
-		tFactory = TransformerFactory.newInstance();
+		super();
+		this.tFactory = TransformerFactory.newInstance();
 	}
 
-	public void setFormat(String formatName) throws BuildException {
-		formatUrl = resolveInternalResource(formatName, "format", "xsl");
+	public void setFormat(final String formatName) throws BuildException {
+		this.formatUrl = resolveInternalResource(formatName, "format", "xsl");
 	}
 
-	public void setFormatFile(File formatFile) throws BuildException {
-		formatUrl = resolveFile(formatFile, "format");
+	public void setFormatFile(final File formatFile) throws BuildException {
+		this.formatUrl = resolveFile(formatFile, "format");
 	}
 
-	public void setFormatUrl(String formatUrlS) throws BuildException {
-		formatUrl = resolveUrl(formatUrlS, "format");
+	public void setFormatUrl(final String formatUrlS) throws BuildException {
+		this.formatUrl = resolveUrl(formatUrlS, "format");
 	}
 
-	public void setSkin(String skinName) throws BuildException {
-		skinUrl = resolveInternalResource(skinName, "skin", "css");
+	public void setSkin(final String skinName) throws BuildException {
+		this.skinUrl = resolveInternalResource(skinName, "skin", "css");
 	}
 
-	public void setSkinFile(File skinFile) throws BuildException {
-		skinUrl = resolveFile(skinFile, "skin");
+	public void setSkinFile(final File skinFile) throws BuildException {
+		this.skinUrl = resolveFile(skinFile, "skin");
 	}
 
-	public void setSkinUrl(String skinUrlS) throws BuildException {
-		skinUrl = resolveUrl(skinUrlS, "skin");
+	public void setSkinUrl(final String skinUrlS) throws BuildException {
+		this.skinUrl = resolveUrl(skinUrlS, "skin");
 	}
 
-	public void setXmlReportFile(File xmlReportFile) throws BuildException {
-		reportUrl = resolveFile(xmlReportFile, "report");
+	public void setXmlReportFile(final File xmlReportFile) throws BuildException {
+		this.reportUrl = resolveFile(xmlReportFile, "report");
 	}
 
-	public void setXmlReportUrl(String xmlReportUrlS) throws BuildException {
-		reportUrl = resolveUrl(xmlReportUrlS, "report");
+	public void setXmlReportUrl(final String xmlReportUrlS) throws BuildException {
+		this.reportUrl = resolveUrl(xmlReportUrlS, "report");
 	}
 
-	public void setOutputFile(File outputFile) {
+	public void setOutputFile(final File outputFile) {
 		this.outputFile = outputFile;
 	}
 
-	private URL resolveFile(File file, String kind) throws BuildException {
-		if (!file.exists())
+	private URL resolveFile(final File file, final String kind) throws BuildException {
+		if (!file.exists()) {
 			throw new BuildException(kind + " file " + file + " does not exist");
-		if (!file.isFile())
+		}
+		if (!file.isFile()) {
 			throw new BuildException(kind + " file " + file + " is not a file");
+		}
 
 		try {
 			return file.toURI().toURL();
@@ -95,7 +107,7 @@ public class MackerReportAntTask extends Task {
 		}
 	}
 
-	private URL resolveUrl(String urlS, String kind) throws BuildException {
+	private URL resolveUrl(final String urlS, final String kind) throws BuildException {
 		try {
 			return new URL(urlS);
 		} catch (MalformedURLException murle) {
@@ -103,50 +115,78 @@ public class MackerReportAntTask extends Task {
 		}
 	}
 
-	private URL resolveInternalResource(String name, String kind, String extension) throws BuildException {
-		String resourceName = "net/innig/macker/report/" + kind + '/' + name + '.' + extension;
-		URL resource = getClass().getClassLoader().getResource(resourceName);
-		if (resource == null)
-			throw new BuildException("No internal Macker report " + kind + " named \"" + name + "\" (can't find \""
-					+ resourceName + "\")");
+	private URL resolveInternalResource(final String name, final String kind,
+			final String extension) throws BuildException {
+		final String resourceName = "net/innig/macker/report/" + kind + '/' + name
+				+ '.' + extension;
+		final URL resource = MackerReportAntTask.class.getResource(resourceName);
+		if (resource == null) {
+			throw new BuildException("No internal Macker report " + kind
+					+ " named \"" + name + "\" (can't find \"" + resourceName
+					+ "\")");
+		}
 		return resource;
 	}
 
 	public void execute() throws BuildException {
-		if (reportUrl == null)
+		if (getReportUrl() == null) {
 			throw new BuildException("xmlReportFile or xmlReportUrl required");
-		if (outputFile == null)
+		}
+		if (getOutputFile() == null) {
 			throw new BuildException("outputFile required");
+		}
 
-		if (formatUrl == null)
+		if (getFormatUrl() == null) {
 			setFormat("html-basic");
-		if (skinUrl == null)
+		}
+		if (getSkinUrl() == null) {
 			setSkin("vanilla");
+		}
 
-		File outputDir = outputFile.getParentFile();
+		final File outputDir = getOutputFile().getParentFile();
 
 		try {
-			Transformer transformer = tFactory.newTransformer(new StreamSource(formatUrl.openStream()));
-			transformer.transform(new StreamSource(reportUrl.openStream()), new StreamResult(new FileOutputStream(
-					outputFile)));
+			final Transformer transformer = getTFactory().newTransformer(new StreamSource(
+					getFormatUrl().openStream()));
+			transformer.transform(new StreamSource(getReportUrl().openStream()),
+					new StreamResult(new FileOutputStream(getOutputFile())));
 		} catch (IOException ioe) {
 			throw new BuildException("Unable to process report: " + ioe, ioe);
 		} catch (TransformerException te) {
-			throw new BuildException("Unable to apply report formatting: " + te.getMessage(), te);
+			throw new BuildException("Unable to apply report formatting: "
+					+ te.getMessage(), te);
 		}
 
-		File skinOutputFile = new File(outputDir, "macker-report.css");
+		final File skinOutputFile = new File(outputDir, "macker-report.css");
 		try {
-			IOUtils.copy(skinUrl.openStream(), new FileOutputStream(skinOutputFile));
+			IOUtils.copy(getSkinUrl().openStream(), new FileOutputStream(
+					skinOutputFile));
 			// StreamSplitter is used blocking here, right?
-			// new StreamSplitter(skinUrl.openStream(), new FileOutputStream(skinOutputFile)).run();
+			// new StreamSplitter(skinUrl.openStream(), new
+			// FileOutputStream(skinOutputFile)).run();
 		} catch (IOException ioe) {
-			throw new BuildException("Unable to copy skin to " + skinOutputFile, ioe);
+			throw new BuildException(
+					"Unable to copy skin to " + skinOutputFile, ioe);
 		}
 	}
-
-	private URL formatUrl, skinUrl;
-	private URL reportUrl;
-	private File outputFile;
-	private TransformerFactory tFactory;
+	
+	private URL getFormatUrl() {
+		return this.formatUrl;
+	}
+	
+	private File getOutputFile() {
+		return this.outputFile;
+	}
+	
+	private URL getReportUrl() {
+		return this.reportUrl;
+	}
+	
+	private URL getSkinUrl() {
+		return this.skinUrl;
+	}
+	
+	public TransformerFactory getTFactory() {
+		return this.tFactory;
+	}
 }

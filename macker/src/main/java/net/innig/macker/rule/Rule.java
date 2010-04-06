@@ -24,31 +24,38 @@ import net.innig.macker.event.ListenerException;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassManager;
 
+/**
+ * @author Paul Cantrell
+ */
 public abstract class Rule {
-	public Rule(RuleSet parent) {
+	
+	private RuleSet parent;
+	private RuleSeverity severity;
+	
+	public Rule(final RuleSet parent) {
 		this.parent = parent;
 	}
 
 	public RuleSet getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	public RuleSeverity getSeverity() {
-		if (severity != null)
-			return severity;
-		else if (parent != null)
-			return parent.getSeverity();
-		else
-			return RuleSeverity.ERROR;
+		if (this.severity != null) {
+			return this.severity;
+		}
+		
+		if (getParent() != null) {
+			return getParent().getSeverity();
+		}
+
+		return RuleSeverity.ERROR;
 	}
 
-	public void setSeverity(RuleSeverity severity) {
+	public void setSeverity(final RuleSeverity severity) {
 		this.severity = severity;
 	}
 
 	public abstract void check(EvaluationContext context, ClassManager classes) throws RulesException,
 			MackerIsMadException, ListenerException;
-
-	private RuleSet parent;
-	private RuleSeverity severity;
 }

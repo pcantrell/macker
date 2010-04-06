@@ -31,108 +31,134 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Paul Cantrell
+ */
 public class EvaluationContext {
-	public EvaluationContext(ClassManager classManager, RuleSet ruleSet) {
+	
+	private RuleSet ruleSet;
+	private EvaluationContext parent;
+	private Map<String, String> varValues;
+	private Set<MackerEventListener> listeners;
+	private ClassManager classManager;
+	
+	public EvaluationContext(final ClassManager classManager, final RuleSet ruleSet) {
 		this.classManager = classManager;
 		this.ruleSet = ruleSet;
-		varValues = new HashMap<String, String>();
-		listeners = new HashSet<MackerEventListener>();
+		this.varValues = new HashMap<String, String>();
+		this.listeners = new HashSet<MackerEventListener>();
 	}
 
-	public EvaluationContext(RuleSet ruleSet, EvaluationContext parent) {
+	public EvaluationContext(final RuleSet ruleSet, final EvaluationContext parent) {
 		this(parent.getClassManager(), ruleSet);
 		this.parent = parent;
 	}
 
-	public EvaluationContext(EvaluationContext parent) {
+	public EvaluationContext(final EvaluationContext parent) {
 		this(parent.getRuleSet(), parent);
 	}
 
 	public EvaluationContext getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	public ClassManager getClassManager() {
-		return classManager;
+		return this.classManager;
 	}
 
 	public RuleSet getRuleSet() {
-		return ruleSet;
+		return this.ruleSet;
 	}
 
-	public void setVariableValue(String name, String value) throws UndeclaredVariableException {
-		varValues.put(name, (value == null) ? "" : VariableParser.parse(this, value));
+	public void setVariableValue(final String name, final String value) throws UndeclaredVariableException {
+		String putValue = "";
+		if (value != null) {
+			putValue = VariableParser.parse(this, value);
+		}
+		getVarValues().put(name, putValue);
 	}
 
-	public String getVariableValue(String name) throws UndeclaredVariableException {
-		String value = varValues.get(name);
-		if (value != null)
+	public String getVariableValue(final String name) throws UndeclaredVariableException {
+		final String value = getVarValues().get(name);
+		if (value != null) {
 			return value;
-		if (parent != null)
-			return parent.getVariableValue(name);
+		}
+		if (getParent() != null) {
+			return getParent().getVariableValue(name);
+		}
 		throw new UndeclaredVariableException(name);
 	}
 
-	public void setVariables(Map<String, String> vars) {
-		varValues.putAll(vars);
+	public void setVariables(final Map<String, String> vars) {
+		getVarValues().putAll(vars);
 	}
 
-	public void addListener(MackerEventListener listener) {
-		listeners.add(listener);
+	public void addListener(final MackerEventListener listener) {
+		getListeners().add(listener);
 	}
 
-	public void removeListener(MackerEventListener listener) {
-		listeners.remove(listener);
+	public void removeListener(final MackerEventListener listener) {
+		getListeners().remove(listener);
 	}
 
 	public void broadcastStarted() throws ListenerException {
 		broadcastStarted(getRuleSet());
 	}
 
-	protected void broadcastStarted(RuleSet targetRuleSet) throws ListenerException {
-		for (MackerEventListener listener : listeners)
+	protected void broadcastStarted(final RuleSet targetRuleSet) throws ListenerException {
+		for (MackerEventListener listener : getListeners()) {
 			listener.mackerStarted(targetRuleSet);
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			getParent().broadcastStarted(targetRuleSet);
+		}
 	}
 
 	public void broadcastFinished() throws MackerIsMadException, ListenerException {
 		broadcastFinished(getRuleSet());
 	}
 
-	protected void broadcastFinished(RuleSet targetRuleSet) throws MackerIsMadException, ListenerException {
-		for (MackerEventListener listener : listeners)
+	protected void broadcastFinished(final RuleSet targetRuleSet) throws MackerIsMadException, ListenerException {
+		for (MackerEventListener listener : getListeners()) {
 			listener.mackerFinished(targetRuleSet);
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			getParent().broadcastFinished(targetRuleSet);
+		}
 	}
 
 	public void broadcastAborted() {
 		broadcastAborted(getRuleSet());
 	}
 
-	protected void broadcastAborted(RuleSet targetRuleSet) {
-		for (MackerEventListener listener : listeners)
+	protected void broadcastAborted(final RuleSet targetRuleSet) {
+		for (MackerEventListener listener : getListeners()) {
 			listener.mackerAborted(targetRuleSet);
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			getParent().broadcastAborted(targetRuleSet);
+		}
 	}
 
-	public void broadcastEvent(MackerEvent event) throws MackerIsMadException, ListenerException {
+	public void broadcastEvent(final MackerEvent event) throws MackerIsMadException, ListenerException {
 		broadcastEvent(event, getRuleSet());
 	}
 
-	protected void broadcastEvent(MackerEvent event, RuleSet targetRuleSet) throws MackerIsMadException,
+	protected void broadcastEvent(final MackerEvent event, final RuleSet targetRuleSet) throws MackerIsMadException,
 			ListenerException {
-		for (MackerEventListener listener : listeners)
+		for (MackerEventListener listener : getListeners()) {
 			listener.handleMackerEvent(targetRuleSet, event);
-		if (getParent() != null)
+		}
+		if (getParent() != null) {
 			getParent().broadcastEvent(event, targetRuleSet);
+		}
 	}
-
-	private RuleSet ruleSet;
-	private EvaluationContext parent;
-	private Map<String, String> varValues;
-	private Set<MackerEventListener> listeners;
-	private ClassManager classManager;
+	
+	private Set<MackerEventListener> getListeners() {
+		return this.listeners;
+	}
+	
+	private Map<String, String> getVarValues() {
+		return this.varValues;
+	}
 }

@@ -36,32 +36,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Paul Cantrell
+ */
 public class PrintingListener implements MackerEventListener {
+
 	public PrintingListener(PrintWriter out) {
-		this.out = out;
+		this.writer = out;
 	}
 
 	public PrintingListener(Writer out) {
-		this.out = new PrintWriter(out, true);
+		this.writer = new PrintWriter(out, true);
 	}
 
 	public PrintingListener(OutputStream out) {
-		this.out = new PrintWriter(out, true);
+		this.writer = new PrintWriter(out, true);
 	}
 
 	public void setThreshold(RuleSeverity threshold) {
 		this.threshold = threshold;
 	}
-
+	
 	public void setMaxMessages(int maxMessages) {
 		this.maxMessages = maxMessages;
 	}
 
 	public void mackerStarted(RuleSet ruleSet) {
 		if (ruleSet.getParent() == null || ruleSet.hasName()) {
-			out.println();
-			out.println("(Checking ruleset: " + ruleSet.getName() + " ...)");
-			first = true;
+			getWriter().println();
+			getWriter().println("(Checking ruleset: " + ruleSet.getName() + " ...)");
+			setFirst(true);
 		}
 	}
 
@@ -75,27 +79,28 @@ public class PrintingListener implements MackerEventListener {
 		if (event instanceof ForEachEvent) {
 			if (event instanceof ForEachIterationStarted) {
 				ForEachIterationStarted iterStart = (ForEachIterationStarted) event;
-				out.print('(');
-				out.print(iterStart.getForEach().getVariableName());
-				out.print(": ");
-				out.print(iterStart.getVariableValue());
-				out.println(")");
+				getWriter().print('(');
+				getWriter().print(iterStart.getForEach().getVariableName());
+				getWriter().print(": ");
+				getWriter().print(iterStart.getVariableValue());
+				getWriter().println(")");
 			}
 			// ignore other ForEachEvents
 		} else {
-			eventsBySeverity.put(event.getRule().getSeverity(), event);
-			if (event.getRule().getSeverity().compareTo(threshold) >= 0) {
-				if (messagesPrinted < maxMessages) {
-					if (first) {
-						out.println();
-						first = false;
+			getEventsBySeverity().put(event.getRule().getSeverity(), event);
+			if (event.getRule().getSeverity().compareTo(getThreshold()) >= 0) {
+				if (getMessagesPrinted() < getMaxMessages()) {
+					if (isFirst()) {
+						getWriter().println();
+						setFirst(false);
 					}
-					out.println(event.toStringVerbose());
+					getWriter().println(event.toStringVerbose());
 				}
-				if (messagesPrinted == maxMessages)
-					out.println("WARNING: Exceeded the limit of " + maxMessages + " message"
-							+ (maxMessages == 1 ? "" : "s") + "; further messages surpressed");
-				messagesPrinted++;
+				if (getMessagesPrinted() == getMaxMessages()) {
+					getWriter().println("WARNING: Exceeded the limit of " + getMaxMessages() + " message"
+							+ (getMaxMessages() == 1 ? "" : "s") + "; further messages surpressed");
+				}
+				this.messagesPrinted++;
 			}
 
 		}
@@ -104,33 +109,65 @@ public class PrintingListener implements MackerEventListener {
 	public void printSummary() {
 		// output looks like: "(2 errors, 1 warning)"
 		boolean firstSeverity = true;
-		List<RuleSeverity> severities = new ArrayList<RuleSeverity>(eventsBySeverity.keySet());
+		List<RuleSeverity> severities = new ArrayList<RuleSeverity>(getEventsBySeverity().keySet());
 		Collections.reverse(severities);
 		for (RuleSeverity severity : severities) {
-			Collection<MackerEvent> eventsForSev = eventsBySeverity.get(severity);
+			Collection<MackerEvent> eventsForSev = getEventsBySeverity().get(severity);
 			if (eventsForSev.size() > 0) {
-				if (firstSeverity)
-					out.print("(");
-				else
-					out.print(", ");
+				if (firstSeverity) {
+					getWriter().print("(");
+				} else {
+					getWriter().print(", ");
+				}
 				firstSeverity = false;
-				out.print(eventsForSev.size());
-				out.print(' ');
-				out.print((eventsForSev.size() == 1) ? severity.getName() : severity.getNamePlural());
+				getWriter().print(eventsForSev.size());
+				getWriter().print(' ');
+				getWriter().print((eventsForSev.size() == 1) ? severity.getName() : severity.getNamePlural());
 			}
 		}
-		if (!firstSeverity)
-			out.println(')');
+		if (!firstSeverity) {
+			getWriter().println(')');
+		}
 	}
 
 	public String toString() {
 		return "PrintingListener";
 	}
+	
+	private MultiMap<RuleSeverity, MackerEvent> getEventsBySeverity() {
+		return this.eventsBySeverity;
+	}
+	
+	private boolean isFirst() {
+		return this.first;
+	}
+	
+	private void setFirst(boolean first) {
+		this.first = first;
+	}
+	
+	private int getMaxMessages() {
+		return this.maxMessages;
+	}
+	
+	private int getMessagesPrinted() {
+		return this.messagesPrinted;
+	}
+	
+	private RuleSeverity getThreshold() {
+		return this.threshold;
+	}
+	
+	private PrintWriter getWriter() {
+		return this.writer;
+	}
 
 	private boolean first;
-	private PrintWriter out;
-	private int maxMessages = Integer.MAX_VALUE, messagesPrinted = 0;
+	private PrintWriter writer;
+	private int maxMessages = Integer.MAX_VALUE;
+	private int messagesPrinted = 0;
 	private RuleSeverity threshold = RuleSeverity.INFO;
-	private final MultiMap<RuleSeverity, MackerEvent> eventsBySeverity = new CompositeMultiMap<RuleSeverity, MackerEvent>(
+	private final MultiMap<RuleSeverity, MackerEvent> eventsBySeverity =
+		new CompositeMultiMap<RuleSeverity, MackerEvent>(
 			new EnumMap<RuleSeverity, Set<MackerEvent>>(RuleSeverity.class), HashSet.class);
 }

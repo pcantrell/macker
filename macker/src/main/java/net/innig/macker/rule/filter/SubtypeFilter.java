@@ -29,18 +29,24 @@ import net.innig.macker.structure.ClassInfo;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Paul Cantrell
+ */
 public class SubtypeFilter implements Filter {
-	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+	public Pattern createPattern(final RuleSet ruleSet, final List<Pattern> params, final Map<String, String> options)
 			throws RulesException {
-		if (params.size() != 1)
+		if (params.size() != 1) {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects one parameter, but has " + params.size());
+		}
 		final Pattern supertypePat = params.get(0);
 		return new Pattern() {
-			public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
-				for (ClassInfo supertype : classInfo.getSupertypes())
-					if (supertypePat.matches(context, supertype))
+			public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+				for (ClassInfo supertype : classInfo.getSupertypes()) {
+					if (supertypePat.matches(context, supertype)) {
 						return true;
+					}
+				}
 				return false;
 			}
 		};

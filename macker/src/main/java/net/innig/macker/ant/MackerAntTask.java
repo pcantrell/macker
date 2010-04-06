@@ -49,60 +49,78 @@ import org.apache.tools.ant.types.Path;
  * @author Paul Cantrell
  */
 public class MackerAntTask extends Task {
+	
+	private static final String MACKER_CHOKED_MESSAGE = "Macker configuration failed";
+	private static final String MACKER_IS_MAD_MESSAGE = "Macker rules checking failed";
+	
 	private boolean fork = false;
 	private boolean failOnError = true;
 	private boolean verbose = false;
 	private List<String> jvmArgs;
-	private Macker macker; // for non-forked
-	private Java jvm; // for forked
-	private Path classPath;
+	
+	private Path classpath;
 	private String angerProperty;
+	
+	// for non-forked
+	private Macker macker;
+	private Java jvm;
+	
 	/**
 	 * Create a new {@link MackerAntTask} instance.
 	 *
 	 */
 	public MackerAntTask() {
-		macker = new Macker();
-		jvmArgs = new ArrayList<String>();
+		setMacker(new Macker());
+		setJvmArgs(new ArrayList<String>());
 	}
 
 	public void execute() throws BuildException {
-		if (verbose)
+		if (isVerbose()) {
 			System.out.println("Macker (verbose mode enabled)");
-		if (failOnError && angerProperty != null)
+		}
+		if (isFailOnError() && getAngerProperty() != null) {
 			System.out.println("WARNING: failOnError is set, so angerProperty will have no effect");
+		}
 		try {
-			if (!fork) {
-				if (classPath != null)
-					macker.setClassLoader(new AntClassLoader(getProject(), classPath, false));
+			if (!isFork()) {
+				if (getClasspath() != null) {
+					getMacker().setClassLoader(new AntClassLoader(getProject(), getClasspath(), false));
+				}
 
-				macker.check();
+				getMacker().check();
 			} else {
-				if (classPath == null)
+				if (getClasspath() == null) {
 					throw new BuildException("nested <classpath> element is required when fork=true");
+				}
 
 				getJvm().setTaskName("macker");
 				getJvm().setClassname("net.innig.macker.Macker");
-				getJvm().setFork(fork);
+				getJvm().setFork(isFork());
 				getJvm().setFailonerror(false);
 				getJvm().clearArgs();
 
-				for (String arg : jvmArgs)
+				for (String arg : getJvmArgs()) {
 					getJvm().createArg().setValue(arg);
+				}
 
-				int resultCode = getJvm().executeJava();
-				if (resultCode == 2)
+				final int resultCode = getJvm().executeJava();
+				if (resultCode == 2) {
 					throw new MackerIsMadException();
-				if (resultCode != 0)
+				}
+				if (resultCode != 0) {
 					throw new BuildException(MACKER_CHOKED_MESSAGE);
+				}
 			}
 		} catch (MackerIsMadException mime) {
-			if (mime.getMessage() != null)
+			if (mime.getMessage() != null) {
 				printMessageChain(mime);
-			if (angerProperty != null)
-				getProject().setProperty(angerProperty, "true");
-			if (failOnError)
+			}
+			if (getAngerProperty() != null) {
+				getProject().setProperty(getAngerProperty(), "true");
+			}
+			if (isFailOnError()) {
 				throw new BuildException(MACKER_IS_MAD_MESSAGE);
+			}
 		} catch (ListenerException lie) {
 			printMessageChain(lie);
 			throw new BuildException(MACKER_CHOKED_MESSAGE);
@@ -115,90 +133,95 @@ public class MackerAntTask extends Task {
 		}
 	}
 
-	public void setFork(boolean fork) {
+	public void setFork(final boolean fork) {
 		this.fork = fork;
 	}
 
-	public void setFailOnError(boolean failOnError) {
+	public void setFailOnError(final boolean failOnError) {
 		this.failOnError = failOnError;
 	}
 
-	public void setMaxMessages(int printMaxMessages) {
-		macker.setPrintMaxMessages(printMaxMessages);
-		jvmArgs.add("--print-max");
-		jvmArgs.add(String.valueOf(printMaxMessages));
+	public void setMaxMessages(final int printMaxMessages) {
+		getMacker().setPrintMaxMessages(printMaxMessages);
+		getJvmArgs().add("--print-max");
+		getJvmArgs().add(String.valueOf(printMaxMessages));
 	}
 
-	public void setPrintThreshold(String threshold) {
-		macker.setPrintThreshold(RuleSeverity.fromName(threshold));
-		jvmArgs.add("--print");
-		jvmArgs.add(threshold);
+	public void setPrintThreshold(final String threshold) {
+		getMacker().setPrintThreshold(RuleSeverity.fromName(threshold));
+		getJvmArgs().add("--print");
+		getJvmArgs().add(threshold);
 	}
 
-	public void setAngerThreshold(String threshold) {
-		macker.setAngerThreshold(RuleSeverity.fromName(threshold));
-		jvmArgs.add("--anger");
-		jvmArgs.add(threshold);
+	public void setAngerThreshold(final String threshold) {
+		getMacker().setAngerThreshold(RuleSeverity.fromName(threshold));
+		getJvmArgs().add("--anger");
+		getJvmArgs().add(threshold);
 	}
 
-	public void setAngerProperty(String property) {
+	public void setAngerProperty(final String property) {
 		this.angerProperty = property;
 	}
 
-	public void setVerbose(boolean verbose) {
+	public void setVerbose(final boolean verbose) {
 		this.verbose = verbose;
-		macker.setVerbose(verbose);
-		if (verbose)
-			jvmArgs.add("-v");
+		getMacker().setVerbose(verbose);
+		if (verbose) {
+			getJvmArgs().add("-v");
+		}
 	}
 
 	public Path createClasspath() {
-		return classPath = getJvm().createClasspath();
+		setClasspath(getJvm().createClasspath());
+		return getClasspath();
 	}
 
-	public void addConfiguredVar(Var var) {
-		macker.setVariable(var.getName(), var.getValue());
-		jvmArgs.add("-D");
-		jvmArgs.add(var.getName() + "=" + var.getValue());
+	public void addConfiguredVar(final Var var) {
+		getMacker().setVariable(var.getName(), var.getValue());
+		getJvmArgs().add("-D");
+		getJvmArgs().add(var.getName() + "=" + var.getValue());
 	}
 
-	public void setXmlReportFile(File xmlReportFile) {
-		macker.setXmlReportFile(xmlReportFile);
-		jvmArgs.add("-o");
-		jvmArgs.add(xmlReportFile.getPath());
+	public void setXmlReportFile(final File xmlReportFile) {
+		getMacker().setXmlReportFile(xmlReportFile);
+		getJvmArgs().add("-o");
+		getJvmArgs().add(xmlReportFile.getPath());
 	}
 
-	static public class Var {
+	public static class Var {
+		
+		private String name;
+		private String value;
+		
 		public String getName() {
-			return name;
+			return this.name;
 		}
 
 		public String getValue() {
-			return value;
+			return this.value;
 		}
 
-		public void setName(String name) {
+		public void setName(final String name) {
 			this.name = name;
 		}
 
-		public void setValue(String value) {
+		public void setValue(final String value) {
 			this.value = value;
 		}
-
-		private String name, value;
 	}
 
-	public void addConfiguredClasses(FileSet classFiles) throws IOException {
-		DirectoryScanner classScanner = classFiles.getDirectoryScanner(getProject());
-		String[] fileNames = classScanner.getIncludedFiles();
-		File baseDir = classScanner.getBasedir();
+	public void addConfiguredClasses(final FileSet classFiles) throws IOException {
+		final DirectoryScanner classScanner = classFiles.getDirectoryScanner(getProject());
+		final String[] fileNames = classScanner.getIncludedFiles();
+		final File baseDir = classScanner.getBasedir();
 		for (int n = 0; n < fileNames.length; n++) {
-			File classFile = new File(baseDir, fileNames[n]);
-			if (!classFile.getName().endsWith(".class"))
+			final File classFile = new File(baseDir, fileNames[n]);
+			if (!classFile.getName().endsWith(".class")) {
 				System.out.println("WARNING: " + fileNames[n] + " is not a .class file; ignoring");
-			jvmArgs.add(classFile.getPath());
+			}
+			getJvmArgs().add(classFile.getPath());
 			try {
-				macker.addClass(classFile);
+				getMacker().addClass(classFile);
 			} catch (ClassParseException cpe) {
 				printMessageChain("Unable to parse class file: " + classFile.getPath(), cpe);
 				throw new BuildException(MACKER_CHOKED_MESSAGE);
@@ -206,16 +229,16 @@ public class MackerAntTask extends Task {
 		}
 	}
 
-	public void addConfiguredRules(FileSet rulesFiles) throws IOException {
-		DirectoryScanner rulesScanner = rulesFiles.getDirectoryScanner(getProject());
-		String[] fileNames = rulesScanner.getIncludedFiles();
-		File baseDir = rulesScanner.getBasedir();
+	public void addConfiguredRules(final FileSet rulesFiles) throws IOException {
+		final DirectoryScanner rulesScanner = rulesFiles.getDirectoryScanner(getProject());
+		final String[] fileNames = rulesScanner.getIncludedFiles();
+		final File baseDir = rulesScanner.getBasedir();
 		for (int n = 0; n < fileNames.length; n++) {
-			File rulesFile = new File(baseDir, fileNames[n]);
-			jvmArgs.add("-r");
-			jvmArgs.add(rulesFile.getPath());
+			final File rulesFile = new File(baseDir, fileNames[n]);
+			getJvmArgs().add("-r");
+			getJvmArgs().add(rulesFile.getPath());
 			try {
-				macker.addRulesFile(rulesFile);
+				getMacker().addRulesFile(rulesFile);
 			} catch (RulesException re) {
 				printMessageChain(re);
 				throw new BuildException(MACKER_CHOKED_MESSAGE);
@@ -224,23 +247,61 @@ public class MackerAntTask extends Task {
 	}
 
 	private Java getJvm() {
-		if (jvm == null) {
-			jvm = new Java();
-			jvm.setProject(getProject());
+		if (this.jvm == null) {
+			this.jvm = new Java();
+			this.jvm.setProject(getProject());
 		}
-		return jvm;
+		return this.jvm;
 	}
 
-	private void printMessageChain(Throwable e) {
+	private void printMessageChain(final Throwable e) {
 		printMessageChain("", e);
 	}
 
-	private void printMessageChain(String message, Throwable e) {
+	private void printMessageChain(final String message, Throwable e) {
 		System.out.println(message);
-		for (; e != null; e = e.getCause())
+		for (; e != null; e = e.getCause()) {
 			System.out.println(e.getMessage());
+		}
 	}
-
-	private static final String MACKER_CHOKED_MESSAGE = "Macker configuration failed";
-	private static final String MACKER_IS_MAD_MESSAGE = "Macker rules checking failed";
+	
+	private String getAngerProperty() {
+		return this.angerProperty;
+	}
+	
+	private Path getClasspath() {
+		return this.classpath;
+	}
+	
+	private void setClasspath(final Path classpath) {
+		this.classpath = classpath;
+	}
+	
+	private boolean isFailOnError() {
+		return this.failOnError;
+	}
+	
+	private boolean isFork() {
+		return this.fork;
+	}
+	
+	private List<String> getJvmArgs() {
+		return this.jvmArgs;
+	}
+	
+	private void setJvmArgs(final List<String> jvmArgs) {
+		this.jvmArgs = jvmArgs;
+	}
+	
+	private Macker getMacker() {
+		return this.macker;
+	}
+	
+	private void setMacker(final Macker macker) {
+		this.macker = macker;
+	}
+	
+	private boolean isVerbose() {
+		return this.verbose;
+	}
 }

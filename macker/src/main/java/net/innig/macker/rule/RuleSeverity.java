@@ -22,14 +22,18 @@ package net.innig.macker.rule;
 
 import java.util.Arrays;
 
+/**
+ * @author Paul Cantrell
+ */
 public enum RuleSeverity {
 	DEBUG("debug"), INFO("info"), WARNING("warnings"), ERROR("errors");
 
 	public static RuleSeverity fromName(String name) throws IllegalArgumentException {
 		RuleSeverity severity = RuleSeverity.valueOf(name.toUpperCase());
-		if (severity == null)
+		if (severity == null) {
 			throw new IllegalArgumentException("Unknown severity level \"" + name + "\" (expected one of "
 					+ Arrays.toString(RuleSeverity.values()) + ")");
+		}
 		return severity;
 	}
 
@@ -38,12 +42,12 @@ public enum RuleSeverity {
 	}
 
 	public String getNamePlural() {
-		return plural;
+		return this.plural;
 	}
 
 	private RuleSeverity(String plural) {
 		this.plural = plural;
 	}
 
-	private transient final String plural;
+	private final transient String plural;
 }

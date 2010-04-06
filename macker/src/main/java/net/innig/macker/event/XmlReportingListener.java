@@ -1,8 +1,5 @@
 package net.innig.macker.event;
 
-import net.innig.macker.rule.RuleSet;
-import net.innig.macker.structure.ClassInfo;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,21 +8,28 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.LinkedList;
 
+import net.innig.macker.rule.RuleSet;
+import net.innig.macker.structure.ClassInfo;
+
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+/**
+ * @author Paul Cantrell
+ */
 public class XmlReportingListener implements MackerEventListener {
-	private Writer out;
+	
+	private Writer writer;
 	private String encoding;
 
 	private Document document;
 	private Element curElem;
 	private LinkedList<Element> elemStack;
 
-	public XmlReportingListener(File outFile) throws ListenerException {
+	public XmlReportingListener(final File outFile) throws ListenerException {
 		try {
 			if (outFile.exists()) {
 				final boolean succesfullyDeleted = outFile.delete();
@@ -33,41 +37,42 @@ public class XmlReportingListener implements MackerEventListener {
 					throw new ListenerException(this, "Unable to remove report file \"" + outFile + "\"");
 				}
 			}
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
-			BufferedWriter bufferedOut = new BufferedWriter(out);
+			final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
+			final BufferedWriter bufferedOut = new BufferedWriter(out);
 			init(bufferedOut, "UTF-8");
 		} catch (IOException ioe) {
 			throw new ListenerException(this, "Unable to remove and re-create report file \"" + outFile + "\"", ioe);
 		}
 	}
 
-	public XmlReportingListener(Writer out, String encoding) throws ListenerException {
+	public XmlReportingListener(final Writer out, final String encoding) throws ListenerException {
 		init(out, encoding);
 	}
 
-	private void init(Writer out, String encoding) throws ListenerException {
-		this.out = out;
+	private void init(final Writer writer, final String encoding) throws ListenerException {
+		this.writer = writer;
 		this.encoding = encoding;
 
-		elemStack = new LinkedList<Element>();
-		Element topElem = new Element("macker-report");
-		Element timestampElem = new Element("timestamp");
-		timestampElem.setText(new java.util.Date().toString()); // to heck with
+		setElemStack(new LinkedList<Element>());
+		final Element topElem = new Element("macker-report");
+		final Element timestampElem = new Element("timestamp");
+		timestampElem.setText(new java.util.Date().toString());
+		// to heck with
 		// sophisticated
 		// localization!
 		topElem.addContent(timestampElem);
 
 		pushElem(topElem);
-		document = new Document(topElem);
+		setDocument(new Document(topElem));
 	}
 
 	public void flush() throws ListenerException {
 		try {
-			Format format = Format.getPrettyFormat();
-			format.setEncoding(encoding);
-			XMLOutputter xmlOut = new XMLOutputter(format);
-			xmlOut.output(document, out);
-			out.flush();
+			final Format format = Format.getPrettyFormat();
+			format.setEncoding(getEncoding());
+			final XMLOutputter xmlOut = new XMLOutputter(format);
+			xmlOut.output(getDocument(), getWriter());
+			getWriter().flush();
 		} catch (IOException ioe) {
 			throw new ListenerException(this, "Unable to write XML report", ioe);
 		}
@@ -75,105 +80,141 @@ public class XmlReportingListener implements MackerEventListener {
 
 	public void close() throws ListenerException {
 		try {
-			out.close();
+			getWriter().close();
 		} catch (IOException ioe) {
 			throw new ListenerException(this, "Unable to close XML report", ioe);
 		}
 	}
 
-	public void mackerStarted(RuleSet ruleSet) {
+	public void mackerStarted(final RuleSet ruleSet) {
 		if (ruleSet.hasName()) {
-			Element ruleSetElem = new Element("ruleset");
+			final Element ruleSetElem = new Element("ruleset");
 			ruleSetElem.setAttribute("name", ruleSet.getName());
-			curElem.addContent(ruleSetElem);
+			getCurElem().addContent(ruleSetElem);
 			pushElem(ruleSetElem);
-		} else
-			pushElem(curElem); // push again so finish can pop
+		} else {
+			// push again so finish can pop
+			pushElem(getCurElem());
+		}
 	}
 
-	public void mackerFinished(RuleSet ruleSet) throws MackerIsMadException, ListenerException {
+	public void mackerFinished(final RuleSet ruleSet) throws MackerIsMadException, ListenerException {
 		popElem();
 	}
 
-	public void mackerAborted(RuleSet ruleSet) {
-		curElem = null;
+	public void mackerAborted(final RuleSet ruleSet) {
+		setCurElem(null);
 	}
 
-	public void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException {
+	public void handleMackerEvent(final RuleSet ruleSet, final MackerEvent event) throws MackerIsMadException {
 		if (event instanceof MessageEvent) {
-			Element messageRuleElem = new Element("message-rule");
+			final Element messageRuleElem = new Element("message-rule");
 			handleEventBasics(messageRuleElem, event);
-			curElem.addContent(messageRuleElem);
+			getCurElem().addContent(messageRuleElem);
 		}
 
 		if (event instanceof AccessRuleViolation) {
-			AccessRuleViolation violation = (AccessRuleViolation) event;
-			Element violationElem = new Element("access-rule-violation");
+			final AccessRuleViolation violation = (AccessRuleViolation) event;
+			final Element violationElem = new Element("access-rule-violation");
 
 			handleEventBasics(violationElem, violation);
 
-			Element fromElem = new Element("from");
-			Element toElem = new Element("to");
+			final Element fromElem = new Element("from");
+			final Element toElem = new Element("to");
 			describeClass(fromElem, violation.getFrom());
 			describeClass(toElem, violation.getTo());
 			violationElem.addContent(fromElem);
 			violationElem.addContent(toElem);
 
-			curElem.addContent(violationElem);
+			getCurElem().addContent(violationElem);
 		}
 
 		if (event instanceof ForEachStarted) {
-			ForEachStarted forEachStarted = (ForEachStarted) event;
-			Element forEachElem = new Element("foreach");
+			final ForEachStarted forEachStarted = (ForEachStarted) event;
+			final Element forEachElem = new Element("foreach");
 			forEachElem.setAttribute("var", forEachStarted.getForEach().getVariableName());
-			curElem.addContent(forEachElem);
+			getCurElem().addContent(forEachElem);
 			pushElem(forEachElem);
 		}
 
 		if (event instanceof ForEachIterationStarted) {
-			ForEachIterationStarted forEachIter = (ForEachIterationStarted) event;
-			Element iterElem = new Element("iteration");
+			final ForEachIterationStarted forEachIter = (ForEachIterationStarted) event;
+			final Element iterElem = new Element("iteration");
 			iterElem.setAttribute("value", forEachIter.getVariableValue());
-			curElem.addContent(iterElem);
+			getCurElem().addContent(iterElem);
 			pushElem(iterElem);
 		}
 
-		if (event instanceof ForEachIterationFinished || event instanceof ForEachFinished)
+		if (event instanceof ForEachIterationFinished || event instanceof ForEachFinished) {
 			popElem();
+		}
 	}
 
-	private void handleEventBasics(Element elem, MackerEvent event) {
+	private void handleEventBasics(final Element elem, final MackerEvent event) {
 		elem.setAttribute("severity", event.getRule().getSeverity().getName());
 		for (String message : event.getMessages()) {
-			Element messageElem = new Element("message");
+			final Element messageElem = new Element("message");
 			messageElem.setText(message);
 			elem.addContent(messageElem);
 		}
 	}
 
-	private void describeClass(Element classInfoElem, ClassInfo classInfo) {
-		Element fullElem = new Element("full-name");
-		Element classElem = new Element("class");
-		Element packElem = new Element("package");
+	private void describeClass(final Element classInfoElem, final ClassInfo classInfo) {
+		final Element fullElem = new Element("full-name");
+		final Element classElem = new Element("class");
+		final Element packElem = new Element("package");
 		fullElem.setText(classInfo.getFullName());
 		classElem.setText(classInfo.getClassName());
 		packElem.setText(classInfo.getPackageName());
 		classInfoElem.addContent(fullElem);
 		classInfoElem.addContent(classElem);
-		if (!StringUtils.isEmpty(classInfo.getPackageName()))
+		if (!StringUtils.isEmpty(classInfo.getPackageName())) {
 			classInfoElem.addContent(packElem);
+		}
 	}
 
-	private void pushElem(Element elem) {
-		elemStack.addLast(curElem);
-		curElem = elem;
+	private void pushElem(final Element elem) {
+		getElemStack().addLast(getCurElem());
+		setCurElem(elem);
 	}
 
 	private void popElem() {
-		curElem = elemStack.removeLast();
+		setCurElem(getElemStack().removeLast());
 	}
 
 	public String toString() {
 		return "XmlReportingListener";
+	}
+	
+	private Element getCurElem() {
+		return this.curElem;
+	}
+	
+	private void setCurElem(final Element curElem) {
+		this.curElem = curElem;
+	}
+	
+	private Document getDocument() {
+		return this.document;
+	}
+	
+	private void setDocument(final Document document) {
+		this.document = document;
+	}
+	
+	private LinkedList<Element> getElemStack() {
+		return this.elemStack;
+	}
+	
+	private void setElemStack(final LinkedList<Element> elemStack) {
+		this.elemStack = elemStack;
+	}
+	
+	private String getEncoding() {
+		return this.encoding;
+	}
+	
+	private Writer getWriter() {
+		return this.writer;
 	}
 }
