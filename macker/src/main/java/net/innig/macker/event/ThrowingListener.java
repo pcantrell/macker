@@ -26,64 +26,109 @@ import net.innig.macker.rule.RuleSeverity;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Paul Cantrell
+ *
+ */
 public class ThrowingListener implements MackerEventListener {
-	public ThrowingListener(RuleSeverity throwOnFirstThreshold, RuleSeverity throwOnFinishThreshold) {
+	
+	private final RuleSeverity throwOnFirstThreshold;
+	private final RuleSeverity throwOnFinishThreshold;
+	private RuleSeverity maxSeverity;
+	private List<MackerEvent> events;
+	private boolean inUse;
+	
+	public ThrowingListener(final RuleSeverity throwOnFirstThreshold, final RuleSeverity throwOnFinishThreshold) {
 		this.throwOnFirstThreshold = throwOnFirstThreshold;
 		this.throwOnFinishThreshold = throwOnFinishThreshold;
 		clear();
 	}
 
-	public void mackerStarted(RuleSet ruleSet) {
+	public void mackerStarted(final RuleSet ruleSet) {
 		if (ruleSet.getParent() == null) {
-			if (inUse)
+			if (isInUse()) {
 				throw new IllegalStateException("This ThrowingListener is already in use");
-			inUse = true;
+			}
+			setInUse(true);
 		}
 	}
 
-	public void mackerFinished(RuleSet ruleSet) throws MackerIsMadException {
-		if (ruleSet.getParent() == null)
-			inUse = false;
+	public void mackerFinished(final RuleSet ruleSet) throws MackerIsMadException {
+		if (ruleSet.getParent() == null) {
+			setInUse(false);
+		}
 	}
 
-	public void mackerAborted(RuleSet ruleSet) {
-		events = null;
+	public void mackerAborted(final RuleSet ruleSet) {
+		setEvents(null);
 	}
 
-	public void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException {
-		if (event instanceof ForEachEvent)
+	public void handleMackerEvent(final RuleSet ruleSet, final MackerEvent event) throws MackerIsMadException {
+		if (event instanceof ForEachEvent) {
 			return;
+		}
 
-		RuleSeverity severity = event.getRule().getSeverity();
-		if (maxSeverity == null || severity.compareTo(maxSeverity) >= 0)
-			maxSeverity = severity;
+		final RuleSeverity severity = event.getRule().getSeverity();
+		if (getMaxSeverity() == null || severity.compareTo(getMaxSeverity()) >= 0) {
+			setMaxSeverity(severity);
+		}
 
-		if (throwOnFinishThreshold != null && severity.compareTo(throwOnFinishThreshold) >= 0)
-			events.add(event);
+		if (getThrowOnFinishThreshold() != null && severity.compareTo(getThrowOnFinishThreshold()) >= 0) {
+			getEvents().add(event);
+		}
 
-		timeToGetMad(throwOnFirstThreshold);
+		timeToGetMad(getThrowOnFirstThreshold());
 	}
 
-	public void timeToGetMad(RuleSeverity threshold) throws MackerIsMadException {
-		if (threshold != null && maxSeverity != null && maxSeverity.compareTo(threshold) >= 0)
+	public void timeToGetMad(final RuleSeverity threshold) throws MackerIsMadException {
+		if (threshold != null && getMaxSeverity() != null && getMaxSeverity().compareTo(threshold) >= 0) {
 			timeToGetMad();
+		}
 	}
 
 	public void timeToGetMad() throws MackerIsMadException {
-		if (!events.isEmpty())
-			throw new MackerIsMadException(events);
+		if (!getEvents().isEmpty()) {
+			throw new MackerIsMadException(getEvents());
+		}
 	}
 
 	public void clear() {
-		events = new LinkedList<MackerEvent>();
+		setEvents(new LinkedList<MackerEvent>());
 	}
 
 	public String toString() {
 		return "ThrowingListener";
 	}
-
-	private final RuleSeverity throwOnFirstThreshold, throwOnFinishThreshold;
-	private RuleSeverity maxSeverity;
-	private List<MackerEvent> events;
-	private boolean inUse;
+	
+	private List<MackerEvent> getEvents() {
+		return this.events;
+	}
+	
+	private void setEvents(final List<MackerEvent> events) {
+		this.events = events;
+	}
+	
+	private boolean isInUse() {
+		return this.inUse;
+	}
+	
+	private void setInUse(final boolean inUse) {
+		this.inUse = inUse;
+	}
+	
+	private RuleSeverity getMaxSeverity() {
+		return this.maxSeverity;
+	}
+	
+	private void setMaxSeverity(final RuleSeverity maxSeverity) {
+		this.maxSeverity = maxSeverity;
+	}
+	
+	private RuleSeverity getThrowOnFinishThreshold() {
+		return this.throwOnFinishThreshold;
+	}
+	
+	private RuleSeverity getThrowOnFirstThreshold() {
+		return this.throwOnFirstThreshold;
+	}
 }

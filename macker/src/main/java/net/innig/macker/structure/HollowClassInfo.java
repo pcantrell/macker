@@ -26,15 +26,21 @@ import java.util.Set;
 
 /**
  * Holds a class name, and lazily loads other attributes.
+ * 
+ * @author Paul Cantrell
  */
 public class HollowClassInfo extends AbstractClassInfo {
-	public HollowClassInfo(ClassManager classManager, String className) {
+	
+	private String className;
+	private ClassInfo actual;
+
+	public HollowClassInfo(final ClassManager classManager, final String className) {
 		super(classManager);
 		this.className = className;
 	}
 
 	public String getFullName() {
-		return className;
+		return this.className;
 	}
 
 	public boolean isComplete() {
@@ -78,11 +84,9 @@ public class HollowClassInfo extends AbstractClassInfo {
 	}
 
 	private ClassInfo getActual() {
-		if (actual == null)
-			actual = getClassManager().loadClassInfo(className);
-		return actual;
+		if (this.actual == null) {
+			this.actual = getClassManager().loadClassInfo(this.className);
+		}
+		return this.actual;
 	}
-
-	private String className;
-	private ClassInfo actual;
 }

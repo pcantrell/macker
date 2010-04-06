@@ -24,28 +24,42 @@ import net.innig.macker.structure.ClassInfo;
 import net.innig.macker.util.IncludeExcludeLogic;
 import net.innig.macker.util.IncludeExcludeNode;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class CompositePattern implements Pattern {
 	// --------------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------------
 
-	public static Pattern create(CompositePatternType type, Pattern head, Pattern child, Pattern next) {
-		if (type == null)
-			throw new NullPointerException("type parameter cannot be null");
+	public static Pattern create(final CompositePatternType type,
+			final Pattern head, final Pattern child, final Pattern next) {
+		if (type == null) {
+			throw new IllegalArgumentException("type parameter cannot be null");
+		}
 
-		if (head == null && child == null && next == null)
-			return (type == CompositePatternType.INCLUDE) ? Pattern.ALL : Pattern.NONE;
-		if (head == null && child == null)
+		if (head == null && child == null && next == null) {
+			if (type == CompositePatternType.INCLUDE) {
+				return Pattern.ALL;
+			}
+			
+			return Pattern.NONE;
+		}
+		if (head == null && child == null) {
 			return create(type, next, null, null);
-		if (head == null)
+		}
+		if (head == null) {
 			return create(type, child, null, next);
-		if (type == CompositePatternType.INCLUDE && child == null && next == null)
+		}
+		if (type == CompositePatternType.INCLUDE && child == null && next == null) {
 			return head;
+		}
 
 		return new CompositePattern(type, head, child, next);
 	}
 
-	private CompositePattern(CompositePatternType type, Pattern head, Pattern child, Pattern next) {
+	private CompositePattern(final CompositePatternType type,
+			final Pattern head, final Pattern child, final Pattern next) {
 		this.type = type;
 		this.head = head;
 		this.child = child;
@@ -57,50 +71,56 @@ public final class CompositePattern implements Pattern {
 	// --------------------------------------------------------------------------
 
 	public CompositePatternType getType() {
-		return type;
+		return this.type;
 	}
 
 	public Pattern getHead() {
-		return head;
+		return this.head;
 	}
 
 	public Pattern getChild() {
-		return child;
+		return this.child;
 	}
 
 	public Pattern getNext() {
-		return next;
+		return this.next;
 	}
 
 	private final CompositePatternType type;
-	private final Pattern head, child, next;
+	private final Pattern head;
+	private final Pattern child;
+	private final Pattern next;
 
 	// --------------------------------------------------------------------------
 	// Evaluation
 	// --------------------------------------------------------------------------
 
-	public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+	public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
 		return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, classInfo));
 	}
 
 	private static IncludeExcludeNode makeIncludeExcludeNode(final Pattern pat, final EvaluationContext context,
 			final ClassInfo classInfo) {
-		if (pat == null)
+		if (pat == null) {
 			return null;
+		}
 
 		final boolean include;
-		final Pattern head, child, next;
+		final Pattern head;
+		final Pattern child;
+		final Pattern next;
 
 		if (pat instanceof CompositePattern) {
-			CompositePattern compositePat = (CompositePattern) pat;
-			include = (compositePat.getType() == CompositePatternType.INCLUDE);
+			final CompositePattern compositePat = (CompositePattern) pat;
+			include = compositePat.getType() == CompositePatternType.INCLUDE;
 			head = compositePat.getHead();
 			child = compositePat.getChild();
 			next = compositePat.getNext();
 		} else {
 			include = true;
 			head = pat;
-			child = next = null;
+			child = null;
+			next = null;
 		}
 
 		return new IncludeExcludeNode() {
@@ -127,6 +147,8 @@ public final class CompositePattern implements Pattern {
 	// --------------------------------------------------------------------------
 
 	public String toString() {
-		return "(" + type + ' ' + head + (child == null ? "" : " + " + child) + ')' + (next == null ? "" : ", " + next);
+		return "(" + getType() + ' ' + getHead()
+				+ (getChild() == null ? "" : " + " + getChild()) + ')'
+				+ (getNext() == null ? "" : ", " + getNext());
 	}
 }

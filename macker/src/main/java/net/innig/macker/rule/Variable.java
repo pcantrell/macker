@@ -23,32 +23,38 @@ package net.innig.macker.rule;
 import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.structure.ClassManager;
 
+/**
+ * @author Paul Cantrell
+ */
 public class Variable extends Rule {
-	public Variable(RuleSet parent, String name, String value) {
+	
+	private String variableName;
+	private String value;
+	
+	public Variable(final RuleSet parent, final String name, final String value) {
 		super(parent);
 		setVariableName(name);
 		setValue(value);
 	}
 
 	public String getVariableName() {
-		return variableName;
+		return this.variableName;
 	}
 
-	public void setVariableName(String variableName) {
+	public void setVariableName(final String variableName) {
 		this.variableName = variableName;
 	}
 
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 
-	public void check(EvaluationContext context, ClassManager classes) throws RulesException, MackerIsMadException {
+	public void check(final EvaluationContext context, final ClassManager classes)
+			throws RulesException, MackerIsMadException {
 		context.setVariableValue(getVariableName(), getValue());
 	}
-
-	private String variableName, value;
 }

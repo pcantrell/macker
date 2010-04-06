@@ -20,6 +20,10 @@
 
 package net.innig.macker.rule.filter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import net.innig.macker.rule.EvaluationContext;
 import net.innig.macker.rule.Pattern;
 import net.innig.macker.rule.RuleSet;
@@ -27,37 +31,48 @@ import net.innig.macker.rule.RulesException;
 import net.innig.macker.structure.AccessModifier;
 import net.innig.macker.structure.ClassInfo;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * @author Paul Cantrell
+ */
 public class AccessFilter implements Filter {
-	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+	public Pattern createPattern(final RuleSet ruleSet, final List<Pattern> params, final Map<String, String> options)
 			throws RulesException {
-		if (params.size() != 0)
+		if (params.size() != 0) {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects no parameters, but has " + params.size());
+		}
 
-		String maxS = options.get("max"), minS = options.get("min");
-		final AccessModifier max = (maxS != null) ? AccessModifier.valueOf(maxS.toUpperCase()) : AccessModifier.PUBLIC, min = (minS != null) ? AccessModifier
-				.valueOf(minS.toUpperCase())
-				: AccessModifier.PRIVATE;
+		final String maxS = options.get("max");
+		final String minS = options.get("min");
+		final AccessModifier max = getAccessModifier(maxS, AccessModifier.PUBLIC);
+		final AccessModifier min = getAccessModifier(minS, AccessModifier.PRIVATE);
 
-		if (maxS == null && minS == null)
+		if (maxS == null && minS == null) {
 			throw new FilterSyntaxException(this, options.get("filter")
 					+ " requires a \"max\" or \"min\" option (or both)");
-		if (max == null && maxS != null)
+		}
+		if (max == null && maxS != null) {
 			throw new FilterSyntaxException(this, '"' + maxS + "\" is not a valid access level; expected one of: "
 					+ Arrays.asList(AccessModifier.values()));
-		if (min == null && minS != null)
+		}
+		if (min == null && minS != null) {
 			throw new FilterSyntaxException(this, '"' + minS + "\" is not a valid access level; expected one of: "
 					+ Arrays.asList(AccessModifier.values()));
+		}
 
 		return new Pattern() {
-			public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+			public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
 				return classInfo.getAccessModifier().compareTo(min) >= 0
 						&& classInfo.getAccessModifier().compareTo(max) <= 0;
 			}
 		};
+	}
+	
+	private AccessModifier getAccessModifier(final String value, final AccessModifier valueIfNull) {
+		if (value == null) {
+			return valueIfNull;
+		}
+		
+		return AccessModifier.valueOf(value.toUpperCase());
 	}
 }

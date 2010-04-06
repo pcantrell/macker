@@ -22,10 +22,17 @@ package net.innig.macker.rule;
 
 import net.innig.util.EnumeratedType;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class AccessRuleType extends EnumeratedType {
-	public static final AccessRuleType ALLOW = new AccessRuleType("allow"), DENY = new AccessRuleType("deny");
+	
+	private static final long serialVersionUID = -2283793245002944532L;
 
-	private AccessRuleType(String name) {
+	public static final AccessRuleType ALLOW = new AccessRuleType("allow");
+	public static final AccessRuleType DENY = new AccessRuleType("deny");
+
+	private AccessRuleType(final String name) {
 		super(name);
 	}
 }

@@ -24,28 +24,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Paul Cantrell
+ */
 public class MackerIsMadException extends Exception {
+	
+	private static final long serialVersionUID = -6422294499450829625L;
+
+	private static final String BASE_MESSAGE = "Macker rules checking failed";
+	
+	private final List<MackerEvent> events;
+	
 	public MackerIsMadException() {
 		super();
-		events = null;
+		this.events = null;
 	}
 
-	public MackerIsMadException(MackerEvent event) {
+	public MackerIsMadException(final MackerEvent event) {
 		this(Collections.singletonList(event));
 	}
 
-	public MackerIsMadException(List<MackerEvent> events) {
+	public MackerIsMadException(final List<MackerEvent> events) {
 		super(BASE_MESSAGE);
-		if (events.isEmpty())
+		if (events.isEmpty()) {
 			throw new IllegalArgumentException("Macker needs a non-empty list of things to be mad about.");
+		}
 		this.events = Collections.unmodifiableList(new ArrayList<MackerEvent>(events));
 	}
 
 	public List<MackerEvent> getEvents() {
-		return events;
+		return this.events;
 	}
-
-	private final List<MackerEvent> events;
-
-	private static final String BASE_MESSAGE = "Macker rules checking failed";
 }

@@ -30,17 +30,22 @@ import net.innig.macker.structure.PrimitiveTypeInfo;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Paul Cantrell
+ */
 public class FinalFilter implements Filter {
-	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
+	
+	public Pattern createPattern(final RuleSet ruleSet, final List<Pattern> params, final Map<String, String> options)
 			throws RulesException {
-		if (params.size() != 0)
+		if (params.size() != 0) {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects no parameters, but has " + params.size());
+		}
 		return FINAL_PATTERN;
 	}
 
-	private final Pattern FINAL_PATTERN = new Pattern() {
-		public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
+	private static final Pattern FINAL_PATTERN = new Pattern() {
+		public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
 			return classInfo.isFinal() && !(classInfo instanceof PrimitiveTypeInfo);
 		}
 	};

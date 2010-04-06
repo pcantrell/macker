@@ -23,25 +23,31 @@ package net.innig.macker.rule;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class VariableParser {
-	public static String parse(EvaluationContext context, String inS) throws UndeclaredVariableException {
-		StringBuffer outS = new StringBuffer();
-		Matcher varMatcher = var.matcher(inS);
+	
+	public static String parse(final EvaluationContext context, final String inS) throws UndeclaredVariableException {
+		final StringBuffer outS = new StringBuffer();
+		final Matcher varMatcher = var.matcher(inS);
 		for (int pos = 0; pos >= 0;) {
-			boolean hasAnotherVar = varMatcher.find(pos);
-			int expEnd = hasAnotherVar ? varMatcher.start() : inS.length();
+			final boolean hasAnotherVar = varMatcher.find(pos);
+			final int expEnd = hasAnotherVar ? varMatcher.start() : inS.length();
 
-			if (pos < expEnd)
+			if (pos < expEnd) {
 				outS.append(inS.substring(pos, expEnd));
-			if (hasAnotherVar)
+			}
+			if (hasAnotherVar) {
 				outS.append(context.getVariableValue(varMatcher.group(1)));
+			}
 
 			pos = hasAnotherVar ? varMatcher.end() : -1;
 		}
 		return outS.toString();
 	}
 
-	static private Pattern var = Pattern.compile("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}");
+	private static Pattern var = Pattern.compile("\\$\\{([A-Za-z0-9_\\.\\-]+)\\}");
 
 	private VariableParser() {
 	}

@@ -25,8 +25,21 @@ import net.innig.macker.structure.ClassInfo;
 
 import java.util.List;
 
+/**
+ * @author Paul Cantrell
+ */
 public class AccessRuleViolation extends MackerEvent {
-	public AccessRuleViolation(AccessRule accessRule, ClassInfo from, ClassInfo to, List<String> messages) {
+	
+	private static final long serialVersionUID = -2600252287009857450L;
+	
+	private static final String CR = System.getProperty("line.separator");
+
+	private final AccessRule accessRule;
+	private final ClassInfo from;
+	private final ClassInfo to;
+	
+	public AccessRuleViolation(final AccessRule accessRule, final ClassInfo from,
+			final ClassInfo to, final List<String> messages) {
 		super(accessRule, "Illegal reference" + CR // ! hokey, hokey, hokey!
 				+ "  from " + from + CR + "    to " + to, messages);
 		this.accessRule = accessRule;
@@ -35,18 +48,14 @@ public class AccessRuleViolation extends MackerEvent {
 	}
 
 	public final AccessRule getAccessRule() {
-		return accessRule;
+		return this.accessRule;
 	}
 
 	public final ClassInfo getFrom() {
-		return from;
+		return this.from;
 	}
 
 	public final ClassInfo getTo() {
-		return to;
+		return this.to;
 	}
-
-	private final AccessRule accessRule;
-	private final ClassInfo from, to;
-	private static final String CR = System.getProperty("line.separator");
 }

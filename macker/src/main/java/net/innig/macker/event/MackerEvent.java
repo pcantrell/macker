@@ -28,8 +28,18 @@ import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 
+/**
+ * @author Paul Cantrell
+ */
 public class MackerEvent extends EventObject {
-	public MackerEvent(Rule rule, String description, List<String> messages) {
+
+	private static final long serialVersionUID = -8361984457903302252L;
+	
+	private final Rule rule;
+	private final String description;
+	private final List<String> messages;
+
+	public MackerEvent(final Rule rule, final String description, final List<String> messages) {
 		super(rule);
 		this.rule = rule;
 		this.description = description;
@@ -37,15 +47,15 @@ public class MackerEvent extends EventObject {
 	}
 
 	public Rule getRule() {
-		return rule;
+		return this.rule;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public List<String> getMessages() {
-		return messages;
+		return this.messages;
 	}
 
 	public String toString() {
@@ -55,23 +65,20 @@ public class MackerEvent extends EventObject {
 	public String toStringVerbose() {
 		// ! This is completely crappy -- the PrintingListener probably should
 		// be the one to deal with this
-		final String CR = System.getProperty("line.separator");
-		StringBuffer s = new StringBuffer();
-		if (rule.getSeverity() != RuleSeverity.ERROR) {
-			s.append(rule.getSeverity().getName().toUpperCase());
+		final String cr = System.getProperty("line.separator");
+		final StringBuffer s = new StringBuffer();
+		if (getRule().getSeverity() != RuleSeverity.ERROR) {
+			s.append(getRule().getSeverity().getName().toUpperCase());
 			s.append(": ");
 		}
-		for (String msg : messages) {
+		for (String msg : getMessages()) {
 			s.append(msg);
-			s.append(CR);
+			s.append(cr);
 		}
-		if (getDescription() != null)
+		if (getDescription() != null) {
 			s.append(getDescription());
-		s.append(CR);
+		}
+		s.append(cr);
 		return s.toString();
 	}
-
-	private final Rule rule;
-	private final String description;
-	private final List<String> messages;
 }

@@ -22,11 +22,17 @@ package net.innig.macker.rule;
 
 import net.innig.util.EnumeratedType;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class CompositePatternType extends EnumeratedType {
-	public static final CompositePatternType INCLUDE = new CompositePatternType("include"),
-			EXCLUDE = new CompositePatternType("exclude");
+	
+	private static final long serialVersionUID = 4333085842792460629L;
 
-	private CompositePatternType(String name) {
+	public static final CompositePatternType INCLUDE = new CompositePatternType("include");
+	public static final CompositePatternType EXCLUDE = new CompositePatternType("exclude");
+
+	private CompositePatternType(final String name) {
 		super(name);
 	}
 }
