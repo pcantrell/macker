@@ -6,7 +6,52 @@
 	<version>0.4.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Macker</name>
-
+	<licenses>
+		<license>
+			<name>GNU General Public License version 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<description>Build-time architectural rule checking utility for Java developers</description>
+	<url>http://macker.sourceforge.net/</url>
+	<issueManagement>
+		<system>tracker</system>
+		<url>https://sourceforge.net/tracker/?group_id=55296</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>melquiades</id>
+			<name>Paul Cantrell</name>
+			<url>htp://www.innig.net/</url>
+			<roles>
+				<role>Original Author</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>barredijkstra</id>
+			<name>Barre Dijkstra</name>
+			<email>barredijkstra@users.sourceforge.net</email>
+			<url>http://macker.sourceforge.net/</url>
+			<timezone>GMT+1</timezone>
+			<roles>
+				<role>Project Lead</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>litpho</id>
+			<name>Jasper de Vries</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<scm>
+		<connection>svn</connection>
+		<url>https://macker.svn.sourceforge.net/svnroot/macker</url>
+	</scm>
 	<build>
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
 		<testSourceDirectory>${basedir}/test/java</testSourceDirectory>

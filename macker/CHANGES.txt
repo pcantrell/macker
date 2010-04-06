@@ -1,5 +1,9 @@
 VERSION HISTORY
 
+version 0.4.3:
+	- Moved from Ant to Maven for building Macker, including refactoring of the source directory structure and dependencies
+	- Removed dependencies on sweetxml and innig-util
+
 version 0.4.2:
     - HTML report formatting with supporting Ant task
 
