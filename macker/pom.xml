@@ -53,9 +53,6 @@
 		<url>https://macker.svn.sourceforge.net/svnroot/macker</url>
 	</scm>
 	<build>
-		<sourceDirectory>${basedir}/src/java</sourceDirectory>
-		<testSourceDirectory>${basedir}/test/java</testSourceDirectory>
-
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -111,13 +108,6 @@
 	</reporting>
 
 	<dependencies>
-		<dependency>
-			<groupId>innig</groupId>
-			<artifactId>innig-util</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/innig-util.jar</systemPath>
-		</dependency>
 		<dependency>
 			<groupId>net.innig.sweetxml</groupId>
 			<artifactId>sweetxml</artifactId>
