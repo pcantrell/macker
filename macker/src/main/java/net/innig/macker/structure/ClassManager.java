@@ -140,7 +140,7 @@ public class ClassManager {
 	 * @param classInfo The new {@link ClassInfo} for the class to replace.
 	 */
 	private void replaceClass(final ClassInfo classInfo) {
-		getAllClasses().add(classInfo);
+		this.allClasses.add(classInfo);
 		getClassNameToInfo().put(classInfo.getFullClassName(), classInfo);
 	}
 
