@@ -22,6 +22,8 @@ package net.innig.macker.structure;
 
 /**
  * Java access modifiers for classes and members. Ordered by increasing visibility.
+ * 
+ * @author Paul Cantrell
  */
 public enum AccessModifier {
 	PRIVATE, PACKAGE, PROTECTED, PUBLIC;

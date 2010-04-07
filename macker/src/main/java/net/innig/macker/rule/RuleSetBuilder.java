@@ -230,8 +230,11 @@ public class RuleSetBuilder {
 		if ("include".equals(patternElem.getName())) {
 			patType = CompositePatternType.INCLUDE;
 		} else if ("exclude".equals(patternElem.getName())) {
-			patType = (filterName == null) ? CompositePatternType.EXCLUDE
-					: CompositePatternType.INCLUDE;
+			if (filterName == null) {
+				patType = CompositePatternType.EXCLUDE;
+			} else {
+				patType = CompositePatternType.INCLUDE;
+			}
 		} else if (isTopElem) {
 			patType = CompositePatternType.INCLUDE;
 		} else {
@@ -293,9 +296,13 @@ public class RuleSetBuilder {
 			options.remove("regex");
 
 			final Filter filter = FilterFinder.findFilter(filterName);
-			head = filter.createPattern(ruleSet,
-					(head == null) ? new ArrayList<Pattern>() : Collections
-							.singletonList(head), options);
+			List<Pattern> params;
+			if (head == null) {
+				params = new ArrayList<Pattern>();
+			} else {
+				params = Collections.singletonList(head);
+			}
+			head = filter.createPattern(ruleSet, params, options);
 
 			if ("exclude".equals(patternElem.getName())) {
 				head = CompositePattern.create(CompositePatternType.EXCLUDE,
@@ -422,8 +429,8 @@ public class RuleSetBuilder {
 		if (value == null) {
 			value = elem.getAttributeValue("regex");
 			if (value != null) {
-				System.err
-					.println("WARNING: The \"regex\" attribute is deprecated, and will be removed in v1.0.  Use \"class\" instead");
+				System.err.println("WARNING: The \"regex\" attribute is deprecated, and will be removed in v1.0." +
+					"  Use \"class\" instead");
 			}
 		}
 		return value;

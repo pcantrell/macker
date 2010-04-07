@@ -22,8 +22,14 @@ package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.RulesException;
 
+/**
+ * @author Paul Cantrell
+ */
 public class NoSuchFilterException extends RulesException {
-	public NoSuchFilterException(String filterName) {
+
+	private static final long serialVersionUID = -5333197966910932283L;
+
+	public NoSuchFilterException(final String filterName) {
 		super("Filter named \"" + filterName + "\" not found");
 	}
 }

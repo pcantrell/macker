@@ -25,12 +25,15 @@ import net.innig.macker.event.MackerIsMadException;
 import net.innig.macker.event.MessageEvent;
 import net.innig.macker.structure.ClassManager;
 
+/**
+ * @author Paul Cantrell
+ */
 public class Message extends Rule {
 	// --------------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------------
 
-	public Message(RuleSet parent, String message) {
+	public Message(final RuleSet parent, final String message) {
 		super(parent);
 		this.message = message;
 		setSeverity(RuleSeverity.INFO);
@@ -41,10 +44,10 @@ public class Message extends Rule {
 	// --------------------------------------------------------------------------
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
@@ -54,8 +57,8 @@ public class Message extends Rule {
 	// Evaluation
 	// --------------------------------------------------------------------------
 
-	public void check(EvaluationContext context, ClassManager classes) throws RulesException, MackerIsMadException,
-			ListenerException {
+	public void check(final EvaluationContext context, final ClassManager classes)
+			throws RulesException, MackerIsMadException, ListenerException {
 		context.broadcastEvent(new MessageEvent(this, VariableParser.parse(context, getMessage())));
 	}
 }

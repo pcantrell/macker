@@ -28,27 +28,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class MackerRegex {
 	// --------------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------------
 
-	public MackerRegex(String regexStr) throws MackerRegexSyntaxException {
-		this(regexStr, true);
+	public MackerRegex(final String patternString) throws MackerRegexSyntaxException {
+		this(patternString, true);
 	}
 
-	public MackerRegex(String regexStr, boolean allowParts) throws MackerRegexSyntaxException {
-		if (regexStr == null) {
-			throw new IllegalArgumentException("regexStr == null");
+	public MackerRegex(final String patternString, final boolean allowParts) throws MackerRegexSyntaxException {
+		if (patternString == null) {
+			throw new IllegalArgumentException("patternString == null");
 		}
 
-		this.regexStr = regexStr;
-		parts = null;
-		regex = null;
-		prevVarValues = new HashMap<String, String>();
+		this.patternString = patternString;
+		setParts(null);
+		setRegex(null);
+		setPrevVarValues(new HashMap<String, String>());
 
-		if (!(allowParts ? allowable : allowableNoParts).matcher(regexStr).matches()) {
-			throw new MackerRegexSyntaxException(regexStr);
+		final Pattern pattern;
+		if (allowParts) {
+			pattern = allowable;
+		} else {
+			pattern = allowableNoParts;
+		}
+		
+		if (!pattern.matcher(patternString).matches()) {
+			throw new MackerRegexSyntaxException(patternString);
 		}
 	}
 
@@ -57,66 +67,79 @@ public final class MackerRegex {
 	// --------------------------------------------------------------------------
 
 	public String getPatternString() {
-		return regexStr;
+		return this.patternString;
 	}
 
-	private final String regexStr;
+	private final String patternString;
 
 	// --------------------------------------------------------------------------
 	// Evaluation
 	// --------------------------------------------------------------------------
 
-	public boolean matches(EvaluationContext context, String s) throws UndeclaredVariableException,
+	public boolean matches(final EvaluationContext context, final String s) throws UndeclaredVariableException,
 			MackerRegexSyntaxException {
 		return getMatch(context, s) != null;
 	}
 
-	public String getMatch(EvaluationContext context, String s) throws UndeclaredVariableException,
+	public String getMatch(final EvaluationContext context, final String s) throws UndeclaredVariableException,
 			MackerRegexSyntaxException {
 		parseExpr(context);
-		Boolean match = matchCache.get(s);
+		Boolean match = getMatchCache().get(s);
 		if (match != null) {
-			return match ? matchResultCache.get(s) : null;
+			if (match) {
+				return getMatchResultCache().get(s);
+			}
+			
+			return null;
 		}
 
-		Matcher matcher = regex.matcher('.' + s);
+		final Matcher matcher = getRegex().matcher('.' + s);
 		match = matcher.matches();
-		matchCache.put(s, match);
+		getMatchCache().put(s, match);
 		if (match) {
-			String matchResult = matcher.group(matcher.groupCount());
-			matchResultCache.put(s, matchResult);
+			final String matchResult = matcher.group(matcher.groupCount());
+			getMatchResultCache().put(s, matchResult);
 			return matchResult;
 		}
 		
 		return null;
 	}
 
-	private void parseExpr(EvaluationContext context) throws UndeclaredVariableException, MackerRegexSyntaxException {
-		if (parts == null) {
-			parts = new ArrayList<Part>();
-			Matcher varMatcher = var.matcher(regexStr);
+	private void parseExpr(final EvaluationContext context)
+			throws UndeclaredVariableException, MackerRegexSyntaxException {
+		if (getParts() == null) {
+			setParts(new ArrayList<Part>());
+			final Matcher varMatcher = var.matcher(getPatternString());
 			for (int pos = 0; pos >= 0;) {
-				boolean hasAnotherVar = varMatcher.find(pos);
-				int expEnd = hasAnotherVar ? varMatcher.start() : regexStr.length();
+				final boolean hasAnotherVar = varMatcher.find(pos);
+				final int expEnd;
+				if (hasAnotherVar) {
+					expEnd = varMatcher.start();
+				} else {
+					expEnd = getPatternString().length();
+				}
 
 				if (pos < expEnd) {
-					parts.add(new ExpPart(parseSubexpr(regexStr.substring(pos, expEnd))));
+					getParts().add(new ExpPart(parseSubexpr(getPatternString().substring(pos, expEnd))));
 				}
 				if (hasAnotherVar) {
-					parts.add(new VarPart(varMatcher.group(1)));
+					getParts().add(new VarPart(varMatcher.group(1)));
 				}
 
-				pos = hasAnotherVar ? varMatcher.end() : -1;
+				pos = -1;
+				if (hasAnotherVar) {
+					pos = varMatcher.end();
+				}
 			}
 		}
 
 		// Building the regexp is expensive; there's no point in doing it if we
 		// already have one cached, and the relevant variables haven't changed
 
-		boolean changed = regex == null;
-		for (Map.Entry<String, String> entry : prevVarValues.entrySet()) {
-			String name = entry.getKey();
-			String value = entry.getValue();
+		boolean changed = getRegex() == null;
+		for (Map.Entry<String, String> entry : getPrevVarValues().entrySet()) {
+			final String name = entry.getKey();
+			final String value = entry.getValue();
 			if (!context.getVariableValue(name).equals(value)) {
 				changed = true;
 				break;
@@ -124,35 +147,35 @@ public final class MackerRegex {
 		}
 
 		if (changed) {
-			StringBuffer builtRegexStr = new StringBuffer("^\\.?");
-			for (Part part : parts) {
+			final StringBuffer builtRegexStr = new StringBuffer("^\\.?");
+			for (Part part : getParts()) {
 				if (part instanceof VarPart) {
-					String varName = ((VarPart) part).varName;
-					String varValue = context.getVariableValue(varName);
-					prevVarValues.put(varName, varValue);
+					final String varName = ((VarPart) part).getVarName();
+					final String varValue = context.getVariableValue(varName);
+					getPrevVarValues().put(varName, varValue);
 					builtRegexStr.append(parseSubexpr(varValue));
 				} else if (part instanceof ExpPart) {
-					builtRegexStr.append(((ExpPart) part).exp);
+					builtRegexStr.append(((ExpPart) part).getExp());
 				}
 			}
 			builtRegexStr.append('$');
 
 			try {
-				regex = Pattern.compile(builtRegexStr.toString());
+				setRegex(Pattern.compile(builtRegexStr.toString()));
 			} catch (PatternSyntaxException pse) {
 				System.out.println("builtRegexStr = " + builtRegexStr);
-				throw new MackerRegexSyntaxException(regexStr, pse);
+				throw new MackerRegexSyntaxException(getPatternString(), pse);
 			}
 
 			// ! if(???)
-			// ! throw new MackerRegexSyntaxException(regexStr,
+			// ! throw new MackerRegexSyntaxException(patternString,
 			// "Too many parenthesized expressions");
-			matchCache = new HashMap<String, Boolean>();
-			matchResultCache = new HashMap<String, String>();
+			setMatchCache(new HashMap<String, Boolean>());
+			setMatchResultCache(new HashMap<String, String>());
 		}
 	}
 
-	private String parseSubexpr(String exp) {
+	private String parseSubexpr(final String exp) {
 		return exp.replace(".", "[\\.\\$]").replace("/", "\\.").replace("$", "\\$").replace("*", "\uFFFF").replace(
 				"\uFFFF\uFFFF", ".*").replace("\uFFFF", "[^\\.]*");
 	}
@@ -166,37 +189,46 @@ public final class MackerRegex {
 	private static Pattern allowable;
 	private static Pattern allowableNoParts;
 	static {
-		String varS = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
-		String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")" + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";
+		final String varS = "\\$\\{([A-Za-z0-9_\\.\\-]+)\\}";
+		final String partS = "(([A-Za-z_]|[\\(\\)]|\\*|" + varS + ")" + "([A-Za-z0-9_]|[\\(\\)]|\\*|" + varS + ")*)";
 		var = Pattern.compile(varS);
 		allowable = Pattern.compile("^([\\$\\./]?" + partS + ")+$");
 		allowableNoParts = Pattern.compile("^" + partS + "$");
 	}
 
-	private class Part {
+	/** Marker interface Part. */
+	private static interface Part {
 	}
 
-	private class VarPart extends Part {
-		public VarPart(String varName) {
+	private static class VarPart implements Part {
+		public VarPart(final String varName) {
 			this.varName = varName;
 		}
 
-		public String varName;
+		private final String varName;
 
 		public String toString() {
-			return "var(" + varName + ")";
+			return "var(" + getVarName() + ")";
+		}
+		
+		public String getVarName() {
+			return this.varName;
 		}
 	}
 
-	private class ExpPart extends Part {
-		public ExpPart(String exp) {
+	private static class ExpPart implements Part {
+		public ExpPart(final String exp) {
 			this.exp = exp;
 		}
 
-		public String exp;
+		private final String exp;
 
 		public String toString() {
-			return "exp(" + exp + ")";
+			return "exp(" + getExp() + ")";
+		}
+		
+		public String getExp() {
+			return this.exp;
 		}
 	}
 
@@ -205,6 +237,46 @@ public final class MackerRegex {
 	// --------------------------------------------------------------------------
 
 	public String toString() {
-		return '"' + regexStr + '"';
+		return '"' + getPatternString() + '"';
+	}
+	
+	private Map<String, Boolean> getMatchCache() {
+		return this.matchCache;
+	}
+	
+	private void setMatchCache(final Map<String, Boolean> matchCache) {
+		this.matchCache = matchCache;
+	}
+	
+	private Map<String, String> getMatchResultCache() {
+		return this.matchResultCache;
+	}
+	
+	private void setMatchResultCache(final Map<String, String> matchResultCache) {
+		this.matchResultCache = matchResultCache;
+	}
+	
+	private List<Part> getParts() {
+		return this.parts;
+	}
+	
+	private void setParts(final List<Part> parts) {
+		this.parts = parts;
+	}
+	
+	private Map<String, String> getPrevVarValues() {
+		return this.prevVarValues;
+	}
+	
+	private void setPrevVarValues(final Map<String, String> prevVarValues) {
+		this.prevVarValues = prevVarValues;
+	}
+	
+	private Pattern getRegex() {
+		return this.regex;
+	}
+	
+	private void setRegex(final Pattern regex) {
+		this.regex = regex;
 	}
 }

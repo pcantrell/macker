@@ -22,15 +22,21 @@ package net.innig.macker.rule.filter;
 
 import net.innig.macker.rule.RulesException;
 
+/**
+ * @author Paul Cantrell
+ */
 public class FilterSyntaxException extends RulesException {
-	public FilterSyntaxException(Filter filter, String message) {
+
+	private static final long serialVersionUID = -4672234174756322960L;
+	
+	private final Filter filter;
+
+	public FilterSyntaxException(final Filter filter, final String message) {
 		super(message);
 		this.filter = filter;
 	}
 
 	public Filter getFilter() {
-		return filter;
+		return this.filter;
 	}
-
-	private final Filter filter;
 }

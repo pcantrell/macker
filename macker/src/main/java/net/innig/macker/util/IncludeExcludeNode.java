@@ -22,12 +22,16 @@ package net.innig.macker.util;
 
 import net.innig.macker.rule.RulesException;
 
+/**
+ * @author Paul Cantrell
+ */
 public interface IncludeExcludeNode {
-	public boolean isInclude();
+	
+	boolean isInclude();
 
-	public boolean matches() throws RulesException;
+	boolean matches() throws RulesException;
 
-	public IncludeExcludeNode getChild();
+	IncludeExcludeNode getChild();
 
-	public IncludeExcludeNode getNext();
+	IncludeExcludeNode getNext();
 }

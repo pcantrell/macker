@@ -24,22 +24,26 @@ import org.jdom.Element;
 
 /**
  * Indicates a structural exception in rules specification XML.
+ * 
+ * @author Paul Cantrell
  */
-
 public class RulesDocumentException extends RulesException {
-	public RulesDocumentException(Exception e) {
+
+	private static final long serialVersionUID = -7949392677017120131L;
+	
+	private final Element element;
+
+	public RulesDocumentException(final Exception e) {
 		super("Error in rules document XML", e);
-		element = null;
+		this.element = null;
 	}
 
-	public RulesDocumentException(Element element, String message) {
+	public RulesDocumentException(final Element element, final String message) {
 		super("Error in rules document XML: " + message + " (Offending element: " + element + ')');
 		this.element = element;
 	}
 
 	public final Element getElement() {
-		return element;
+		return this.element;
 	}
-
-	private final Element element;
 }

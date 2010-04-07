@@ -28,8 +28,8 @@ import java.util.Arrays;
 public enum RuleSeverity {
 	DEBUG("debug"), INFO("info"), WARNING("warnings"), ERROR("errors");
 
-	public static RuleSeverity fromName(String name) throws IllegalArgumentException {
-		RuleSeverity severity = RuleSeverity.valueOf(name.toUpperCase());
+	public static RuleSeverity fromName(final String name) throws IllegalArgumentException {
+		final RuleSeverity severity = RuleSeverity.valueOf(name.toUpperCase());
 		if (severity == null) {
 			throw new IllegalArgumentException("Unknown severity level \"" + name + "\" (expected one of "
 					+ Arrays.toString(RuleSeverity.values()) + ")");
@@ -45,7 +45,7 @@ public enum RuleSeverity {
 		return this.plural;
 	}
 
-	private RuleSeverity(String plural) {
+	private RuleSeverity(final String plural) {
 		this.plural = plural;
 	}
 

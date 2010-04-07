@@ -41,12 +41,12 @@ public abstract class AbstractClassInfo implements ClassInfo {
 	}
 
 	public String getClassName() {
-		final String className = getFullName();
+		final String className = getFullClassName();
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
 	public String getPackageName() {
-		final String className = getFullName();
+		final String className = getFullClassName();
 		final int lastDotPos = className.lastIndexOf('.');
 		if (lastDotPos <= 0) {
 			return "";
@@ -90,14 +90,14 @@ public abstract class AbstractClassInfo implements ClassInfo {
 		if (!(that instanceof ClassInfo)) {
 			return false;
 		}
-		return getFullName().equals(((ClassInfo) that).getFullName());
+		return getFullClassName().equals(((ClassInfo) that).getFullClassName());
 	}
 
 	public final int hashCode() {
-		return getFullName().hashCode();
+		return getFullClassName().hashCode();
 	}
 
 	public String toString() {
-		return getFullName();
+		return getFullClassName();
 	}
 }

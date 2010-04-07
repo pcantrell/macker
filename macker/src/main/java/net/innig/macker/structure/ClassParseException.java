@@ -24,17 +24,22 @@ import org.apache.bcel.classfile.JavaClass;
 
 /**
  * A class file was found, but was unparsable.
+ * 
+ * @author Paul Cantrell
  */
 public class ClassParseException extends Exception {
-	public ClassParseException(String message) {
+
+	private static final long serialVersionUID = -5569141764651140271L;
+
+	public ClassParseException(final String message) {
 		super(message);
 	}
 
-	public ClassParseException(String message, JavaClass classFile) {
+	public ClassParseException(final String message, final JavaClass classFile) {
 		super(message + "\n" + classFile);
 	}
 
-	public ClassParseException(ClassFormatError cfe) {
+	public ClassParseException(final ClassFormatError cfe) {
 		super(cfe);
 	}
 }

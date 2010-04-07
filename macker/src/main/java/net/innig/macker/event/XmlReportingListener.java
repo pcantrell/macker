@@ -163,7 +163,7 @@ public class XmlReportingListener implements MackerEventListener {
 		final Element fullElem = new Element("full-name");
 		final Element classElem = new Element("class");
 		final Element packElem = new Element("package");
-		fullElem.setText(classInfo.getFullName());
+		fullElem.setText(classInfo.getFullClassName());
 		classElem.setText(classInfo.getClassName());
 		packElem.setText(classInfo.getPackageName());
 		classInfoElem.addContent(fullElem);

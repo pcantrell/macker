@@ -24,15 +24,21 @@ import net.innig.macker.rule.ForEach;
 
 import java.util.ArrayList;
 
+/**
+ * @author Paul Cantrell
+ */
 public class ForEachEvent extends MackerEvent {
-	public ForEachEvent(ForEach forEach, String description) {
+
+	private static final long serialVersionUID = 7903655875130188455L;
+	
+	private ForEach forEach;
+
+	public ForEachEvent(final ForEach forEach, final String description) {
 		super(forEach, description, new ArrayList<String>());
 		this.forEach = forEach;
 	}
 
 	public ForEach getForEach() {
-		return forEach;
+		return this.forEach;
 	}
-
-	private ForEach forEach;
 }

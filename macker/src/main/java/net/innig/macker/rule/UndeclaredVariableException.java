@@ -20,8 +20,14 @@
 
 package net.innig.macker.rule;
 
+/**
+ * @author Paul Cantrell
+ */
 public class UndeclaredVariableException extends RulesException {
-	public UndeclaredVariableException(String variableName) {
+
+	private static final long serialVersionUID = 4482925884938801527L;
+
+	public UndeclaredVariableException(final String variableName) {
 		super("Variable named \"" + variableName + "\" not declared");
 	}
 }

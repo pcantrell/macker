@@ -22,15 +22,21 @@ package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
 
+/**
+ * @author Paul Cantrell
+ */
 public class ForEachIterationFinished extends ForEachEvent {
-	public ForEachIterationFinished(ForEach forEach, String varValue) {
+
+	private static final long serialVersionUID = 3899128844034999116L;
+	
+	private final String varValue;
+
+	public ForEachIterationFinished(final ForEach forEach, final String varValue) {
 		super(forEach, forEach.getVariableName() + " = " + varValue);
 		this.varValue = varValue;
 	}
 
 	public String getVariableValue() {
-		return varValue;
+		return this.varValue;
 	}
-
-	private final String varValue;
 }

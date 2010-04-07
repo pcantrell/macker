@@ -42,6 +42,21 @@ import org.apache.commons.io.IOUtils;
  * @author Paul Cantrell
  */
 public class ClassManager {
+	
+	/** Flag indicating if all referenced, external, classes could be resolved. */
+	private boolean incompleteClassWarning;
+	/** The ClassLoader to use. */
+	private ClassLoader classLoader;
+	/** Set holding all classes. */
+	private Set<ClassInfo> allClasses;
+	/** Set holding all primary classes. */
+	private Set<ClassInfo> primaryClasses;
+	/**
+	 * Map holding all {@link ClassInfo} instances, indexed by their fully qualified name.
+	 */
+	private Map<String, ClassInfo> classNameToInfo;
+	/** MultiMap holding all references between classes. */
+	private MultiMap<ClassInfo, ClassInfo> references;
 
 	/**
 	 * Create a new {@link ClassManager} instance.
@@ -49,11 +64,11 @@ public class ClassManager {
 	public ClassManager() {
 		// Trees make nice sorted output
 		final ClassInfoNameComparator classInfoNameComparator = new ClassInfoNameComparator();
-		allClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
-		primaryClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
-		classNameToInfo = new TreeMap<String, ClassInfo>();
-		references = new TreeMultiMap<ClassInfo, ClassInfo>(classInfoNameComparator, classInfoNameComparator);
-		classLoader = Thread.currentThread().getContextClassLoader();
+		this.allClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
+		this.primaryClasses = new TreeSet<ClassInfo>(classInfoNameComparator);
+		this.classNameToInfo = new TreeMap<String, ClassInfo>();
+		this.references = new TreeMultiMap<ClassInfo, ClassInfo>(classInfoNameComparator, classInfoNameComparator);
+		this.classLoader = Thread.currentThread().getContextClassLoader();
 
 		for (ClassInfo ci : PrimitiveTypeInfo.ALL) {
 			replaceClass(ci);
@@ -66,7 +81,7 @@ public class ClassManager {
 	 * @return The used ClassLoader.
 	 */
 	public ClassLoader getClassLoader() {
-		return classLoader;
+		return this.classLoader;
 	}
 
 	/**
@@ -74,7 +89,7 @@ public class ClassManager {
 	 * 
 	 * @param classLoader The ClassLoader to use.
 	 */
-	public void setClassLoader(ClassLoader classLoader) {
+	public void setClassLoader(final ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 
@@ -86,8 +101,8 @@ public class ClassManager {
 	 * @throws ClassParseException When the class couldn't be parsed.
 	 * @throws IOException When reading of the class failed.
 	 */
-	public ClassInfo readClass(File classFile) throws ClassParseException, IOException {
-		ClassInfo classInfo = new ParsedClassInfo(this, classFile);
+	public ClassInfo readClass(final File classFile) throws ClassParseException, IOException {
+		final ClassInfo classInfo = new ParsedClassInfo(this, classFile);
 		addClass(classInfo);
 		return classInfo;
 	}
@@ -100,8 +115,8 @@ public class ClassManager {
 	 * @throws ClassParseException When the class couldn't be parsed.
 	 * @throws IOException When reading of the class failed.
 	 */
-	public ClassInfo readClass(InputStream classFile) throws ClassParseException, IOException {
-		ClassInfo classInfo = new ParsedClassInfo(this, classFile);
+	public ClassInfo readClass(final InputStream classFile) throws ClassParseException, IOException {
+		final ClassInfo classInfo = new ParsedClassInfo(this, classFile);
 		addClass(classInfo);
 		return classInfo;
 	}
@@ -111,8 +126,8 @@ public class ClassManager {
 	 * 
 	 * @param classInfo The {@link ClassInfo} for the class to add.
 	 */
-	private void addClass(ClassInfo classInfo) {
-		ClassInfo existing = findClassInfo(classInfo.getFullName());
+	private void addClass(final ClassInfo classInfo) {
+		final ClassInfo existing = findClassInfo(classInfo.getFullClassName());
 		if (existing != null && !(existing instanceof HollowClassInfo)) {
 			throw new IllegalStateException("ClassManager already contains a class named " + classInfo);
 		}
@@ -124,9 +139,9 @@ public class ClassManager {
 	 * 
 	 * @param classInfo The new {@link ClassInfo} for the class to replace.
 	 */
-	private void replaceClass(ClassInfo classInfo) {
-		allClasses.add(classInfo);
-		classNameToInfo.put(classInfo.getFullName(), classInfo);
+	private void replaceClass(final ClassInfo classInfo) {
+		getAllClasses().add(classInfo);
+		getClassNameToInfo().put(classInfo.getFullClassName(), classInfo);
 	}
 
 	/**
@@ -144,10 +159,11 @@ public class ClassManager {
 				+ " cannot be a primary class, because it is a primitive type");
 		}
 		checkOwner(classInfo);
-		classInfo = findClassInfo(classInfo.getFullName()); // in case of hollow
-		primaryClasses.add(classInfo);
-		references.putAll(classInfo, classInfo.getReferences().keySet());
-		allClasses.addAll(classInfo.getReferences().keySet());
+		// in case of hollow
+		classInfo = findClassInfo(classInfo.getFullClassName());
+		getPrimaryClasses().add(classInfo);
+		getReferences().putAll(classInfo, classInfo.getReferences().keySet());
+		getAllClasses().addAll(classInfo.getReferences().keySet());
 	}
 
 	/**
@@ -156,7 +172,7 @@ public class ClassManager {
 	 * @return Unmodifiable set containing all loaded classes.
 	 */
 	public Set<ClassInfo> getAllClasses() {
-		return Collections.unmodifiableSet(allClasses);
+		return Collections.unmodifiableSet(this.allClasses);
 	}
 
 	/**
@@ -165,7 +181,7 @@ public class ClassManager {
 	 * @return Unmodifiable set containing all primary classes.
 	 */
 	public Set<ClassInfo> getPrimaryClasses() {
-		return Collections.unmodifiableSet(primaryClasses);
+		return Collections.unmodifiableSet(this.primaryClasses);
 	}
 
 	/**
@@ -174,7 +190,7 @@ public class ClassManager {
 	 * @return {@link MultiMap} containing all references.
 	 */
 	public MultiMap<ClassInfo, ClassInfo> getReferences() {
-		return InnigCollections.unmodifiableMultiMap(references);
+		return InnigCollections.unmodifiableMultiMap(this.references);
 	}
 
 	/**
@@ -183,7 +199,7 @@ public class ClassManager {
 	 * @param className The fully qualified class name.
 	 * @return The {@link ClassInfo} for the class.
 	 */
-	public ClassInfo getClassInfo(String className) {
+	public ClassInfo getClassInfo(final String className) {
 		ClassInfo classInfo = findClassInfo(className);
 		if (classInfo != null) {
 			return classInfo;
@@ -200,12 +216,13 @@ public class ClassManager {
 	 * @param className
 	 * @return
 	 */
-	ClassInfo loadClassInfo(String className) {
+	ClassInfo loadClassInfo(final String className) {
 		ClassInfo classInfo = findClassInfo(className);
 		if (classInfo == null || classInfo instanceof HollowClassInfo) {
-			classInfo = null; // don't use hollow!
-			String resourceName = ClassNameTranslator.classToResourceName(className);
-			InputStream classStream = classLoader.getResourceAsStream(resourceName);
+			// don't use hollow!
+			classInfo = null;
+			final String resourceName = ClassNameTranslator.classToResourceName(className);
+			final InputStream classStream = getClassLoader().getResourceAsStream(resourceName);
 
 			if (classStream == null) {
 				showIncompleteWarning();
@@ -234,8 +251,8 @@ public class ClassManager {
 		return classInfo;
 	}
 
-	private ClassInfo findClassInfo(String className) {
-		return classNameToInfo.get(className);
+	private ClassInfo findClassInfo(final String className) {
+		return getClassNameToInfo().get(className);
 	}
 
 	/**
@@ -244,7 +261,7 @@ public class ClassManager {
 	 * @param classInfo the {@link ClassInfo} of the class to check.
 	 * @throws IllegalStateException When the {@link ClassManager} is not managing the class.
 	 */
-	private void checkOwner(ClassInfo classInfo) throws IllegalStateException {
+	private void checkOwner(final ClassInfo classInfo) throws IllegalStateException {
 		if (classInfo.getClassManager() != this) {
 			throw new IllegalStateException("classInfo argument (" + classInfo
 					+ ") is not managed by this ClassManager");
@@ -255,26 +272,23 @@ public class ClassManager {
 	 * Show a warning on {@link System.out} that not all referenced classes can be found.
 	 */
 	private void showIncompleteWarning() {
-		if (!incompleteClassWarning) {
-			incompleteClassWarning = true;
+		if (!isIncompleteClassWarning()) {
+			setIncompleteClassWarning(true);
 			System.out.println("WARNING: Macker is unable to load some of the external classes"
 					+ " used by the primary classes (see warnings below).  Rules which"
 					+ " depend on attributes of these missing classes other than their" + " names will fail.");
 		}
 	}
-
-	/** Flag indicating if all referenced, external, classes could be resolved. */
-	private boolean incompleteClassWarning;
-	/** The ClassLoader to use. */
-	private ClassLoader classLoader;
-	/** Set holding all classes. */
-	private Set<ClassInfo> allClasses;
-	/** Set holding all primary classes. */
-	private Set<ClassInfo> primaryClasses;
-	/**
-	 * Map holding all {@link ClassInfo} instances, indexed by their fully qualified name.
-	 */
-	private Map<String, ClassInfo> classNameToInfo;
-	/** MultiMap holding all references between classes. */
-	private MultiMap<ClassInfo, ClassInfo> references;
+	
+	private Map<String, ClassInfo> getClassNameToInfo() {
+		return this.classNameToInfo;
+	}
+	
+	private boolean isIncompleteClassWarning() {
+		return this.incompleteClassWarning;
+	}
+	
+	private void setIncompleteClassWarning(final boolean incompleteClassWarning) {
+		this.incompleteClassWarning = incompleteClassWarning;
+	}
 }

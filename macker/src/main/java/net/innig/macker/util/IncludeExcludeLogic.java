@@ -22,18 +22,42 @@ package net.innig.macker.util;
 
 import net.innig.macker.rule.RulesException;
 
+/**
+ * @author Paul Cantrell
+ */
 public class IncludeExcludeLogic {
-	public static boolean apply(IncludeExcludeNode node) throws RulesException {
-		return applyNext(node, node.isInclude() ? false // include starts with
-				// all excluded, and
-				: true); // exclude starts with all included
+	
+	/**
+	 * Private constructor voor utility class.
+	 */
+	private IncludeExcludeLogic() {
 	}
 
-	private static boolean applyNext(IncludeExcludeNode node, boolean prevMatches) throws RulesException {
-		IncludeExcludeNode child = node.getChild(), next = node.getNext();
-		boolean curMatches = node.matches();
-		boolean matchesSoFar = node.isInclude() ? prevMatches || (curMatches && (child == null || apply(child)))
-				: prevMatches && (!curMatches || (child != null && apply(child)));
-		return (next == null) ? matchesSoFar : applyNext(next, matchesSoFar);
+	public static boolean apply(final IncludeExcludeNode node) throws RulesException {
+		// include starts with all excluded, and exclude starts with all included
+		boolean prevMatches = true;
+		if (node.isInclude()) {
+			prevMatches = false;
+		}
+		
+		return applyNext(node, prevMatches);
+	}
+
+	private static boolean applyNext(final IncludeExcludeNode node, final boolean prevMatches) throws RulesException {
+		final IncludeExcludeNode child = node.getChild();
+		final IncludeExcludeNode next = node.getNext();
+		final boolean curMatches = node.matches();
+		boolean matchesSoFar;
+		if (node.isInclude()) {
+			matchesSoFar = prevMatches || (curMatches && (child == null || apply(child)));
+		} else {
+			matchesSoFar = prevMatches && (!curMatches || (child != null && apply(child)));
+		}
+		
+		if (next == null) {
+			return matchesSoFar;
+		}
+		
+		return applyNext(next, matchesSoFar);
 	}
 }

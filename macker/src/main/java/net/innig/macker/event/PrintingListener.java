@@ -41,27 +41,27 @@ import java.util.Set;
  */
 public class PrintingListener implements MackerEventListener {
 
-	public PrintingListener(PrintWriter out) {
+	public PrintingListener(final PrintWriter out) {
 		this.writer = out;
 	}
 
-	public PrintingListener(Writer out) {
+	public PrintingListener(final Writer out) {
 		this.writer = new PrintWriter(out, true);
 	}
 
-	public PrintingListener(OutputStream out) {
+	public PrintingListener(final OutputStream out) {
 		this.writer = new PrintWriter(out, true);
 	}
 
-	public void setThreshold(RuleSeverity threshold) {
+	public void setThreshold(final RuleSeverity threshold) {
 		this.threshold = threshold;
 	}
 	
-	public void setMaxMessages(int maxMessages) {
+	public void setMaxMessages(final int maxMessages) {
 		this.maxMessages = maxMessages;
 	}
 
-	public void mackerStarted(RuleSet ruleSet) {
+	public void mackerStarted(final RuleSet ruleSet) {
 		if (ruleSet.getParent() == null || ruleSet.hasName()) {
 			getWriter().println();
 			getWriter().println("(Checking ruleset: " + ruleSet.getName() + " ...)");
@@ -69,16 +69,16 @@ public class PrintingListener implements MackerEventListener {
 		}
 	}
 
-	public void mackerFinished(RuleSet ruleSet) throws MackerIsMadException {
+	public void mackerFinished(final RuleSet ruleSet) throws MackerIsMadException {
 	}
 
-	public void mackerAborted(RuleSet ruleSet) {
+	public void mackerAborted(final RuleSet ruleSet) {
 	} // don't care
 
-	public void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException {
+	public void handleMackerEvent(final RuleSet ruleSet, final MackerEvent event) throws MackerIsMadException {
 		if (event instanceof ForEachEvent) {
 			if (event instanceof ForEachIterationStarted) {
-				ForEachIterationStarted iterStart = (ForEachIterationStarted) event;
+				final ForEachIterationStarted iterStart = (ForEachIterationStarted) event;
 				getWriter().print('(');
 				getWriter().print(iterStart.getForEach().getVariableName());
 				getWriter().print(": ");
@@ -109,10 +109,10 @@ public class PrintingListener implements MackerEventListener {
 	public void printSummary() {
 		// output looks like: "(2 errors, 1 warning)"
 		boolean firstSeverity = true;
-		List<RuleSeverity> severities = new ArrayList<RuleSeverity>(getEventsBySeverity().keySet());
+		final List<RuleSeverity> severities = new ArrayList<RuleSeverity>(getEventsBySeverity().keySet());
 		Collections.reverse(severities);
 		for (RuleSeverity severity : severities) {
-			Collection<MackerEvent> eventsForSev = getEventsBySeverity().get(severity);
+			final Collection<MackerEvent> eventsForSev = getEventsBySeverity().get(severity);
 			if (eventsForSev.size() > 0) {
 				if (firstSeverity) {
 					getWriter().print("(");
@@ -142,7 +142,7 @@ public class PrintingListener implements MackerEventListener {
 		return this.first;
 	}
 	
-	private void setFirst(boolean first) {
+	private void setFirst(final boolean first) {
 		this.first = first;
 	}
 	

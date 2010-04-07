@@ -27,15 +27,18 @@ import java.util.Set;
 /**
  * Class info for a class which Macker couldn't load. Attempts to get attributes other than the name throw
  * {@link IncompleteClassInfoException}.
+ * 
+ * @author Paul Cantrell
  */
 public class IncompleteClassInfo extends AbstractClassInfo {
-	IncompleteClassInfo(ClassManager classManager, String className) {
+
+	IncompleteClassInfo(final ClassManager classManager, final String className) {
 		super(classManager);
 		this.className = className;
 	}
 
-	public String getFullName() {
-		return className;
+	public String getFullClassName() {
+		return this.className;
 	}
 
 	public boolean isComplete() {
@@ -70,9 +73,9 @@ public class IncompleteClassInfo extends AbstractClassInfo {
 		throw newIncompleteException("resolve references from");
 	}
 
-	private IncompleteClassInfoException newIncompleteException(String action) {
-		return new IncompleteClassInfoException("Unable to " + action + " class " + className
-				+ ", because the class file could not be loaded." + " Make sure it is in Macker's classpath.");
+	private IncompleteClassInfoException newIncompleteException(final String action) {
+		return new IncompleteClassInfoException("Unable to " + action + " class " + getFullClassName()
+			+ ", because the class file could not be loaded." + " Make sure it is in Macker's classpath.");
 	}
 
 	private String className;

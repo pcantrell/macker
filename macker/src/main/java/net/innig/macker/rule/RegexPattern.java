@@ -22,13 +22,16 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
 
+/**
+ * @author Paul Cantrell
+ */
 public final class RegexPattern implements Pattern {
 	// --------------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------------
 
-	public RegexPattern(String regexStr) throws MackerRegexSyntaxException {
-		regex = new MackerRegex(regexStr);
+	public RegexPattern(final String regexStr) throws MackerRegexSyntaxException {
+		this.regex = new MackerRegex(regexStr);
 	}
 
 	// --------------------------------------------------------------------------
@@ -36,7 +39,7 @@ public final class RegexPattern implements Pattern {
 	// --------------------------------------------------------------------------
 
 	public MackerRegex getRegex() {
-		return regex;
+		return this.regex;
 	}
 
 	private final MackerRegex regex;
@@ -45,15 +48,15 @@ public final class RegexPattern implements Pattern {
 	// Evaluation
 	// --------------------------------------------------------------------------
 
-	public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException {
-		return regex.matches(context, classInfo.getFullName());
+	public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+		return getRegex().matches(context, classInfo.getFullClassName());
 	}
 
-	public String getMatch(EvaluationContext context, ClassInfo classInfo) throws RulesException {
-		return regex.getMatch(context, classInfo.getFullName());
+	public String getMatch(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+		return getRegex().getMatch(context, classInfo.getFullClassName());
 	}
 
 	public String toString() {
-		return regex.toString();
+		return getRegex().toString();
 	}
 }

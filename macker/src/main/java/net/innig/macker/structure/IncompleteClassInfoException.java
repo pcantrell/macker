@@ -23,10 +23,14 @@ package net.innig.macker.structure;
 /**
  * Macker needs attributes of a missing class.
  * 
+ * @author Paul Cantrell
  * @see IncompleteClassInfo
  */
 public class IncompleteClassInfoException extends UnsupportedOperationException {
-	public IncompleteClassInfoException(String message) {
+
+	private static final long serialVersionUID = 1L;
+
+	public IncompleteClassInfoException(final String message) {
 		super(message);
 	}
 }

@@ -26,33 +26,36 @@ import java.util.Set;
 
 /**
  * Information about a class's structure.
+ * 
+ * @author Paul Cantrell
  */
 public interface ClassInfo {
-	public ClassManager getClassManager();
+	
+	ClassManager getClassManager();
 
-	public boolean isComplete();
+	boolean isComplete();
 
-	public String getFullName();
+	String getFullClassName();
 
-	public String getClassName();
+	String getClassName();
 
-	public String getPackageName();
+	String getPackageName();
 
-	public boolean isInterface();
+	boolean isInterface();
 
-	public boolean isAbstract();
+	boolean isAbstract();
 
-	public boolean isFinal();
+	boolean isFinal();
 
-	public AccessModifier getAccessModifier();
+	AccessModifier getAccessModifier();
 
-	public ClassInfo getExtends();
+	ClassInfo getExtends();
 
-	public Set<ClassInfo> getImplements();
+	Set<ClassInfo> getImplements();
 
-	public Set<ClassInfo> getDirectSupertypes();
+	Set<ClassInfo> getDirectSupertypes();
 
-	public Set<ClassInfo> getSupertypes();
+	Set<ClassInfo> getSupertypes();
 
-	public MultiMap<ClassInfo, Reference> getReferences();
+	MultiMap<ClassInfo, Reference> getReferences();
 }

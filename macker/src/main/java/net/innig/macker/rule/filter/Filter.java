@@ -27,7 +27,10 @@ import net.innig.macker.rule.RulesException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Paul Cantrell
+ */
 public interface Filter {
-	public Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options)
-			throws RulesException;
+	
+	Pattern createPattern(RuleSet ruleSet, List<Pattern> params, Map<String, String> options) throws RulesException;
 }

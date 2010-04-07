@@ -22,14 +22,18 @@ package net.innig.macker.rule;
 
 /**
  * Indicates an illegal or ill-formed rule.
+ * 
+ * @author Paul Cantrell
  */
-
 public abstract class RulesException extends Exception {
-	public RulesException(String message) {
+
+	private static final long serialVersionUID = -2163482334429986910L;
+
+	public RulesException(final String message) {
 		super(message);
 	}
 
-	public RulesException(String message, Throwable cause) {
+	public RulesException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 }

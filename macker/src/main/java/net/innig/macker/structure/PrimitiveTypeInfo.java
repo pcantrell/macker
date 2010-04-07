@@ -29,6 +29,8 @@ import java.util.Set;
 
 /**
  * Hard-coded class info for Java's primitive types.
+ * 
+ * @author Paul Cantrell
  */
 public enum PrimitiveTypeInfo implements ClassInfo {
 	BYTE, SHORT, INT, LONG, CHAR, BOOLEAN, FLOAT, DOUBLE, VOID;
@@ -48,7 +50,7 @@ public enum PrimitiveTypeInfo implements ClassInfo {
 		return toString().toLowerCase();
 	}
 
-	public String getFullName() {
+	public String getFullClassName() {
 		return getName();
 	}
 

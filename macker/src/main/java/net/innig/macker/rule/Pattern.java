@@ -22,9 +22,13 @@ package net.innig.macker.rule;
 
 import net.innig.macker.structure.ClassInfo;
 
+/**
+ * @author Paul Cantrell
+ */
 public interface Pattern {
-	public static final Pattern ALL = new Pattern() {
-		public boolean matches(EvaluationContext context, ClassInfo classInfo) {
+	
+	Pattern ALL = new Pattern() {
+		public boolean matches(final EvaluationContext context, final ClassInfo classInfo) {
 			return true;
 		}
 
@@ -33,8 +37,8 @@ public interface Pattern {
 		}
 	};
 
-	public static final Pattern NONE = new Pattern() {
-		public boolean matches(EvaluationContext context, ClassInfo classInfo) {
+	Pattern NONE = new Pattern() {
+		public boolean matches(final EvaluationContext context, final ClassInfo classInfo) {
 			return false;
 		}
 
@@ -43,5 +47,5 @@ public interface Pattern {
 		}
 	};
 
-	public boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException;
+	boolean matches(EvaluationContext context, ClassInfo classInfo) throws RulesException;
 }

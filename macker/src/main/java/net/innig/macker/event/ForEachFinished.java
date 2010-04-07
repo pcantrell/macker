@@ -22,8 +22,14 @@ package net.innig.macker.event;
 
 import net.innig.macker.rule.ForEach;
 
+/**
+ * @author Paul Cantrell
+ */
 public class ForEachFinished extends ForEachEvent {
-	public ForEachFinished(ForEach forEach) {
+
+	private static final long serialVersionUID = -7279235972179295641L;
+
+	public ForEachFinished(final ForEach forEach) {
 		super(forEach, "forEach finished");
 	}
 }

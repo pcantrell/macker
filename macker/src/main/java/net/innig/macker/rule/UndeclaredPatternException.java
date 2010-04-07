@@ -20,8 +20,14 @@
 
 package net.innig.macker.rule;
 
+/**
+ * @author Paul Cantrell
+ */
 public class UndeclaredPatternException extends RulesException {
-	public UndeclaredPatternException(String patternName) {
+
+	private static final long serialVersionUID = -8178505711316183327L;
+
+	public UndeclaredPatternException(final String patternName) {
 		super("Pattern named \"" + patternName + "\" not declared");
 	}
 }

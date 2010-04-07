@@ -24,8 +24,14 @@ import net.innig.macker.rule.Message;
 
 import java.util.Collections;
 
+/**
+ * @author Paul Cantrell
+ */
 public class MessageEvent extends MackerEvent {
-	public MessageEvent(Message messageRule, String message) {
+
+	private static final long serialVersionUID = -3831181792847655423L;
+
+	public MessageEvent(final Message messageRule, final String message) {
 		super(messageRule, null, Collections.singletonList(message));
 	}
 }

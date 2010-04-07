@@ -24,24 +24,31 @@ import net.innig.util.GraphType;
 
 /**
  * Taxonomy of different kinds of references between classes.
- * 
+ *
+ * @author Paul Cantrell
  * @see Reference
  */
 public class ReferenceType extends GraphType {
-	public static final ReferenceType SIGNATURE = new ReferenceType("signature"), MEMBER_SIGNATURE = new ReferenceType(
-			"member-signature", SIGNATURE), METHOD_SIGNATURE = new ReferenceType("method-signature", MEMBER_SIGNATURE),
-			METHOD_PARAM = new ReferenceType("method-param", METHOD_SIGNATURE), METHOD_RETURNS = new ReferenceType(
-					"method-returns", METHOD_SIGNATURE), METHOD_THROWS = new ReferenceType("method-throws",
-					METHOD_SIGNATURE), FIELD_SIGNATURE = new ReferenceType("field-signature", MEMBER_SIGNATURE),
-			SUPER = new ReferenceType("super"), EXTENDS = new ReferenceType("extends", SUPER),
-			IMPLEMENTS = new ReferenceType("implements", SUPER), INTERNAL = new ReferenceType("internal"),
-			CONSTANT_POOL = new ReferenceType("constant-pool", INTERNAL);
+	
+	private static final long serialVersionUID = 7881805878888320289L;
+	public static final ReferenceType SIGNATURE = new ReferenceType("signature");
+	public static final ReferenceType MEMBER_SIGNATURE = new ReferenceType("member-signature", SIGNATURE);
+	public static final ReferenceType METHOD_SIGNATURE = new ReferenceType("method-signature", MEMBER_SIGNATURE);
+	public static final ReferenceType METHOD_PARAM = new ReferenceType("method-param", METHOD_SIGNATURE);
+	public static final ReferenceType METHOD_RETURNS = new ReferenceType("method-returns", METHOD_SIGNATURE);
+	public static final ReferenceType METHOD_THROWS = new ReferenceType("method-throws", METHOD_SIGNATURE);
+	public static final ReferenceType FIELD_SIGNATURE = new ReferenceType("field-signature", MEMBER_SIGNATURE);
+	public static final ReferenceType SUPER = new ReferenceType("super");
+	public static final ReferenceType EXTENDS = new ReferenceType("extends", SUPER);
+	public static final ReferenceType IMPLEMENTS = new ReferenceType("implements", SUPER);
+	public static final ReferenceType INTERNAL = new ReferenceType("internal");
+	public static final ReferenceType CONSTANT_POOL = new ReferenceType("constant-pool", INTERNAL);
 
-	private ReferenceType(String name) {
+	private ReferenceType(final String name) {
 		super(name);
 	}
 
-	private ReferenceType(String name, ReferenceType parent) {
+	private ReferenceType(final String name, final ReferenceType parent) {
 		super(name, parent);
 	}
 }

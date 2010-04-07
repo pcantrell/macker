@@ -32,16 +32,19 @@ import net.innig.macker.util.IncludeExcludeNode;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Paul Cantrell
+ */
 public class AccessRule extends Rule {
 	// --------------------------------------------------------------------------
 	// Constructors
 	// --------------------------------------------------------------------------
 
-	public AccessRule(RuleSet parent) {
+	public AccessRule(final RuleSet parent) {
 		super(parent);
-		type = AccessRuleType.DENY;
-		from = Pattern.ALL;
-		to = Pattern.ALL;
+		this.type = AccessRuleType.DENY;
+		this.from = Pattern.ALL;
+		this.to = Pattern.ALL;
 	}
 
 	// --------------------------------------------------------------------------
@@ -49,10 +52,10 @@ public class AccessRule extends Rule {
 	// --------------------------------------------------------------------------
 
 	public AccessRuleType getType() {
-		return type;
+		return this.type;
 	}
 
-	public void setType(AccessRuleType type) {
+	public void setType(final AccessRuleType type) {
 		if (type == null) {
 			throw new IllegalArgumentException("type parameter cannot be null");
 		}
@@ -60,42 +63,42 @@ public class AccessRule extends Rule {
 	}
 
 	public Pattern getFrom() {
-		return from;
+		return this.from;
 	}
 
-	public void setFrom(Pattern from) {
+	public void setFrom(final Pattern from) {
 		this.from = from;
 	}
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
 	public Pattern getTo() {
-		return to;
+		return this.to;
 	}
 
-	public void setTo(Pattern to) {
+	public void setTo(final Pattern to) {
 		this.to = to;
 	}
 
 	public AccessRule getChild() {
-		return child;
+		return this.child;
 	}
 
-	public void setChild(AccessRule child) {
+	public void setChild(final AccessRule child) {
 		this.child = child;
 	}
 
 	public AccessRule getNext() {
-		return next;
+		return this.next;
 	}
 
-	public void setNext(AccessRule next) {
+	public void setNext(final AccessRule next) {
 		this.next = next;
 	}
 
@@ -110,12 +113,12 @@ public class AccessRule extends Rule {
 	// Evaluation
 	// --------------------------------------------------------------------------
 
-	public void check(EvaluationContext context, ClassManager classes) throws RulesException, MackerIsMadException,
-			ListenerException {
-		EvaluationContext localContext = new EvaluationContext(context);
+	public void check(final EvaluationContext context, final ClassManager classes)
+			throws RulesException, MackerIsMadException, ListenerException {
+		final EvaluationContext localContext = new EvaluationContext(context);
 		for (MultiMap.Entry<ClassInfo, ClassInfo> reference : classes.getReferences().entrySet()) {
-			ClassInfo from = reference.getKey();
-			ClassInfo to = reference.getValue();
+			final ClassInfo from = reference.getKey();
+			final ClassInfo to = reference.getValue();
 			if (from.equals(to)) {
 				continue;
 			}
@@ -127,8 +130,8 @@ public class AccessRule extends Rule {
 			localContext.setVariableValue("to", to.getClassName());
 			localContext.setVariableValue("from-package", from.getPackageName());
 			localContext.setVariableValue("to-package", to.getPackageName());
-			localContext.setVariableValue("from-full", from.getFullName());
-			localContext.setVariableValue("to-full", to.getFullName());
+			localContext.setVariableValue("from-full", from.getFullClassName());
+			localContext.setVariableValue("to-full", to.getFullClassName());
 
 			if (!checkAccess(localContext, from, to)) {
 				List<String> messages;
@@ -142,7 +145,7 @@ public class AccessRule extends Rule {
 		}
 	}
 
-	private boolean checkAccess(EvaluationContext context, ClassInfo fromClass, ClassInfo toClass)
+	private boolean checkAccess(final EvaluationContext context, final ClassInfo fromClass, final ClassInfo toClass)
 			throws RulesException {
 		return IncludeExcludeLogic.apply(makeIncludeExcludeNode(this, context, fromClass, toClass));
 	}

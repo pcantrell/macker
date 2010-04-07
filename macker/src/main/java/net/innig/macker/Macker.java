@@ -62,7 +62,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class Macker {
 	/** The class manager. */
-	private ClassManager cm;
+	private ClassManager classManager;
 	/** The rule sets. */
 	private Collection<RuleSet> ruleSets;
 	/** The command line passed variables. */
@@ -84,10 +84,10 @@ public class Macker {
 	 * Create a new {@link Macker} instance.
 	 */
 	public Macker() {
-		cm = new ClassManager();
-		ruleSets = new ArrayList<RuleSet>();
-		vars = new HashMap<String, String>();
-		verbose = false;
+		this.classManager = new ClassManager();
+		this.ruleSets = new ArrayList<RuleSet>();
+		this.vars = new HashMap<String, String>();
+		this.verbose = false;
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class Macker {
 	 * @throws IOException When reading the class failed.
 	 * @throws ClassParseException When the class couldn't be parsed.
 	 */
-	public void addClass(File classFile) throws IOException, ClassParseException {
-		cm.makePrimary(cm.readClass(classFile));
+	public void addClass(final File classFile) throws IOException, ClassParseException {
+		makePrimary(getClassManager().readClass(classFile));
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class Macker {
 	 * @throws IOException When reading the class failed.
 	 * @throws ClassParseException When the class couldn't be parsed.
 	 */
-	public void addClass(InputStream classFile) throws IOException, ClassParseException {
-		cm.makePrimary(cm.readClass(classFile));
+	public void addClass(final InputStream classFile) throws IOException, ClassParseException {
+		makePrimary(getClassManager().readClass(classFile));
 	}
 
 	/**
@@ -122,8 +122,17 @@ public class Macker {
 	 * @throws IOException When reading the class failed.
 	 * @throws ClassParseException When the class couldn't be parsed.
 	 */
-	public void addClass(String className) throws ClassNotFoundException {
-		cm.makePrimary(cm.getClassInfo(className));
+	public void addClass(final String className) throws ClassNotFoundException {
+		makePrimary(getClassManager().getClassInfo(className));
+	}
+	
+	/**
+	 * Make a ClassInfo object the primary.
+	 * 
+	 * @param classInfo the ClassInfo object
+	 */
+	private void makePrimary(final ClassInfo classInfo) {
+		getClassManager().makePrimary(classInfo);
 	}
 
 	/**
@@ -137,8 +146,8 @@ public class Macker {
 	 * @throws IOException When reading of the text file or class files failed.
 	 * @throws ClassParseException When the classes couldn't be parsed.
 	 */
-	public void addClassesFromFile(String fileName) throws IOException, ClassParseException {
-		File indexFile = new File(fileName);
+	public void addClassesFromFile(final String fileName) throws IOException, ClassParseException {
+		final File indexFile = new File(fileName);
 		BufferedReader indexReader = null;
 		try {
 			indexReader = new BufferedReader(new FileReader(indexFile));
@@ -160,7 +169,7 @@ public class Macker {
 	 * 
 	 * @throws IncompleteClassInfoException When the class info is incomplete or could not be constructed.
 	 */
-	public void addReachableClasses(Class<?> initialClass, final String primaryPrefix)
+	public void addReachableClasses(final Class<?> initialClass, final String primaryPrefix)
 			throws IncompleteClassInfoException {
 		addReachableClasses(initialClass.getName(), primaryPrefix);
 	}
@@ -175,14 +184,14 @@ public class Macker {
 	 * 
 	 * @throws IncompleteClassInfoException When the class info is incomplete or could not be constructed.
 	 */
-	public void addReachableClasses(String initialClassName, final String primaryPrefix)
+	public void addReachableClasses(final String initialClassName, final String primaryPrefix)
 			throws IncompleteClassInfoException {
-		Graphs.reachableNodes(cm.getClassInfo(initialClassName), new GraphWalker<ClassInfo>() {
-			public Collection<ClassInfo> getEdgesFrom(ClassInfo classInfo) {
-				cm.makePrimary(classInfo);
+		Graphs.reachableNodes(getClassManager().getClassInfo(initialClassName), new GraphWalker<ClassInfo>() {
+			public Collection<ClassInfo> getEdgesFrom(final ClassInfo classInfo) {
+				makePrimary(classInfo);
 				return InnigCollections.select(classInfo.getReferences().keySet(), new Selector<ClassInfo>() {
-					public boolean select(ClassInfo classInfo) {
-						return classInfo.getFullName().startsWith(primaryPrefix);
+					public boolean select(final ClassInfo classInfo) {
+						return classInfo.getFullClassName().startsWith(primaryPrefix);
 					}
 				});
 			}
@@ -195,7 +204,7 @@ public class Macker {
 	 * @return <code>true</code> if there are primary classes loaded.
 	 */
 	public boolean hasClasses() {
-		return !cm.getPrimaryClasses().isEmpty();
+		return !getClassManager().getPrimaryClasses().isEmpty();
 	}
 
 	/**
@@ -206,8 +215,8 @@ public class Macker {
 	 * @throws IOException When reading the file failed.
 	 * @throws RulesException When the rules could not be build.
 	 */
-	public void addRulesFile(File rulesFile) throws IOException, RulesException {
-		ruleSets.addAll(new RuleSetBuilder().build(rulesFile));
+	public void addRulesFile(final File rulesFile) throws IOException, RulesException {
+		getRuleSets().addAll(new RuleSetBuilder().build(rulesFile));
 	}
 
 	/**
@@ -218,8 +227,8 @@ public class Macker {
 	 * @throws IOException When reading the file failed.
 	 * @throws RulesException When the rules could not be build.
 	 */
-	public void addRulesFile(InputStream rulesFile) throws IOException, RulesException {
-		ruleSets.addAll(new RuleSetBuilder().build(rulesFile));
+	public void addRulesFile(final InputStream rulesFile) throws IOException, RulesException {
+		getRuleSets().addAll(new RuleSetBuilder().build(rulesFile));
 	}
 
 	/**
@@ -230,8 +239,8 @@ public class Macker {
 	 * @throws IOException When the ruleset could not be loaded.
 	 * @throws RulesException When the ruleset was invalid.
 	 */
-	public void addRuleSet(RuleSet ruleSet) throws IOException, RulesException {
-		ruleSets.add(ruleSet);
+	public void addRuleSet(final RuleSet ruleSet) throws IOException, RulesException {
+		getRuleSets().add(ruleSet);
 	}
 
 	/**
@@ -239,8 +248,8 @@ public class Macker {
 	 * 
 	 * @param listener The {@link MackerEventListener}.
 	 */
-	public void addListener(MackerEventListener listener) {
-		listeners.add(listener);
+	public void addListener(final MackerEventListener listener) {
+		getListeners().add(listener);
 	}
 
 	/**
@@ -249,7 +258,7 @@ public class Macker {
 	 * @return <code>true</code> if there is atleast 1 {@link RuleSet} loaded.
 	 */
 	public boolean hasRules() {
-		return !ruleSets.isEmpty();
+		return !getRuleSets().isEmpty();
 	}
 
 	/**
@@ -258,8 +267,8 @@ public class Macker {
 	 * @param name The name of the variable.
 	 * @param value The value of the variable.
 	 */
-	public void setVariable(String name, String value) {
-		vars.put(name, value);
+	public void setVariable(final String name, final String value) {
+		getVars().put(name, value);
 	}
 
 	/**
@@ -267,7 +276,7 @@ public class Macker {
 	 * 
 	 * @param verbose <code>true</code> for verbose output.
 	 */
-	public void setVerbose(boolean verbose) {
+	public void setVerbose(final boolean verbose) {
 		this.verbose = verbose;
 	}
 
@@ -276,8 +285,8 @@ public class Macker {
 	 * 
 	 * @param classLoader The ClassLoader.
 	 */
-	public void setClassLoader(ClassLoader classLoader) {
-		cm.setClassLoader(classLoader);
+	public void setClassLoader(final ClassLoader classLoader) {
+		getClassManager().setClassLoader(classLoader);
 	}
 
 	/**
@@ -285,7 +294,7 @@ public class Macker {
 	 * 
 	 * @param printMaxMessages The maximum number of messages.
 	 */
-	public void setPrintMaxMessages(int printMaxMessages) {
+	public void setPrintMaxMessages(final int printMaxMessages) {
 		this.printMaxMessages = printMaxMessages;
 	}
 
@@ -294,7 +303,7 @@ public class Macker {
 	 * 
 	 * @param printThreshold The lowest {@link RuleSeverity} level to show output from.
 	 */
-	public void setPrintThreshold(RuleSeverity printThreshold) {
+	public void setPrintThreshold(final RuleSeverity printThreshold) {
 		this.printThreshold = printThreshold;
 	}
 
@@ -303,7 +312,7 @@ public class Macker {
 	 * 
 	 * @param angerThreshold The lowest {@link RuleSeverity} level to report an error from.
 	 */
-	public void setAngerThreshold(RuleSeverity angerThreshold) {
+	public void setAngerThreshold(final RuleSeverity angerThreshold) {
 		this.angerThreshold = angerThreshold;
 	}
 
@@ -312,7 +321,7 @@ public class Macker {
 	 * 
 	 * @param xmlReportFile The xml report file to use.
 	 */
-	public void setXmlReportFile(File xmlReportFile) {
+	public void setXmlReportFile(final File xmlReportFile) {
 		this.xmlReportFile = xmlReportFile;
 	}
 
@@ -331,12 +340,12 @@ public class Macker {
 			System.out.println("WARNING: No class files specified");
 		}
 
-		if (verbose) {
-			System.out.println(cm.getPrimaryClasses().size() + " primary classes");
-			System.out.println(cm.getAllClasses().size() + " total classes");
-			System.out.println(cm.getReferences().size() + " references");
+		if (isVerbose()) {
+			System.out.println(getClassManager().getPrimaryClasses().size() + " primary classes");
+			System.out.println(getClassManager().getAllClasses().size() + " total classes");
+			System.out.println(getClassManager().getReferences().size() + " references");
 
-			for (ClassInfo classInfo : cm.getPrimaryClasses()) {
+			for (ClassInfo classInfo : getClassManager().getPrimaryClasses()) {
 				System.out.println("Classes used by " + classInfo + ":");
 				for (ClassInfo used : classInfo.getReferences().keySet()) {
 					System.out.println("    " + used);
@@ -346,28 +355,28 @@ public class Macker {
 		}
 
 		PrintingListener printing;
-		if (printThreshold == null) {
+		if (getPrintThreshold() == null) {
 			printing = null;
 		} else {
 			printing = new PrintingListener(System.out);
-			printing.setThreshold(printThreshold);
-			if (printMaxMessages > 0) {
-				printing.setMaxMessages(printMaxMessages);
+			printing.setThreshold(getPrintThreshold());
+			if (getPrintMaxMessages() > 0) {
+				printing.setMaxMessages(getPrintMaxMessages());
 			}
 			addListener(printing);
 		}
 
 		ThrowingListener throwing;
-		if (angerThreshold == null) {
+		if (getAngerThreshold() == null) {
 			throwing = null;
 		} else {
-			throwing = new ThrowingListener(null, angerThreshold);
+			throwing = new ThrowingListener(null, getAngerThreshold());
 			addListener(throwing);
 		}
 
 		XmlReportingListener xmlReporting = null;
-		if (xmlReportFile != null) {
-			xmlReporting = new XmlReportingListener(xmlReportFile);
+		if (getXmlReportFile() != null) {
+			xmlReporting = new XmlReportingListener(getXmlReportFile());
 			addListener(xmlReporting);
 		}
 
@@ -393,12 +402,12 @@ public class Macker {
 	 * @throws ListenerException TODO Document me!
 	 */
 	public void checkRaw() throws MackerIsMadException, RulesException, ListenerException {
-		for (RuleSet rs : ruleSets) {
-			if (verbose) {
+		for (RuleSet rs : getRuleSets()) {
+			if (isVerbose()) {
 				for (final Pattern pat : rs.getAllPatterns()) {
-					final EvaluationContext ctx = new EvaluationContext(cm, rs);
+					final EvaluationContext ctx = new EvaluationContext(getClassManager(), rs);
 					System.out.println("matching " + pat);
-					for (ClassInfo classInfo : cm.getPrimaryClasses()) {
+					for (ClassInfo classInfo : getClassManager().getPrimaryClasses()) {
 						if (pat.matches(ctx, classInfo)) {
 							System.out.println("    " + classInfo);
 						}
@@ -407,13 +416,13 @@ public class Macker {
 				}
 			}
 
-			EvaluationContext context = new EvaluationContext(cm, rs);
-			context.setVariables(vars);
-			for (MackerEventListener listener : listeners) {
+			final EvaluationContext context = new EvaluationContext(getClassManager(), rs);
+			context.setVariables(getVars());
+			for (MackerEventListener listener : getListeners()) {
 				context.addListener(listener);
 			}
 
-			rs.check(context, cm);
+			rs.check(context, getClassManager());
 		}
 	}
 
@@ -424,29 +433,29 @@ public class Macker {
 	 * 
 	 * @throws Exception When execution fails.
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {
 		try {
 			// Parse args
-			Macker macker = new Macker();
+			final Macker macker = new Macker();
 
 			boolean nextIsRule = false;
 			for (int arg = 0; arg < args.length; arg++) {
-				if (args[arg].equals("-h") || args[arg].equals("-help") || args[arg].equals("--help")) {
+				if ("-h".equals(args[arg]) || "-help".equals(args[arg]) || "--help".equals(args[arg])) {
 					commandLineUsage();
 					return;
-				} else if (args[arg].equals("-V") || args[arg].equals("--version")) {
-					Properties p = new Properties();
+				} else if ("-V".equals(args[arg]) || "--version".equals(args[arg])) {
+					final Properties p = new Properties();
 					p.load(Macker.class.getClassLoader().getResourceAsStream("net/innig/macker/version.properties"));
 					System.out.println("Macker " + p.get("macker.version.long"));
 					System.out.println("http://innig.net/macker/");
 					System.out.println("Licensed under GPL v2.1; see LICENSE.html");
 					return;
-				} else if (args[arg].equals("-v") || args[arg].equals("--verbose")) {
+				} else if ("-v".equals(args[arg]) || "--verbose".equals(args[arg])) {
 					macker.setVerbose(true);
-				} else if (args[arg].startsWith("-D") || args[arg].equals("--define")) {
+				} else if (args[arg].startsWith("-D") || "--define".equals(args[arg])) {
 					int initialPos = 0;
 					int equalPos;
-					if (args[arg].length() == 2 || args[arg].equals("--define")) {
+					if (args[arg].length() == 2 || "--define".equals(args[arg])) {
 						arg++;
 					} else {
 						initialPos = 2;
@@ -458,22 +467,22 @@ public class Macker {
 						commandLineUsage();
 						return;
 					}
-					String varName = args[arg].substring(initialPos, equalPos);
-					String value = args[arg].substring(equalPos + 1);
+					final String varName = args[arg].substring(initialPos, equalPos);
+					final String value = args[arg].substring(equalPos + 1);
 					macker.setVariable(varName, value);
-				} else if (args[arg].equals("-o") || args[arg].equals("--output")) {
+				} else if ("o".equals(args[arg]) || "--output".equals(args[arg])) {
 					macker.setXmlReportFile(new File(args[++arg]));
-				} else if (args[arg].equals("--print-max")) {
+				} else if ("--print-max".equals(args[arg])) {
 					macker.setPrintMaxMessages(Integer.parseInt(args[++arg]));
-				} else if (args[arg].equals("--print")) {
+				} else if ("--print".equals(args[arg])) {
 					macker.setPrintThreshold(RuleSeverity.fromName(args[++arg]));
-				} else if (args[arg].equals("--anger")) {
+				} else if ("--anger".equals(args[arg])) {
 					macker.setAngerThreshold(RuleSeverity.fromName(args[++arg]));
-				} else if (args[arg].equals("-r") || args[arg].equals("--rulesfile")) {
+				} else if ("-r".equals(args[arg]) || "--rulesfile".equals(args[arg])) {
 					nextIsRule = true;
 				} else if (args[arg].startsWith("@")) {
-					macker.addClassesFromFile(args[arg].substring(1)); // the
-				// arg is a file with class names
+					macker.addClassesFromFile(args[arg].substring(1));
+					// the arg is a file with class names
 				} else if (args[arg].endsWith(".xml") || nextIsRule) {
 					macker.addRulesFile(new File(args[arg]));
 					nextIsRule = false;
@@ -519,5 +528,41 @@ public class Macker {
 		System.out.println("              --print-max <max-messages>");
 		System.out.println("          -v, --verbose");
 		System.out.println("          -V, --version");
+	}
+	
+	private RuleSeverity getAngerThreshold() {
+		return this.angerThreshold;
+	}
+	
+	private ClassManager getClassManager() {
+		return this.classManager;
+	}
+	
+	private List<MackerEventListener> getListeners() {
+		return this.listeners;
+	}
+	
+	private int getPrintMaxMessages() {
+		return this.printMaxMessages;
+	}
+	
+	private RuleSeverity getPrintThreshold() {
+		return this.printThreshold;
+	}
+	
+	private Collection<RuleSet> getRuleSets() {
+		return this.ruleSets;
+	}
+	
+	private Map<String, String> getVars() {
+		return this.vars;
+	}
+	
+	private boolean isVerbose() {
+		return this.verbose;
+	}
+	
+	private File getXmlReportFile() {
+		return this.xmlReportFile;
 	}
 }

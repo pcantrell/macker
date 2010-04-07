@@ -39,7 +39,7 @@ public class HollowClassInfo extends AbstractClassInfo {
 		this.className = className;
 	}
 
-	public String getFullName() {
+	public String getFullClassName() {
 		return this.className;
 	}
 

@@ -20,29 +20,35 @@
 
 package net.innig.macker.rule;
 
+/**
+ * @author Paul Cantrell
+ */
 public class MackerRegexSyntaxException extends RulesException {
-	public MackerRegexSyntaxException(String regexp) {
+
+	private static final long serialVersionUID = 8149246905588221194L;
+	
+	private final String regexp;
+
+	public MackerRegexSyntaxException(final String regexp) {
 		super(getMessage(regexp) + "");
 		this.regexp = regexp;
 	}
 
-	public MackerRegexSyntaxException(String regexp, Exception cause) {
+	public MackerRegexSyntaxException(final String regexp, final Exception cause) {
 		super(getMessage(regexp) + ": ", cause);
 		this.regexp = regexp;
 	}
 
-	public MackerRegexSyntaxException(String regexp, String message) {
+	public MackerRegexSyntaxException(final String regexp, final String message) {
 		super(getMessage(regexp) + ": " + message);
 		this.regexp = regexp;
 	}
 
 	public final String getRegexp() {
-		return regexp;
+		return this.regexp;
 	}
 
-	private static String getMessage(String regexp) {
+	private static String getMessage(final String regexp) {
 		return "\"" + regexp + "\" is not a valid Macker regexp pattern";
 	}
-
-	private final String regexp;
 }

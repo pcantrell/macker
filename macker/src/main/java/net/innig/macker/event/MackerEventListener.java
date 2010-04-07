@@ -24,25 +24,29 @@ import net.innig.macker.rule.RuleSet;
 
 import java.util.EventListener;
 
+/**
+ * @author Paul Cantrell
+ */
 public interface MackerEventListener extends EventListener {
+	
 	/**
 	 * Called before rule checking begins for the given ruleset.
 	 */
-	public void mackerStarted(RuleSet ruleSet) throws ListenerException;
+	void mackerStarted(RuleSet ruleSet) throws ListenerException;
 
 	/**
 	 * Called after rule checking has finished for the given ruleset.
 	 */
-	public void mackerFinished(RuleSet ruleSet) throws MackerIsMadException, ListenerException;
+	void mackerFinished(RuleSet ruleSet) throws MackerIsMadException, ListenerException;
 
 	/**
 	 * Called after an exception has aborted rule checking for the given ruleset. <b>??</b>: Is mackerAborted called if
 	 * mackerFinished() was already called, but another listener subsequently aborted?
 	 */
-	public void mackerAborted(RuleSet ruleSet);
+	void mackerAborted(RuleSet ruleSet);
 
 	/**
 	 * Handles Macker's irrational anger.
 	 */
-	public void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException, ListenerException;
+	void handleMackerEvent(RuleSet ruleSet, MackerEvent event) throws MackerIsMadException, ListenerException;
 }
