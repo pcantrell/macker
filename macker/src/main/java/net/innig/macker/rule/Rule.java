@@ -29,7 +29,7 @@ import net.innig.macker.structure.ClassManager;
  */
 public abstract class Rule {
 	
-	private RuleSet parent;
+	private final RuleSet parent;
 	private RuleSeverity severity;
 	
 	public Rule(final RuleSet parent) {

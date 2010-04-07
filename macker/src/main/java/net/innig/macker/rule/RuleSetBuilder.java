@@ -54,9 +54,9 @@ import org.jdom.output.XMLOutputter;
  */
 public class RuleSetBuilder {
 
-	private SAXBuilder saxBuilder;
-	private SAXBuilder saxBuilderVerify;
-	private XMLOutputter xmlOut;
+	private final SAXBuilder saxBuilder;
+	private final SAXBuilder saxBuilderVerify;
+	private final XMLOutputter xmlOut;
 	private String dtdUrlS;
 
 	public RuleSetBuilder() {
@@ -68,8 +68,8 @@ public class RuleSetBuilder {
 		final PrintStream realErr = System.err;
 		try {
 			System.setErr(new PrintStream(new NullOutputStream()));
-			this.dtdUrlS = getClass().getClassLoader().getResource(
-					"net/innig/macker/macker.dtd").toExternalForm();
+			this.dtdUrlS = RuleSetBuilder.class.getResource(
+				"/net/innig/macker/macker.dtd").toExternalForm();
 		} finally {
 			System.setErr(realErr);
 		}

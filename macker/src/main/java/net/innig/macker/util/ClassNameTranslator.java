@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * @author Paul Cantrell
  */
-public class ClassNameTranslator {
+public final class ClassNameTranslator {
 	
 	/**
 	 * Private constructor for utility class.

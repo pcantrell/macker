@@ -25,7 +25,7 @@ import net.innig.macker.rule.RulesException;
 /**
  * @author Paul Cantrell
  */
-public class IncludeExcludeLogic {
+public final class IncludeExcludeLogic {
 	
 	/**
 	 * Private constructor voor utility class.

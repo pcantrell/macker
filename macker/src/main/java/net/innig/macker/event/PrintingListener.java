@@ -41,6 +41,15 @@ import java.util.Set;
  */
 public class PrintingListener implements MackerEventListener {
 
+	private boolean first;
+	private final PrintWriter writer;
+	private int maxMessages = Integer.MAX_VALUE;
+	private int messagesPrinted = 0;
+	private RuleSeverity threshold = RuleSeverity.INFO;
+	private final MultiMap<RuleSeverity, MackerEvent> eventsBySeverity =
+		new CompositeMultiMap<RuleSeverity, MackerEvent>(
+			new EnumMap<RuleSeverity, Set<MackerEvent>>(RuleSeverity.class), HashSet.class);
+	
 	public PrintingListener(final PrintWriter out) {
 		this.writer = out;
 	}
@@ -113,7 +122,7 @@ public class PrintingListener implements MackerEventListener {
 		Collections.reverse(severities);
 		for (RuleSeverity severity : severities) {
 			final Collection<MackerEvent> eventsForSev = getEventsBySeverity().get(severity);
-			if (eventsForSev.size() > 0) {
+			if (!eventsForSev.isEmpty()) {
 				if (firstSeverity) {
 					getWriter().print("(");
 				} else {
@@ -161,13 +170,4 @@ public class PrintingListener implements MackerEventListener {
 	private PrintWriter getWriter() {
 		return this.writer;
 	}
-
-	private boolean first;
-	private PrintWriter writer;
-	private int maxMessages = Integer.MAX_VALUE;
-	private int messagesPrinted = 0;
-	private RuleSeverity threshold = RuleSeverity.INFO;
-	private final MultiMap<RuleSeverity, MackerEvent> eventsBySeverity =
-		new CompositeMultiMap<RuleSeverity, MackerEvent>(
-			new EnumMap<RuleSeverity, Set<MackerEvent>>(RuleSeverity.class), HashSet.class);
 }

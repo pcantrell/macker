@@ -36,9 +36,9 @@ import java.util.Map;
  */
 public class RuleSet extends Rule {
 	
+	private final Map<String, Pattern> patterns;
+	private final Collection<Rule> rules;
 	private String name;
-	private Map<String, Pattern> patterns;
-	private Collection<Rule> rules;
 	private Pattern subsetPat;
 	
 	public static RuleSet getMackerDefaults() {
@@ -109,10 +109,10 @@ public class RuleSet extends Rule {
 
 	public void setPattern(final String name, final Pattern pattern) {
 		if (name == null) {
-			throw new NullPointerException("name cannot be null");
+			throw new IllegalArgumentException("name cannot be null");
 		}
 		if (pattern == null) {
-			throw new NullPointerException("pattern cannot be null");
+			throw new IllegalArgumentException("pattern cannot be null");
 		}
 		getPatterns().put(name, pattern);
 	}

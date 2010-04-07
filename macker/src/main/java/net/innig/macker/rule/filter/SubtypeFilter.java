@@ -39,16 +39,26 @@ public class SubtypeFilter implements Filter {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects one parameter, but has " + params.size());
 		}
-		final Pattern supertypePat = params.get(0);
-		return new Pattern() {
-			public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
-				for (ClassInfo supertype : classInfo.getSupertypes()) {
-					if (supertypePat.matches(context, supertype)) {
-						return true;
-					}
+		
+		return new SuperTypePattern(params.get(0));
+	}
+	
+	/** Match SuperType Pattern. */
+	private static class SuperTypePattern implements Pattern {
+		
+		private Pattern superTypePattern;
+		
+		public SuperTypePattern(final Pattern superTypePattern) {
+			this.superTypePattern = superTypePattern;
+		}
+		
+		public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+			for (ClassInfo supertype : classInfo.getSupertypes()) {
+				if (this.superTypePattern.matches(context, supertype)) {
+					return true;
 				}
-				return false;
 			}
-		};
+			return false;
+		}
 	}
 }

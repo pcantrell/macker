@@ -28,7 +28,7 @@ import net.innig.util.GraphType;
  * @author Paul Cantrell
  * @see Reference
  */
-public class ReferenceType extends GraphType {
+public final class ReferenceType extends GraphType {
 	
 	private static final long serialVersionUID = 7881805878888320289L;
 	public static final ReferenceType SIGNATURE = new ReferenceType("signature");

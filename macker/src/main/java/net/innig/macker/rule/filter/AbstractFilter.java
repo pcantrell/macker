@@ -36,7 +36,7 @@ public class AbstractFilter implements Filter {
 	
 	public Pattern createPattern(final RuleSet ruleSet, final List<Pattern> params, final Map<String, String> options)
 			throws RulesException {
-		if (params.size() != 0) {
+		if (!params.isEmpty()) {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects no parameters, but has " + params.size());
 		}

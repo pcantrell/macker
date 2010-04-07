@@ -70,6 +70,7 @@ public class MackerAntTask extends Task {
 	 *
 	 */
 	public MackerAntTask() {
+		super();
 		setMacker(new Macker());
 		setJvmArgs(new ArrayList<String>());
 	}

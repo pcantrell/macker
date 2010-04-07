@@ -62,17 +62,17 @@ import org.apache.commons.io.IOUtils;
  */
 public class Macker {
 	/** The class manager. */
-	private ClassManager classManager;
+	private final ClassManager classManager;
 	/** The rule sets. */
-	private Collection<RuleSet> ruleSets;
+	private final Collection<RuleSet> ruleSets;
 	/** The command line passed variables. */
-	private Map<String, String> vars;
+	private final Map<String, String> vars;
+	/** The registered event listeners. */
+	private final List<MackerEventListener> listeners = new ArrayList<MackerEventListener>();
 	/** Flag indicating if output should be verbose. */
 	private boolean verbose;
 	/** The XML file to report to. */
 	private File xmlReportFile;
-	/** The registered event listeners. */
-	private List<MackerEventListener> listeners = new ArrayList<MackerEventListener>();
 	/** The maximum number of messages to print. */
 	private int printMaxMessages;
 	/** The lowest rule severity level to print. */
@@ -354,10 +354,8 @@ public class Macker {
 			}
 		}
 
-		PrintingListener printing;
-		if (getPrintThreshold() == null) {
-			printing = null;
-		} else {
+		PrintingListener printing = null;
+		if (getPrintThreshold() != null) {
 			printing = new PrintingListener(System.out);
 			printing.setThreshold(getPrintThreshold());
 			if (getPrintMaxMessages() > 0) {
@@ -366,10 +364,8 @@ public class Macker {
 			addListener(printing);
 		}
 
-		ThrowingListener throwing;
-		if (getAngerThreshold() == null) {
-			throwing = null;
-		} else {
+		ThrowingListener throwing = null;
+		if (getAngerThreshold() != null) {
 			throwing = new ThrowingListener(null, getAngerThreshold());
 			addListener(throwing);
 		}
@@ -445,7 +441,7 @@ public class Macker {
 					return;
 				} else if ("-V".equals(args[arg]) || "--version".equals(args[arg])) {
 					final Properties p = new Properties();
-					p.load(Macker.class.getClassLoader().getResourceAsStream("net/innig/macker/version.properties"));
+					p.load(Macker.class.getResourceAsStream("/net/innig/macker/version.properties"));
 					System.out.println("Macker " + p.get("macker.version.long"));
 					System.out.println("http://innig.net/macker/");
 					System.out.println("Licensed under GPL v2.1; see LICENSE.html");

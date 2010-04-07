@@ -31,7 +31,7 @@ public class ForEachEvent extends MackerEvent {
 
 	private static final long serialVersionUID = 7903655875130188455L;
 	
-	private ForEach forEach;
+	private final ForEach forEach;
 
 	public ForEachEvent(final ForEach forEach, final String description) {
 		super(forEach, description, new ArrayList<String>());

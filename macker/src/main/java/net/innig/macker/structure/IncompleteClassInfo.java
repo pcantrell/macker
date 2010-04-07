@@ -31,6 +31,8 @@ import java.util.Set;
  * @author Paul Cantrell
  */
 public class IncompleteClassInfo extends AbstractClassInfo {
+	
+	private final String className;
 
 	IncompleteClassInfo(final ClassManager classManager, final String className) {
 		super(classManager);
@@ -77,6 +79,4 @@ public class IncompleteClassInfo extends AbstractClassInfo {
 		return new IncompleteClassInfoException("Unable to " + action + " class " + getFullClassName()
 			+ ", because the class file could not be loaded." + " Make sure it is in Macker's classpath.");
 	}
-
-	private String className;
 }

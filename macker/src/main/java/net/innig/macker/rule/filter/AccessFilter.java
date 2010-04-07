@@ -37,7 +37,7 @@ import net.innig.macker.structure.ClassInfo;
 public class AccessFilter implements Filter {
 	public Pattern createPattern(final RuleSet ruleSet, final List<Pattern> params, final Map<String, String> options)
 			throws RulesException {
-		if (params.size() != 0) {
+		if (!params.isEmpty()) {
 			throw new FilterSyntaxException(this, "Filter \"" + options.get("filter")
 					+ "\" expects no parameters, but has " + params.size());
 		}
@@ -60,12 +60,7 @@ public class AccessFilter implements Filter {
 					+ Arrays.asList(AccessModifier.values()));
 		}
 
-		return new Pattern() {
-			public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
-				return classInfo.getAccessModifier().compareTo(min) >= 0
-						&& classInfo.getAccessModifier().compareTo(max) <= 0;
-			}
-		};
+		return new AccessModifierPattern(min, max);
 	}
 	
 	private AccessModifier getAccessModifier(final String value, final AccessModifier valueIfNull) {
@@ -74,5 +69,22 @@ public class AccessFilter implements Filter {
 		}
 		
 		return AccessModifier.valueOf(value.toUpperCase());
+	}
+	
+	/** Match AccessModifier Pattern. */
+	private static class AccessModifierPattern implements Pattern {
+		
+		private final AccessModifier min;
+		private final AccessModifier max;
+		
+		public AccessModifierPattern(final AccessModifier min, final AccessModifier max) {
+			this.min = min;
+			this.max = max;
+		}
+		
+		public boolean matches(final EvaluationContext context, final ClassInfo classInfo) throws RulesException {
+			return classInfo.getAccessModifier().compareTo(this.min) >= 0
+					&& classInfo.getAccessModifier().compareTo(this.max) <= 0;
+		}
 	}
 }

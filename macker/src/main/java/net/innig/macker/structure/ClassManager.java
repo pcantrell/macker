@@ -48,15 +48,15 @@ public class ClassManager {
 	/** The ClassLoader to use. */
 	private ClassLoader classLoader;
 	/** Set holding all classes. */
-	private Set<ClassInfo> allClasses;
+	private final Set<ClassInfo> allClasses;
 	/** Set holding all primary classes. */
-	private Set<ClassInfo> primaryClasses;
+	private final Set<ClassInfo> primaryClasses;
 	/**
 	 * Map holding all {@link ClassInfo} instances, indexed by their fully qualified name.
 	 */
-	private Map<String, ClassInfo> classNameToInfo;
+	private final Map<String, ClassInfo> classNameToInfo;
 	/** MultiMap holding all references between classes. */
-	private MultiMap<ClassInfo, ClassInfo> references;
+	private final MultiMap<ClassInfo, ClassInfo> references;
 
 	/**
 	 * Create a new {@link ClassManager} instance.

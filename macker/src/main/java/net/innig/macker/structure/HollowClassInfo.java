@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public class HollowClassInfo extends AbstractClassInfo {
 	
-	private String className;
+	private final String className;
 	private ClassInfo actual;
 
 	public HollowClassInfo(final ClassManager classManager, final String className) {

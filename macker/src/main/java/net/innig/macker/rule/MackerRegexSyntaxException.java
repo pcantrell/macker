@@ -30,7 +30,7 @@ public class MackerRegexSyntaxException extends RulesException {
 	private final String regexp;
 
 	public MackerRegexSyntaxException(final String regexp) {
-		super(getMessage(regexp) + "");
+		super(getMessage(regexp));
 		this.regexp = regexp;
 	}
 

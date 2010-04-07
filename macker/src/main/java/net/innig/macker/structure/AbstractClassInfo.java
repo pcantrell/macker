@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public abstract class AbstractClassInfo implements ClassInfo {
 
-	private ClassManager classManager;
+	private final ClassManager classManager;
 	private Set<ClassInfo> cachedAllSuper;
 	private Set<ClassInfo> cachedAllDirectSuper;
 	
@@ -67,13 +67,16 @@ public abstract class AbstractClassInfo implements ClassInfo {
 
 	public Set<ClassInfo> getSupertypes() {
 		if (this.cachedAllSuper == null) {
-			this.cachedAllSuper = Graphs.reachableNodes(this, new GraphWalker<ClassInfo>() {
-				public Collection<ClassInfo> getEdgesFrom(final ClassInfo node) {
-					return node.getDirectSupertypes();
-				}
-			});
+			this.cachedAllSuper = Graphs.reachableNodes(this, new CachedGraphWalker());
 		}
 		return this.cachedAllSuper;
+	}
+	
+	/** Cached GraphWalker. */
+	private static class CachedGraphWalker implements GraphWalker<ClassInfo> {
+		public Collection<ClassInfo> getEdgesFrom(final ClassInfo node) {
+			return node.getDirectSupertypes();
+		}
 	}
 
 	public final ClassManager getClassManager() {
